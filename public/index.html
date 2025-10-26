@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>STREMIO | CONSOLE DI COMANDO ADDON</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <style>
+        /* BASE & LAYOUT (Dark Mode) */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #121212; 
+            /* SFONDO SUPER FIGO: Gradiente scuro con texture di profondità */
+            background-image: radial-gradient(at 0% 0%, #1a1a2e 0%, transparent 50%), 
+                              radial-gradient(at 100% 100%, #1a1a2e 0%, transparent 50%),
+                              linear-gradient(to top, #0d0d0d, #121212);
+            color: #E0E0E0; 
+            margin: 0; 
+            display: grid; 
+            place-items: center; 
+            min-height: 100vh;
+        }
+        
+        /* VARIABILI CSS */
+        :root {
+            --primary-color: #BB86FC; 
+            --bg-dark: #1E1E1E;
+            --bg-light: #2D2D2D;
+            --text-color: #E0E0E0;
+            --danger-color: #CF6679; 
+            --success-color: #03DAC6;
+            --info-color: #2196F3;
+        }
+        
+        /* CONTAINER PRINCIPALE */
+        #app { 
+            background: var(--bg-dark);
+            border-radius: 16px; 
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 10px rgba(156, 39, 176, 0.2);
+            padding: 2.5rem; 
+            width: 100%; 
+            max-width: 650px; 
+            box-sizing: border-box; 
+        }
+
+        /* INTESTAZIONE */
+        h1 { 
+            text-align: center; 
+            color: var(--primary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 300;
+        }
+        h2 {
+            color: var(--text-color);
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            margin-top: 2rem;
+        }
+
+        /* INPUTS & PULSANTI */
+        .form-group { margin-bottom: 1.5rem; }
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border: none; 
+            border-radius: 8px; 
+            background-color: #333; 
+            color: var(--text-color);
+        }
+        input:focus { box-shadow: 0 0 0 2px var(--primary-color); outline: none; }
+        .primary-btn { 
+            width: 100%; 
+            padding: 14px; 
+            background-color: var(--primary-color); 
+            color: black; 
+            border: none; 
+            border-radius: 8px; 
+            cursor: pointer; 
+            font-size: 1rem; 
+            font-weight: bold; 
+            transition: background-color 0.2s, transform 0.1s; 
+            margin-bottom: 15px;
+        }
+        .primary-btn:hover:not(:disabled) { background-color: #D0A7FF; transform: translateY(-2px); }
+        .primary-btn:disabled { background-color: #555; cursor: not-allowed; transform: none; color: #999; }
+
+        .secondary-btn {
+            background-color: var(--info-color);
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .secondary-btn:hover:not(:disabled) { background-color: #1e87f7; }
+        
+        /* LISTA E ITEM */
+        .addon-list { list-style: none; padding: 0; margin-top: 1.5rem; }
+        .addon-item { 
+            display: flex; 
+            align-items: center; 
+            background: var(--bg-light); 
+            padding: 1rem; 
+            border-radius: 10px; 
+            margin-bottom: 10px; 
+            justify-content: space-between; 
+            border-left: 4px solid var(--primary-color); 
+        }
+        
+        /* DETTAGLI (Stile per testo lungo) */
+        .addon-icon { width: 50px; height: 50px; margin-right: 1rem; object-fit: contain; border-radius: 8px; }
+        .addon-details { flex-grow: 1; margin-right: 10px; min-width: 0;}
+        .addon-details h3 { 
+            margin: 0 0 0.25rem 0; 
+            font-size: 1.1rem; 
+            color: var(--text-color); 
+            display: flex;
+            align-items: center;
+        }
+        .addon-details p { 
+            margin: 0; 
+            font-size: 0.9rem; 
+            color: #AAAAAA; 
+            max-height: 5.4em; /* Limita l'altezza */
+            overflow: hidden; /* Nasconde l'eccesso */
+            text-overflow: ellipsis; 
+            display: -webkit-box;
+            -webkit-line-clamp: 4; /* Limita a 4 linee per evitare overflow dei pulsanti */
+            -webkit-box-orient: vertical;
+            word-wrap: break-word; /* Forza il wrapping delle URL */
+        }
+
+        /* NUOVA OPZIONE MODIFICA NOME */
+        .edit-name-input {
+            background: #444;
+            border: 1px solid var(--primary-color);
+            padding: 5px;
+            border-radius: 4px;
+            color: var(--text-color);
+            font-size: 1rem;
+            width: 80%;
+            margin-right: 10px;
+        }
+        .edit-icon {
+            color: #ccc;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: color 0.1s;
+        }
+        .edit-icon:hover { color: var(--primary-color); }
+        .save-edit-btn {
+            background-color: var(--success-color);
+            color: black;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-left: 5px;
+        }
+
+        /* CONTROLLI (Container frecce e X) */
+        .controls-container { display: flex; align-items: center; gap: 10px; }
+        .move-controls { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr;
+            gap: 2px;
+            width: 70px;
+        }
+        .controls-btn { 
+            background-color: #555; 
+            border: none;
+            color: white;
+            padding: 4px; 
+            font-size: 0.7rem; 
+            height: 25px; 
+            border-radius: 4px;
+        }
+        .controls-btn:hover:not(:disabled) { background-color: #777; }
+        .controls-btn:nth-child(1), .controls-btn:nth-child(4) { grid-column: span 2; }
+
+        /* PULSANTE RIMUOVI */
+        .remove-btn {
+            background-color: var(--danger-color);
+            color: black;
+            font-weight: bold;
+            padding: 8px 12px;
+            border-radius: 8px;
+            height: 38px;
+            width: 45px !important; 
+        }
+        .remove-btn:hover:not(:disabled) { background-color: #FF708C; }
+        
+        /* MESSAGGI & NUOVO ADDON */
+        .error { color: var(--danger-color); }
+        .success-message { color: var(--success-color); margin-top: 10px; text-align: center; }
+        .add-new-container {
+            background: #282828;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .add-new-container input { margin: 0; }
+        .add-new-container button { width: auto; padding: 10px 15px; }
+
+    </style>
+</head>
+<body>
+
+<div id="app">
+    <h1>STREMIO | CONSOLE DI COMANDO ADDON</h1>
+
+    <div v-if="!isLoggedIn">
+        <form @submit.prevent="login">
+            <h2>Accesso Console</h2>
+            <div class="form-group">
+                <input type="email" v-model="email" placeholder="Stremio E-mail" required>
+            </div>
+            <div class="form-group">
+                <input type="password" v-model="password" placeholder="Stremio Password" required>
+            </div>
+            <button type="submit" class="primary-btn" :disabled="isLoading">
+                {{ isLoading ? 'Accesso in corso...' : 'LOGIN' }}
+            </button>
+        </form>
+    </div>
+
+    <div v-if="isLoggedIn">
+        <h2>Lista Addon ({{ addons.length }})</h2>
+        <div v-if="isLoading" class="loading">Caricamento...</div>
+        
+        <button @click="saveOrder" class="primary-btn" :disabled="isLoading">
+            💾 Salva Ordine e Modifiche su Stremio
+        </button>
+        
+        <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
+        <p v-if="error" class="error">{{ error }}</p>
+
+        <div class="add-new-container">
+            <input type="text" v-model="newAddonUrl" placeholder="Incolla l'URL del manifesto addon (https://.../manifest.json)">
+            <button @click="addNewAddon" class="secondary-btn" :disabled="isLoading || !newAddonUrl.trim()">
+                + Aggiungi
+            </button>
+        </div>
+
+        <ul v-if="!isLoading && addons.length > 0" class="addon-list">
+            <li v-for="(addon, i) in addons" :key="addon.manifest.id" class="addon-item">
+                <img :src="addon.manifest.logo" class="addon-icon" @error="event => event.target.style.display = 'none'">
+                
+                <div class="addon-details">
+                    <h3 v-if="!addon.isEditing">
+                        {{ addon.manifest.name }}
+                        <span @click="startEdit(i)" class="edit-icon" title="Modifica Nome">🖊️</span>
+                    </h3>
+                    <div v-else style="display: flex; align-items: center; margin-bottom: 0.25rem;">
+                        <input type="text" v-model="addon.newLocalName" class="edit-name-input" @keyup.enter="finishEdit(i)">
+                        <button @click="finishEdit(i)" class="save-edit-btn">Salva</button>
+                    </div>
+
+                    <p>{{ addon.manifest.description || 'Nessuna descrizione' }}</p>
+                </div>
+                
+                <div class="controls-container">
+                    
+                    <div class="move-controls">
+                        <button @click="moveTop(i)" :disabled="i === 0" class="controls-btn" title="Sposta in Cima">
+                            🔝
+                        </button>
+                        <button @click="moveBottom(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta in Fondo">
+                            ⬇️
+                        </button>
+                        <button @click="moveUp(i)" :disabled="i === 0" class="controls-btn" title="Sposta Su">
+                            ▲
+                        </button>
+                        <button @click="moveDown(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta Giù">
+                            ▼
+                        </button>
+                    </div>
+
+                    <button @click="removeAddon(i)" class="remove-btn" :disabled="isLoading">
+                        🗑️
+                    </button>
+                </div>
+            </li>
+        </ul>
+        
+        <p v-if="!isLoading && addons.length === 0">Nessun addon trovato per questo account.</p>
+        <button @click="logout" class="primary-btn logout-btn">LOGOUT</button>
+    </div>
+</div>
+
+<script>
+    const { createApp, ref, computed } = Vue
+
+    createApp({
+        setup() {
+            // Variabili di stato
+            const email = ref('');
+            const password = ref('');
+            const authKey = ref(null);
+            const addons = ref([]); 
+            const isLoggedIn = ref(false);
+            const isLoading = ref(false);
+            const error = ref(null);
+            const successMessage = ref(null);
+            const apiBaseUrl = window.location.origin; 
+            const newAddonUrl = ref(''); 
+
+            // --- FUNZIONI DI MODIFICA E MOVIMENTO ---
+
+            const startEdit = (index) => {
+                addons.value[index].newLocalName = addons.value[index].manifest.name;
+                addons.value[index].isEditing = true;
+            };
+
+            const finishEdit = (index) => {
+                const newName = addons.value[index].newLocalName.trim();
+                
+                if (newName) {
+                    addons.value[index].manifest.name = newName;
+                    successMessage.value = `Nome addon aggiornato localmente a "${newName}". Clicca su SALVA per confermare.`;
+                } else {
+                    error.value = "Il nome non può essere vuoto.";
+                }
+                addons.value[index].isEditing = false;
+            };
+            
+            const addNewAddon = () => {
+                const url = newAddonUrl.value.trim();
+                if (!url.startsWith('http')) {
+                    error.value = "Inserisci un URL valido (deve iniziare con http/https).";
+                    return;
+                }
+
+                const newAddon = {
+                    transportUrl: url,
+                    manifest: {
+                        id: `external-${Date.now()}`,
+                        version: '0.0.1',
+                        name: `Nuovo Addon (da URL)`,
+                        description: `Manifest URL: ${url}`,
+                        isEditing: false, 
+                        newLocalName: '',
+                    }
+                };
+
+                if (addons.value.some(a => a.transportUrl === url)) {
+                    error.value = "Questo addon (URL) è già presente nella lista.";
+                    return;
+                }
+
+                addons.value.push(newAddon);
+                newAddonUrl.value = '';
+                successMessage.value = `Nuovo addon aggiunto localmente! Clicca su SALVA per installarlo su Stremio.`;
+            };
+
+            const moveUp = (index) => {
+                if (index > 0) {
+                    [addons.value[index], addons.value[index - 1]] = [addons.value[index - 1], addons.value[index]];
+                }
+            };
+
+            const moveDown = (index) => {
+                if (index < addons.value.length - 1) {
+                    [addons.value[index], addons.value[index + 1]] = [addons.value[index + 1], addons.value[index]];
+                }
+            };
+            
+            const moveTop = (index) => {
+                if (index > 0) {
+                    const item = addons.value.splice(index, 1)[0];
+                    addons.value.unshift(item);
+                }
+            };
+            
+            const moveBottom = (index) => {
+                if (index < addons.value.length - 1) {
+                    const item = addons.value.splice(index, 1)[0];
+                    addons.value.push(item);
+                }
+            };
+
+            const removeAddon = (index) => {
+                if(confirm("Sei sicuro di voler rimuovere " + addons.value[index].manifest.name + "? Sarà rimosso al prossimo salvataggio su Stremio.")) {
+                    addons.value.splice(index, 1);
+                    successMessage.value = "Addon rimosso dalla lista. Clicca su SALVA per confermare su Stremio.";
+                }
+            };
+
+            // --- FUNZIONE DI SALVATAGGIO ---
+            const saveOrder = async () => {
+                isLoading.value = true;
+                error.value = null;
+                successMessage.value = "Salvataggio in corso...";
+                
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/set-addons`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ 
+                            authKey: authKey.value, 
+                            addons: addons.value
+                        })
+                    });
+                    
+                    const data = await response.json();
+
+                    if (!response.ok || data.error) {
+                        throw new Error(data.error || data.message || 'Errore durante il salvataggio.');
+                    }
+                    
+                    successMessage.value = "🎉 Ordine addon salvato con successo su Stremio! Le modifiche saranno visibili a breve.";
+
+                } catch (err) {
+                    error.value = "Salvataggio fallito: " + err.message;
+                } finally {
+                    isLoading.value = false;
+                }
+            };
+
+            // --- FUNZIONI DI BASE (Login/Logout) ---
+            const login = async () => {
+                isLoading.value = true;
+                error.value = null;
+                successMessage.value = null;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/login`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email.value, password: password.value })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.message || 'Login fallito. Controlla le credenziali.');
+                    }
+                    
+                    // Mappa i dati ricevuti per aggiungere i campi necessari per la modifica
+                    addons.value = data.addons.map(addon => ({
+                        ...addon,
+                        isEditing: false, 
+                        newLocalName: addon.manifest.name 
+                    }));
+
+                    authKey.value = data.authKey;
+                    isLoggedIn.value = true;
+
+                } catch (err) {
+                    error.value = err.message;
+                } finally {
+                    isLoading.value = false;
+                }
+            };
+
+            const logout = () => {
+                email.value = '';
+                password.value = '';
+                authKey.value = null;
+                addons.value = [];
+                isLoggedIn.value = false;
+                error.value = null;
+                successMessage.value = null;
+            };
+
+            const sortedAddons = computed(() => {
+                if (!Array.isArray(addons.value)) return [];
+                return addons.value; 
+            });
+
+            // Espone tutte le variabili e funzioni
+            return {
+                email, password, addons, isLoggedIn, isLoading, error, login, logout, 
+                sortedAddons, moveUp, moveDown, saveOrder, authKey, moveTop, moveBottom, removeAddon, successMessage,
+                startEdit, finishEdit, newAddonUrl, addNewAddon 
+            };
+        }
+    }).mount('#app')
+</script>
+
+</body>
+</html>
