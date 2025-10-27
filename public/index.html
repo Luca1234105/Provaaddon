@@ -1,300 +1,605 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>STREMIO | CONSOLE DI COMANDO ADDON</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
     <style>
-        /* BASE & LAYOUT (Dark Mode) */
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: #121212; 
-            /* SFONDO SUPER FIGO: Gradiente scuro con texture di profondità */
-            background-image: radial-gradient(at 0% 0%, #1a1a2e 0%, transparent 50%), 
-                              radial-gradient(at 100% 100%, #1a1a2e 0%, transparent 50%),
-                              linear-gradient(to top, #0d0d0d, #121212);
-            color: #E0E0E0; 
-            margin: 0; 
-            display: grid; 
-            place-items: center; 
-            min-height: 100vh;
-        }
-        
-        /* VARIABILI CSS */
-        :root {
-            --primary-color: #BB86FC; 
-            --bg-dark: #1E1E1E;
-            --bg-light: #2D2D2D;
-            --text-color: #E0E0E0;
-            --danger-color: #CF6679; 
-            --success-color: #03DAC6;
-            --info-color: #2196F3;
-        }
-        
-        /* CONTAINER PRINCIPALE */
-        #app { 
-            background: var(--bg-dark);
-            border-radius: 16px; 
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9), 0 0 10px rgba(156, 39, 176, 0.2);
-            padding: 2.5rem; 
-            width: 100%; 
-            max-width: 650px; 
-            box-sizing: border-box; 
+        /* ====== RESET & BASE ====== */
+        * { box-sizing: border-box; }
+        html, body { height: 100%; margin: 0; font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: #08020a; color: #E6E6E6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+
+        /* ====== BACKGROUND CANVAS (full-screen) ====== */
+        #bgCanvas {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+            background: radial-gradient(ellipse at center, rgba(12,6,20,0.6), rgba(0,0,0,1));
         }
 
-        /* INTESTAZIONE */
-        h1 { 
-            text-align: center; 
-            color: var(--primary-color);
-            margin-bottom: 2rem;
-            font-size: 2rem;
-            font-weight: 300;
-        }
-        h2 {
-            color: var(--text-color);
-            border-bottom: 1px solid #333;
-            padding-bottom: 10px;
-            margin-top: 2rem;
+        /* subtle starfield overlay */
+        .grain {
+            position: fixed;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,0.03) 0.5px, transparent 0.5px);
+            background-size: 3px 3px;
+            opacity: 0.30;
+            z-index: 1;
+            pointer-events: none;
+            mix-blend-mode: screen;
+            filter: blur(0.2px);
         }
 
-        /* INPUTS & PULSANTI */
-        .form-group { margin-bottom: 1.5rem; }
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            border: none; 
-            border-radius: 8px; 
-            background-color: #333; 
-            color: var(--text-color);
+        /* ====== APP CONTAINER (glass card) ====== */
+        #app {
+            position: relative;
+            z-index: 10; /* above BG */
+            max-width: 1100px;
+            width: calc(100% - 48px);
+            margin: 48px auto;
+            background: linear-gradient(135deg, rgba(14,9,18,0.65), rgba(16,10,22,0.55));
+            border-radius: 16px;
+            padding: 2.2rem;
+            box-shadow:
+                0 10px 40px rgba(0,0,0,0.75),
+                0 0 60px rgba(156, 39, 176, 0.08),
+                inset 0 1px 0 rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.03);
+            backdrop-filter: blur(8px) saturate(120%);
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+            overflow: visible;
         }
-        input:focus { box-shadow: 0 0 0 2px var(--primary-color); outline: none; }
-        .primary-btn { 
-            width: 100%; 
-            padding: 14px; 
-            background-color: var(--primary-color); 
-            color: black; 
-            border: none; 
-            border-radius: 8px; 
-            cursor: pointer; 
-            font-size: 1rem; 
-            font-weight: bold; 
-            transition: background-color 0.2s, transform 0.1s; 
-            margin-bottom: 15px;
+
+        /* ====== HEADER ====== */
+        header {
+            display:flex;
+            flex-direction: column;
+            gap:6px;
         }
-        .primary-btn:hover:not(:disabled) { background-color: #D0A7FF; transform: translateY(-2px); }
-        .primary-btn:disabled { background-color: #555; cursor: not-allowed; transform: none; color: #999; }
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            color: #BB86FC;
+            font-size: 1.9rem;
+            margin: 0;
+            letter-spacing: 0.6px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            user-select: none;
+        }
+        h1::after {
+            content: "";
+            height: 2px;
+            flex: 1;
+            background: linear-gradient(90deg, transparent, rgba(187,134,252,0.45), transparent);
+            margin-left: 10px;
+            border-radius: 2px;
+        }
+        .subtitle {
+            font-size: 0.95rem;
+            color: rgba(230,230,230,0.75);
+            margin-top: 2px;
+        }
+
+        /* ====== LAYOUT & GRID ====== */
+        .top-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 1rem;
+            align-items: start;
+        }
+
+        /* forms and panels */
+        .panel {
+            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02));
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(187,134,252,0.06);
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+            min-height: 120px;
+        }
+
+        /* inputs & buttons (neon) */
+        input[type="email"],
+        input[type="password"],
+        input[type="text"] {
+            width: 100%;
+            padding: 12px 14px;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.06);
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+            color: #E9E9F2;
+            font-size: 0.95rem;
+            outline: none;
+            transition: box-shadow .12s, transform .06s;
+        }
+        input::placeholder { color: rgba(230,230,230,0.35); }
+
+        input:focus {
+            box-shadow: 0 0 18px rgba(187,134,252,0.18);
+            border-color: rgba(187,134,252,0.35);
+            transform: translateY(-1px);
+        }
+
+        .primary-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: linear-gradient(90deg, rgba(187,134,252,1), rgba(3,218,198,0.9));
+            border-radius: 10px;
+            border: none;
+            color: #060606;
+            font-weight: 700;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: transform .08s, box-shadow .12s, filter .12s;
+            box-shadow: 0 6px 22px rgba(99,37,199,0.18), 0 0 8px rgba(3,218,198,0.06);
+        }
+        .primary-btn:hover:not(:disabled) {
+            transform: translateY(-3px) scale(1.01);
+            filter: drop-shadow(0 8px 26px rgba(187,134,252,0.12));
+        }
+        .primary-btn:disabled {
+            opacity: .45;
+            cursor: not-allowed;
+            transform: none;
+        }
 
         .secondary-btn {
-            background-color: var(--info-color);
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: background-color 0.2s;
-        }
-        .secondary-btn:hover:not(:disabled) { background-color: #1e87f7; }
-        
-        /* LISTA E ITEM */
-        .addon-list { list-style: none; padding: 0; margin-top: 1.5rem; }
-        .addon-item { 
-            display: flex; 
-            align-items: center; 
-            background: var(--bg-light); 
-            padding: 1rem; 
-            border-radius: 10px; 
-            margin-bottom: 10px; 
-            justify-content: space-between; 
-            border-left: 4px solid var(--primary-color); 
-        }
-        
-        /* DETTAGLI (Stile per testo lungo) */
-        .addon-icon { width: 50px; height: 50px; margin-right: 1rem; object-fit: contain; border-radius: 8px; }
-        .addon-details { flex-grow: 1; margin-right: 10px; min-width: 0;}
-        .addon-details h3 { 
-            margin: 0 0 0.25rem 0; 
-            font-size: 1.1rem; 
-            color: var(--text-color); 
-            display: flex;
-            align-items: center;
-        }
-        .addon-details p { 
-            margin: 0; 
-            font-size: 0.9rem; 
-            color: #AAAAAA; 
-            max-height: 5.4em; /* Limita l'altezza */
-            overflow: hidden; /* Nasconde l'eccesso */
-            text-overflow: ellipsis; 
-            display: -webkit-box;
-            -webkit-line-clamp: 4; /* Limita a 4 linee per evitare overflow dei pulsanti */
-            -webkit-box-orient: vertical;
-            word-wrap: break-word; /* Forza il wrapping delle URL */
-        }
-
-        /* NUOVA OPZIONE MODIFICA NOME */
-        .edit-name-input {
-            background: #444;
-            border: 1px solid var(--primary-color);
-            padding: 5px;
-            border-radius: 4px;
-            color: var(--text-color);
-            font-size: 1rem;
-            width: 80%;
-            margin-right: 10px;
-        }
-        .edit-icon {
-            color: #ccc;
-            cursor: pointer;
-            margin-left: 10px;
-            transition: color 0.1s;
-        }
-        .edit-icon:hover { color: var(--primary-color); }
-        .save-edit-btn {
-            background-color: var(--success-color);
-            color: black;
-            padding: 5px 10px;
-            border-radius: 4px;
-            font-size: 0.8rem;
-            margin-left: 5px;
-        }
-
-        /* CONTROLLI (Container frecce e X) */
-        .controls-container { display: flex; align-items: center; gap: 10px; }
-        .move-controls { 
-            display: grid; 
-            grid-template-columns: 1fr 1fr;
-            gap: 2px;
-            width: 70px;
-        }
-        .controls-btn { 
-            background-color: #555; 
-            border: none;
-            color: white;
-            padding: 4px; 
-            font-size: 0.7rem; 
-            height: 25px; 
-            border-radius: 4px;
-        }
-        .controls-btn:hover:not(:disabled) { background-color: #777; }
-        .controls-btn:nth-child(1), .controls-btn:nth-child(4) { grid-column: span 2; }
-
-        /* PULSANTE RIMUOVI */
-        .remove-btn {
-            background-color: var(--danger-color);
-            color: black;
-            font-weight: bold;
-            padding: 8px 12px;
+            padding: 9px 12px;
             border-radius: 8px;
-            height: 38px;
-            width: 45px !important; 
+            border: none;
+            background: linear-gradient(90deg, rgba(33,150,243,1), rgba(3,218,198,0.85));
+            color: #fff;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform .08s;
         }
-        .remove-btn:hover:not(:disabled) { background-color: #FF708C; }
-        
-        /* MESSAGGI & NUOVO ADDON */
-        .error { color: var(--danger-color); }
-        .success-message { color: var(--success-color); margin-top: 10px; text-align: center; }
-        .add-new-container {
-            background: #282828;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+        .secondary-btn:hover:not(:disabled) { transform: translateY(-2px); }
+
+        /* addon list */
+        .addon-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+        .addon-item {
             display: flex;
-            gap: 10px;
             align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+            border-left: 4px solid rgba(187,134,252,0.85);
+            transition: transform .08s, box-shadow .12s;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
         }
-        .add-new-container input { margin: 0; }
-        .add-new-container button { width: auto; padding: 10px 15px; }
+        .addon-item:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(11,8,20,0.7); }
+
+        .addon-icon { width:56px; height:56px; border-radius:10px; object-fit:cover; background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); display:block; }
+
+        /* NUOVO: Placeholder per icone mancanti */
+        .addon-icon-placeholder {
+            width: 56px;
+            height: 56px;
+            flex-shrink: 0; /* Impedisce che si restringa */
+        }
+
+        .addon-details h3 {
+            margin: 0; color: #F3F3FF; font-weight: 700; font-size: 1.02rem; font-family: 'Orbitron', sans-serif;
+            display:flex; align-items:center; gap:8px;
+        }
+        .addon-details p { margin: 4px 0 0 0; color: rgba(230,230,230,0.65); font-size: 0.9rem; line-height:1.25; max-width: 48ch; }
+
+        /* controls */
+        .controls-container { display:flex; align-items:center; gap:10px; margin-left:auto; }
+        .move-controls { display:grid; grid-template-columns: 1fr 1fr; gap:4px; width:74px; }
+        .controls-btn {
+            background: rgba(0,0,0,0.45);
+            border: 1px solid rgba(255,255,255,0.03);
+            color: #EDEDED;
+            padding:6px 4px; height:34px; border-radius:8px; cursor:pointer; font-weight:700;
+        }
+        .controls-btn:hover:not(:disabled) { box-shadow: 0 6px 18px rgba(0,0,0,0.6); transform: translateY(-2px); }
+
+        .remove-btn {
+            background: linear-gradient(90deg, rgba(207,102,121,1), rgba(255,112,140,0.9));
+            border-radius:10px; padding:8px 12px; border:none; color:#080808; font-weight:800; cursor:pointer;
+            height:38px; width:48px;
+        }
+        
+        /* status indicator */
+        .status-indicator {
+            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+            box-shadow: 0 0 8px 1px var(--status-color, #888);
+            transition: background-color .3s;
+        }
+        .status-unchecked { --status-color: #808080; background-color: #808080; }
+        .status-ok { --status-color: #03DAC6; background-color: #03DAC6; }
+        .status-error { --status-color: #CF6679; background-color: #CF6679; }
+        .status-checking {
+            --status-color: #BB86FC; background-color: #BB86FC;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.9); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
+            100% { transform: scale(0.9); opacity: 0.7; }
+        }
+
+
+        /* edit name */
+        .edit-name-input { padding:8px 10px; border-radius:8px; border:1px solid rgba(187,134,252,0.12); background:#121016; color:#fff; }
+
+        .save-edit-btn { padding:7px 10px; border-radius:8px; border:none; background: linear-gradient(90deg,#03DAC6,#7CFFEF); font-weight:700; cursor:pointer; }
+
+        /* logs */
+        .log-section { margin-top:1rem; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.25)); border-radius:12px; padding:14px; border:1px solid rgba(187,134,252,0.04); max-height:360px; overflow:auto; }
+        .log-item { display:flex; gap:8px; padding:8px; border-radius:8px; align-items:flex-start; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border:1px solid rgba(255,255,255,0.02); margin-bottom:8px; }
+        .log-timestamp { color: rgba(200,200,200,0.5); font-size:0.78rem; min-width:110px; }
+        .log-message { color: rgba(230,230,230,0.92); font-size:0.95rem; word-break: break-word; }
+        .log-details { font-style: italic; color: rgba(230,230,230,0.6); }
+
+
+        .error { color: #FF6B7A; margin-top:8px; font-weight:700; }
+        .success-message { color: #7FF7E1; margin-top:8px; font-weight:700; text-align:center; }
+
+        /* sidebar improvements (more visible) */
+        .sidebar {
+            background: linear-gradient(145deg, rgba(12,6,20,0.88), rgba(6,3,12,0.85));
+            border-radius: 14px;
+            padding: 16px;
+            border: 1px solid rgba(140, 60, 255, 0.18);
+            box-shadow: 0 12px 40px rgba(99,37,199,0.12), inset 0 1px 0 rgba(255,255,255,0.02);
+            backdrop-filter: blur(10px) saturate(110%);
+            color: #E8E8FF;
+            min-height: 220px;
+            position: relative;
+        }
+        .sidebar h3 { margin: 0 0 10px 0; color: #B9A3FF; font-family: 'Orbitron', sans-serif; font-size: 1.05rem; }
+
+        .sidebar .info {
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+            border-radius: 10px;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid rgba(255,255,255,0.03);
+        }
+        .sidebar .info strong { color: #fff; display:inline-block; width:90px; }
+
+        /* responsive */
+        @media (max-width: 1024px) {
+            .top-grid { grid-template-columns: 1fr 320px; }
+        }
+        @media (max-width: 920px) {
+            .top-grid { grid-template-columns: 1fr; }
+            .sidebar { order: 2; }
+        }
+
+        /* small animated glow accents */
+        .neon-accent {
+            position: absolute;
+            pointer-events: none;
+            z-index: 2;
+            mix-blend-mode: screen;
+            filter: blur(30px);
+            opacity: 0.9;
+        }
+
+        /* footer small */
+        .footer {
+            display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:6px;
+            color: rgba(230,230,230,0.5); font-size:0.86rem;
+        }
 
     </style>
 </head>
 <body>
 
-<div id="app">
-    <h1>STREMIO | CONSOLE DI COMANDO ADDON</h1>
+    <canvas id="bgCanvas"></canvas>
+    <div class="grain" aria-hidden="true"></div>
 
-    <div v-if="!isLoggedIn">
-        <form @submit.prevent="login">
-            <h2>Accesso Console</h2>
-            <div class="form-group">
-                <input type="email" v-model="email" placeholder="Stremio E-mail" required>
-            </div>
-            <div class="form-group">
-                <input type="password" v-model="password" placeholder="Stremio Password" required>
-            </div>
-            <button type="submit" class="primary-btn" :disabled="isLoading">
-                {{ isLoading ? 'Accesso in corso...' : 'LOGIN' }}
-            </button>
-        </form>
-    </div>
+    <div id="app">
+        <header>
+            <h1 @click="incrementAdminClick">STREMIO | CONSOLE DI COMANDO ADDON</h1>
+            <div class="subtitle" v-if="!isLoggedIn && !isMonitoring">Per accedere inserisci le credenziali dell'account Stremio</div>
+            <div class="subtitle" v-else-if="isMonitoring">Modalità Monitoraggio attiva</div>
+            <div class="subtitle" v-else-if="isLoggedIn">Console rapida per gestire, ordinare e salvare gli addon</div>
+        </header>
 
-    <div v-if="isLoggedIn">
-        <h2>Lista Addon ({{ addons.length }})</h2>
-        <div v-if="isLoading" class="loading">Caricamento...</div>
-        
-        <button @click="saveOrder" class="primary-btn" :disabled="isLoading">
-            💾 Salva Ordine e Modifiche su Stremio
-        </button>
-        
-        <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
-        <p v-if="error" class="error">{{ error }}</p>
+        <div class="top-grid">
+            <div class="panel">
+                <div v-if="!isLoggedIn">
+                    <form @submit.prevent="login" v-if="!showAdminInput" style="margin-bottom:14px;">
+                        <h2 style="margin:0 0 8px 0; color:#BB86FC; font-family:'Orbitron',sans-serif;">Accesso Utente</h2>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <input type="email" v-model="email" placeholder="Stremio E-mail" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <input type="password" v-model="password" placeholder="Stremio Password" required>
+                        </div>
+                        <button type="submit" class="primary-btn" :disabled="isLoading">
+                            {{ isLoading ? 'Accesso in corso...' : 'LOGIN' }}
+                        </button>
+                    </form>
 
-        <div class="add-new-container">
-            <input type="text" v-model="newAddonUrl" placeholder="Incolla l'URL del manifesto addon (https://.../manifest.json)">
-            <button @click="addNewAddon" class="secondary-btn" :disabled="isLoading || !newAddonUrl.trim()">
-                + Aggiungi
-            </button>
-        </div>
+                    <form v-if="showAdminInput" @submit.prevent="monitorLogin" class="panel" style="margin-top:10px; padding:12px;">
+                        <h2 style="margin:0 0 8px 0; color:#FFA500; font-family:'Orbitron',sans-serif;">Modalità Monitoraggio</h2>
+                        <div class="form-group" style="margin-bottom:10px;">
+                            <input type="password" v-model="adminKey" placeholder="La tua Chiave di Monitoraggio" required>
+                        </div>
+                        <div class="form-group" style="margin-bottom:12px;">
+                            <input type="email" v-model="targetEmail" placeholder="E-mail dell'utente da controllare" required>
+                        </div>
+                        <button type="submit" class="primary-btn" :disabled="isLoading" style="background: linear-gradient(90deg,#FFA500,#FFB86C); color:#111;">
+                            {{ isLoading ? 'Monitoraggio in corso...' : 'MONITORA UTENTE' }}
+                        </button>
+                    </form>
 
-        <ul v-if="!isLoading && addons.length > 0" class="addon-list">
-            <li v-for="(addon, i) in addons" :key="addon.manifest.id" class="addon-item">
-                <img :src="addon.manifest.logo" class="addon-icon" @error="event => event.target.style.display = 'none'">
-                
-                <div class="addon-details">
-                    <h3 v-if="!addon.isEditing">
-                        {{ addon.manifest.name }}
-                        <span @click="startEdit(i)" class="edit-icon" title="Modifica Nome">🖊️</span>
-                    </h3>
-                    <div v-else style="display: flex; align-items: center; margin-bottom: 0.25rem;">
-                        <input type="text" v-model="addon.newLocalName" class="edit-name-input" @keyup.enter="finishEdit(i)">
-                        <button @click="finishEdit(i)" class="save-edit-btn">Salva</button>
-                    </div>
-
-                    <p>{{ addon.manifest.description || 'Nessuna descrizione' }}</p>
+                    <p v-if="error" class="error">{{ error }}</p>
                 </div>
-                
-                <div class="controls-container">
-                    
-                    <div class="move-controls">
-                        <button @click="moveTop(i)" :disabled="i === 0" class="controls-btn" title="Sposta in Cima">
-                            🔝
-                        </button>
-                        <button @click="moveBottom(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta in Fondo">
-                            ⬇️
-                        </button>
-                        <button @click="moveUp(i)" :disabled="i === 0" class="controls-btn" title="Sposta Su">
-                            ▲
-                        </button>
-                        <button @click="moveDown(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta Giù">
-                            ▼
+
+                <div v-if="isLoggedIn">
+                    <h2 style="margin:0 0 12px 0; color:#7FD1FF; font-family:'Orbitron',sans-serif;">
+                        <template v-if="isMonitoring">MONITORAGGIO: {{ targetEmail }}</template>
+                        <template v-else>Lista Addon ({{ addons.length }})</template>
+                    </h2>
+
+                    <div style="margin-bottom:12px;">
+                        <button @click="saveOrder" class="primary-btn" :disabled="isLoading" style="width:100%;">
+                            💾 Salva Ordine e Modifiche su Stremio
                         </button>
                     </div>
 
-                    <button @click="removeAddon(i)" class="remove-btn" :disabled="isLoading">
-                        🗑️
+                    <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
+                    <p v-if="error" class="error">{{ error }}</p>
+
+                    <div class="panel" style="display:flex; gap:10px; align-items:center; padding:12px;">
+                        <input type="text" v-model="newAddonUrl" placeholder="Incolla l'URL del manifesto addon (https://.../manifest.json)" style="flex:1;">
+                        <button @click="addNewAddon" class="secondary-btn" :disabled="isLoading || !newAddonUrl.trim()">+ Aggiungi</button>
+                    </div>
+                    
+                    <div class="panel" style="margin-top:1rem; padding:12px;">
+                        <h3 style="margin:0 0 10px 0; color:#B9A3FF; font-family:'Orbitron',sans-serif; font-size:1.05rem;">Gestione Backup</h3>
+                        <div style="display:flex; gap:10px;">
+                            <button @click="exportBackup" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #4CAF50, #81C784);">Esporta Backup (.json)</button>
+                            <button @click="triggerFileInput" class="secondary-btn" style="flex:1;">Importa Backup (.json)</button>
+                            <input type="file" ref="fileInput" @change="handleFileImport" accept=".json" style="display: none;">
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top:14px;">
+                        <div style="margin-bottom:12px;">
+                             <button @click="checkAllAddonsStatus" class="primary-btn" :disabled="isLoading" style="width:100%; background: linear-gradient(90deg,#555,#888); color:#fff;">
+                                 📡 Verifica Stato Addon
+                             </button>
+                        </div>
+                        
+                        <ul v-if="!isLoading && addons.length > 0" class="addon-list">
+                            <li v-for="(addon, i) in addons" :key="addon.manifest.id + addon.transportUrl" class="addon-item">
+                                
+                                <img v-if="addon.manifest.logo" 
+                                     :src="addon.manifest.logo" 
+                                     class="addon-icon" 
+                                     @error="event => event.target.style.display = 'none'">
+                                <div v-else class="addon-icon-placeholder"></div>
+                                <div class="addon-details">
+                                    <h3 v-if="!addon.isEditing">
+                                        <span :class="['status-indicator', `status-${addon.status}`]" :title="`Stato: ${addon.status}`"></span>
+                                        {{ addon.manifest.name }}
+                                        <span @click="startEdit(i)" class="edit-icon" title="Modifica Nome" style="cursor:pointer; font-size:0.9rem; margin-left:8px; color:rgba(200,200,255,0.7);">🖊️</span>
+                                    </h3>
+                                    <div v-else style="display:flex; align-items:center; margin-bottom:0.25rem;">
+                                        <input type="text" v-model="addon.newLocalName" class="edit-name-input" @keyup.enter="finishEdit(i)">
+                                        <button @click="finishEdit(i)" class="save-edit-btn" style="margin-left:8px;">Salva</button>
+                                    </div>
+
+                                    <p>{{ addon.manifest.description || 'Nessuna descrizione' }}</p>
+                                </div>
+
+                                <div class="controls-container">
+                                    <div class="move-controls" aria-hidden="true">
+                                        <button @click="moveTop(i)" :disabled="i === 0" class="controls-btn" title="Sposta in Cima">🔝</button>
+                                        <button @click="moveBottom(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta in Fondo">⬇️</button>
+                                        <button @click="moveUp(i)" :disabled="i === 0" class="controls-btn" title="Sposta Su">▲</button>
+                                        <button @click="moveDown(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta Giù">▼</button>
+                                    </div>
+
+                                    <button @click="removeAddon(i)" class="remove-btn" :disabled="isLoading" title="Rimuovi">🗑️</button>
+                                </div>
+                            </li>
+                        </ul>
+
+                        <p v-if="!isLoading && addons.length === 0">Nessun addon trovato per questo account.</p>
+                    </div>
+
+                    <div style="margin-top:12px; display:flex; gap:10px;">
+                        <button @click="logout" class="primary-btn logout-btn" style="background: linear-gradient(90deg,#333,#111); color:#fff;">LOGOUT</button>
+                    </div>
+                </div>
+            </div>
+
+            <aside class="sidebar" aria-label="Info Rapide e Log">
+                <div v-if="isLoggedIn" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+                    <h3 style="margin:0;">Info Rapide</h3>
+                    <button @click="fetchLogs" class="secondary-btn" :disabled="isLoadingLogs">
+                        {{ isLoadingLogs ? '...' : 'Aggiorna Log' }}
                     </button>
                 </div>
-            </li>
-        </ul>
-        
-        <p v-if="!isLoading && addons.length === 0">Nessun addon trovato per questo account.</p>
-        <button @click="logout" class="primary-btn logout-btn">LOGOUT</button>
+
+                <div class="info" style="margin-bottom:10px;">
+                    <div><strong>Account:</strong> <span style="opacity:.9">{{ email || targetEmail || '—' }}</span></div>
+                    <div style="margin-top:6px;"><strong>Addons:</strong> <span style="opacity:.9">{{ addons.length }}</span></div>
+                </div>
+
+                <div style="flex:1;">
+                    <h3 style="margin-top:0; font-size:0.95rem;">Log Attività Recenti</h3>
+                    <div class="log-section" style="max-height:300px; padding:8px;">
+                        <ul class="log-list" style="padding:0; margin:0;">
+                            <li v-for="log in activityLogs" :key="log.timestamp + Math.random()" class="log-item">
+                                <span class="log-timestamp">{{ formatLogTime(log.timestamp) }}</span>
+                                <span :class="['log-message', `log-type-${log.type}`]">
+                                    <template v-if="log.type === 'login_success'">
+                                        Login effettuato con successo.
+                                    </template>
+                                    <template v-else-if="log.type === 'login_fail'">
+                                        <span class="error">Login fallito:</span> {{ log.message }}
+                                    </template>
+                                    <template v-else-if="log.type === 'addon_save_success'">
+                                        ✅ Addon salvati su Stremio.
+                                    </template>
+                                    <template v-else-if="log.type === 'addon_save_fail'">
+                                        <span class="error">Salvataggio fallito:</span> {{ log.message }}
+                                    </template>
+                                    <template v-else-if="log.type === 'addon_add'">
+                                        ➕ Aggiunto addon: <span class="log-details">"{{ log.payload.name }}"</span>
+                                    </template>
+                                    <template v-else-if="log.type === 'addon_remove'">
+                                        ➖ Rimosso addon: <span class="log-details">"{{ log.payload.name }}"</span>
+                                    </template>
+                                     <template v-else-if="log.type === 'addon_move'">
+                                        🔃 Spostato addon <span class="log-details">"{{ log.payload.name }}"</span> verso {{ log.payload.direction }}.
+                                    </template>
+                                     <template v-else-if="log.type === 'addon_rename'">
+                                        ✏️ Rinominato addon da <span class="log-details">"{{ log.payload.oldName }}"</span> a <span class="log-details">"{{ log.payload.newName }}"</span>.
+                                    </template>
+                                     <template v-else-if="log.type === 'backup_export'">
+                                        📤 Esportato backup addon.
+                                    </template>
+                                     <template v-else-if="log.type === 'backup_import'">
+                                        📥 Importato backup con <span class="log-details">{{ log.payload.count }} addon</span>.
+                                    </template>
+                                      <template v-else-if="log.type === 'status_check'">
+                                        📡 Avviata verifica stato addon.
+                                    </template>
+                                    <template v-else>
+                                        {{ log.message }}
+                                    </template>
+                                </span>
+                            </li>
+                            <li v-if="activityLogs.length === 0 && !isLoadingLogs" style="color:rgba(230,230,230,0.6); padding:8px;">Nessuna attività recente.</li>
+                            <li v-if="isLoadingLogs" style="color:rgba(230,230,230,0.6); padding:8px;">Caricamento log...</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="footer" style="margin-top:12px;">
+                    <div style="font-size:0.85rem;">© Stremio Console</div>
+                    <div style="font-size:0.85rem; opacity:0.8;">Cyberpunk skin • by Luca</div>
+                </div>
+            </aside>
+        </div>
+
     </div>
-</div>
 
 <script>
-    const { createApp, ref, computed } = Vue
+    /*************************************************************************
+     * ANIMATED BACKGROUND: neon wave fields
+     *************************************************************************/
+    (function initBackground() {
+        const canvas = document.getElementById('bgCanvas');
+        const ctx = canvas.getContext('2d', { alpha: true });
+        let w = canvas.width = innerWidth;
+        let h = canvas.height = innerHeight;
+        let tStart = performance.now();
+
+        const layers = [
+            { amplitude: 60, wavelength: 0.0095, speed: 0.0009, hue: 265, alpha: 0.18, thickness: 1.6 },
+            { amplitude: 90, wavelength: 0.0072, speed: 0.0006, hue: 200, alpha: 0.12, thickness: 2.2 },
+            { amplitude: 120, wavelength: 0.0055, speed: 0.0004, hue: 300, alpha: 0.09, thickness: 2.8 },
+            { amplitude: 240, wavelength: 0.0036, speed: 0.00025, hue: 150, alpha: 0.06, thickness: 3.6 }
+        ];
+
+        function resize() {
+            w = canvas.width = innerWidth;
+            h = canvas.height = innerHeight;
+        }
+        addEventListener('resize', resize);
+
+        function drawBackdrop() {
+            const g = ctx.createLinearGradient(0, 0, w, h);
+            g.addColorStop(0, 'rgba(6,2,12,1)');
+            g.addColorStop(0.3, 'rgba(12,6,20,1)');
+            g.addColorStop(1, 'rgba(3,2,8,1)');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, w, h);
+
+            const vg = ctx.createRadialGradient(w * 0.15, h * 0.12, Math.min(w,h)*0.1, w*0.6, h*0.55, Math.max(w,h));
+            vg.addColorStop(0, 'rgba(255,255,255,0.02)');
+            vg.addColorStop(0.4, 'rgba(0,0,0,0.0)');
+            vg.addColorStop(1, 'rgba(0,0,0,0.7)');
+            ctx.fillStyle = vg;
+            ctx.fillRect(0,0,w,h);
+        }
+
+        function draw(t) {
+            const time = (t - tStart);
+            ctx.clearRect(0, 0, w, h);
+            drawBackdrop();
+            ctx.globalCompositeOperation = 'lighter';
+
+            layers.forEach((L, idx) => {
+                ctx.beginPath();
+                const amplitude = L.amplitude;
+                const wavelength = L.wavelength * w;
+                const speed = L.speed;
+                const thickness = L.thickness;
+
+                const grad = ctx.createLinearGradient(0, 0, w, 0);
+                const hueA = L.hue;
+                const hueB = (L.hue + 60) % 360;
+                grad.addColorStop(0, `hsla(${hueA},100%,60%,${L.alpha})`);
+                grad.addColorStop(0.5, `hsla(${hueB},90%,58%,${L.alpha * 0.9})`);
+                grad.addColorStop(1, `hsla(${(hueA+120)%360},85%,50%,${L.alpha*0.7})`);
+                ctx.strokeStyle = grad;
+                ctx.lineWidth = 1.2 * thickness;
+                ctx.lineCap = 'round';
+
+                const step = Math.max(2, Math.round(w / 220));
+                for (let x = 0; x <= w; x += step) {
+                    const nx = x / wavelength;
+                    const y = h * 0.55 + Math.sin(nx * 2 * Math.PI + time * speed + idx * 0.6) * amplitude * Math.cos(nx * 0.5 + time * speed * 0.3);
+                    if (x === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+
+                ctx.lineWidth = 0.8 * thickness;
+                ctx.strokeStyle = `rgba(255,255,255,${L.alpha*0.06})`;
+                ctx.stroke();
+            });
+
+            ctx.globalCompositeOperation = 'screen';
+            const particleCount = 20;
+            for (let i = 0; i < particleCount; i++) {
+                const px = ( (Math.sin((time * 0.0002) + i) + 1) / 2 ) * w;
+                const py = ( (Math.cos((time * 0.00015) + i*0.7) + 1) / 2 ) * h * 0.9;
+                const r = 0.6 + (Math.sin(time * 0.0006 + i) + 1) * 1.6;
+                ctx.beginPath();
+                ctx.fillStyle = `rgba(140,200,255,${0.06 + (i%3)/40})`;
+                ctx.arc(px, py, r, 0, Math.PI*2);
+                ctx.fill();
+            }
+
+            ctx.globalCompositeOperation = 'source-over';
+            requestAnimationFrame(draw);
+        }
+
+        requestAnimationFrame(draw);
+    })();
+</script>
+
+<script>
+    const { createApp, ref, computed, onMounted } = Vue
 
     createApp({
         setup() {
@@ -309,178 +614,45 @@
             const successMessage = ref(null);
             const apiBaseUrl = window.location.origin; 
             const newAddonUrl = ref(''); 
+            const fileInput = ref(null);
 
-            // --- FUNZIONI DI MODIFICA E MOVIMENTO ---
+            // Variabili MONITORAGGIO
+            const adminClickCount = ref(0);
+            const showAdminInput = ref(false);
+            const adminKey = ref('');
+            const targetEmail = ref('');
+            const isMonitoring = ref(false);
 
-            const startEdit = (index) => {
-                addons.value[index].newLocalName = addons.value[index].manifest.name;
-                addons.value[index].isEditing = true;
-            };
-
-            const finishEdit = (index) => {
-                const newName = addons.value[index].newLocalName.trim();
-                
-                if (newName) {
-                    addons.value[index].manifest.name = newName;
-                    successMessage.value = `Nome addon aggiornato localmente a "${newName}". Clicca su SALVA per confermare.`;
-                } else {
-                    error.value = "Il nome non può essere vuoto.";
-                }
-                addons.value[index].isEditing = false;
-            };
+            // Variabili LOG ATTIVITA'
+            const activityLogs = ref([]);
+            const isLoadingLogs = ref(false);
             
-            const addNewAddon = () => {
-                const url = newAddonUrl.value.trim();
-                if (!url.startsWith('http')) {
-                    error.value = "Inserisci un URL valido (deve iniziare con http/https).";
-                    return;
-                }
-
-                const newAddon = {
-                    transportUrl: url,
-                    manifest: {
-                        id: `external-${Date.now()}`,
-                        version: '0.0.1',
-                        name: `Nuovo Addon (da URL)`,
-                        description: `Manifest URL: ${url}`,
-                        isEditing: false, 
-                        newLocalName: '',
-                    }
-                };
-
-                if (addons.value.some(a => a.transportUrl === url)) {
-                    error.value = "Questo addon (URL) è già presente nella lista.";
-                    return;
-                }
-
-                addons.value.push(newAddon);
-                newAddonUrl.value = '';
-                successMessage.value = `Nuovo addon aggiunto localmente! Clicca su SALVA per installarlo su Stremio.`;
-            };
-
-            const moveUp = (index) => {
-                if (index > 0) {
-                    [addons.value[index], addons.value[index - 1]] = [addons.value[index - 1], addons.value[index]];
-                }
-            };
-
-            const moveDown = (index) => {
-                if (index < addons.value.length - 1) {
-                    [addons.value[index], addons.value[index + 1]] = [addons.value[index + 1], addons.value[index]];
-                }
-            };
-            
-            const moveTop = (index) => {
-                if (index > 0) {
-                    const item = addons.value.splice(index, 1)[0];
-                    addons.value.unshift(item);
-                }
-            };
-            
-            const moveBottom = (index) => {
-                if (index < addons.value.length - 1) {
-                    const item = addons.value.splice(index, 1)[0];
-                    addons.value.push(item);
-                }
-            };
-
-            const removeAddon = (index) => {
-                if(confirm("Sei sicuro di voler rimuovere " + addons.value[index].manifest.name + "? Sarà rimosso al prossimo salvataggio su Stremio.")) {
-                    addons.value.splice(index, 1);
-                    successMessage.value = "Addon rimosso dalla lista. Clicca su SALVA per confermare su Stremio.";
-                }
-            };
-
-            // --- FUNZIONE DI SALVATAGGIO ---
-            const saveOrder = async () => {
-                isLoading.value = true;
-                error.value = null;
-                successMessage.value = "Salvataggio in corso...";
-                
-                try {
-                    const response = await fetch(`${apiBaseUrl}/api/set-addons`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ 
-                            authKey: authKey.value, 
-                            addons: addons.value
-                        })
-                    });
-                    
-                    const data = await response.json();
-
-                    if (!response.ok || data.error) {
-                        throw new Error(data.error || data.message || 'Errore durante il salvataggio.');
-                    }
-                    
-                    successMessage.value = "🎉 Ordine addon salvato con successo su Stremio! Le modifiche saranno visibili a breve.";
-
-                } catch (err) {
-                    error.value = "Salvataggio fallito: " + err.message;
-                } finally {
-                    isLoading.value = false;
-                }
-            };
-
-            // --- FUNZIONI DI BASE (Login/Logout) ---
-            const login = async () => {
-                isLoading.value = true;
-                error.value = null;
-                successMessage.value = null;
-                try {
-                    const response = await fetch(`${apiBaseUrl}/api/login`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ email: email.value, password: password.value })
-                    });
-
-                    const data = await response.json();
-
-                    if (!response.ok) {
-                        throw new Error(data.message || 'Login fallito. Controlla le credenziali.');
-                    }
-                    
-                    // Mappa i dati ricevuti per aggiungere i campi necessari per la modifica
-                    addons.value = data.addons.map(addon => ({
-                        ...addon,
-                        isEditing: false, 
-                        newLocalName: addon.manifest.name 
-                    }));
-
-                    authKey.value = data.authKey;
-                    isLoggedIn.value = true;
-
-                } catch (err) {
-                    error.value = err.message;
-                } finally {
-                    isLoading.value = false;
-                }
-            };
-
-            const logout = () => {
-                email.value = '';
-                password.value = '';
-                authKey.value = null;
-                addons.value = [];
-                isLoggedIn.value = false;
-                error.value = null;
-                successMessage.value = null;
-            };
-
-            const sortedAddons = computed(() => {
-                if (!Array.isArray(addons.value)) return [];
-                return addons.value; 
+            // Helper per aggiungere proprietà locali agli addon
+            const mapAddon = (addon) => ({
+                ...addon,
+                isEditing: false,
+                newLocalName: addon.manifest.name,
+                status: 'unchecked',
             });
 
-            // Espone tutte le variabili e funzioni
-            return {
-                email, password, addons, isLoggedIn, isLoading, error, login, logout, 
-                sortedAddons, moveUp, moveDown, saveOrder, authKey, moveTop, moveBottom, removeAddon, successMessage,
-                startEdit, finishEdit, newAddonUrl, addNewAddon 
-            };
-        }
-    }).mount('#app')
-</script>
+            // --- FUNZIONE CENTRALIZZATA PER LOGGARE LE AZIONI ---
+            const logAction = async (type, payload = {}) => {
+                const optimisticLog = { type, payload, timestamp: new Date().toISOString() };
+                activityLogs.value.unshift(optimisticLog);
 
-</body>
-</html>
+                try {
+                    await fetch(`${apiBaseUrl}/api/log-event`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${authKey.value}`
+                        },
+                        body: JSON.stringify({ type, payload })
+                    });
+                } catch (e) {
+                    console.error("Impossibile inviare il log al backend:", e);
+                }
+            };
+
+
+            // --- FUNZIO
