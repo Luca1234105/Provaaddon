@@ -42,17 +42,14 @@
         /* ====== APP CONTAINER (glass card) ====== */
         #app {
             position: relative;
-            z-index: 10; /* above BG */
+            z-index: 10;
             max-width: 1100px;
             width: calc(100% - 48px);
             margin: 48px auto;
             background: linear-gradient(135deg, rgba(14,9,18,0.65), rgba(16,10,22,0.55));
             border-radius: 16px;
             padding: 2.2rem;
-            box-shadow:
-                0 10px 40px rgba(0,0,0,0.75),
-                0 0 60px rgba(156, 39, 176, 0.08),
-                inset 0 1px 0 rgba(255,255,255,0.02);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.75), 0 0 60px rgba(156, 39, 176, 0.08), inset 0 1px 0 rgba(255,255,255,0.02);
             border: 1px solid rgba(255,255,255,0.03);
             backdrop-filter: blur(8px) saturate(120%);
             display: grid;
@@ -62,11 +59,7 @@
         }
 
         /* ====== HEADER ====== */
-        header {
-            display:flex;
-            flex-direction: column;
-            gap:6px;
-        }
+        header { display:flex; flex-direction: column; gap:6px; }
         h1 {
             font-family: 'Orbitron', sans-serif;
             color: #BB86FC;
@@ -86,19 +79,10 @@
             margin-left: 10px;
             border-radius: 2px;
         }
-        .subtitle {
-            font-size: 0.95rem;
-            color: rgba(230,230,230,0.75);
-            margin-top: 2px;
-        }
+        .subtitle { font-size: 0.95rem; color: rgba(230,230,230,0.75); margin-top: 2px; }
 
         /* ====== LAYOUT & GRID ====== */
-        .top-grid {
-            display: grid;
-            grid-template-columns: 1fr 340px;
-            gap: 1rem;
-            align-items: start;
-        }
+        .top-grid { display: grid; grid-template-columns: 1fr 340px; gap: 1rem; align-items: start; }
 
         /* forms and panels */
         .panel {
@@ -111,88 +95,47 @@
         }
 
         /* inputs & buttons (neon) */
-        input[type="email"],
-        input[type="password"],
-        input[type="text"] {
-            width: 100%;
-            padding: 12px 14px;
-            border-radius: 10px;
+        input[type="email"], input[type="password"], input[type="text"] {
+            width: 100%; padding: 12px 14px; border-radius: 10px;
             border: 1px solid rgba(255,255,255,0.06);
             background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-            color: #E9E9F2;
-            font-size: 0.95rem;
-            outline: none;
-            transition: box-shadow .12s, transform .06s;
+            color: #E9E9F2; font-size: 0.95rem; outline: none; transition: box-shadow .12s, transform .06s;
         }
         input::placeholder { color: rgba(230,230,230,0.35); }
-
         input:focus {
-            box-shadow: 0 0 18px rgba(187,134,252,0.18);
-            border-color: rgba(187,134,252,0.35);
-            transform: translateY(-1px);
+            box-shadow: 0 0 18px rgba(187,134,252,0.18); border-color: rgba(187,134,252,0.35); transform: translateY(-1px);
         }
 
         .primary-btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            padding: 12px 14px;
-            background: linear-gradient(90deg, rgba(187,134,252,1), rgba(3,218,198,0.9));
-            border-radius: 10px;
-            border: none;
-            color: #060606;
-            font-weight: 700;
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: transform .08s, box-shadow .12s, filter .12s;
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 12px 14px; background: linear-gradient(90deg, rgba(187,134,252,1), rgba(3,218,198,0.9));
+            border-radius: 10px; border: none; color: #060606; font-weight: 700; font-size: 0.95rem;
+            cursor: pointer; transition: transform .08s, box-shadow .12s, filter .12s;
             box-shadow: 0 6px 22px rgba(99,37,199,0.18), 0 0 8px rgba(3,218,198,0.06);
         }
-        .primary-btn:hover:not(:disabled) {
-            transform: translateY(-3px) scale(1.01);
-            filter: drop-shadow(0 8px 26px rgba(187,134,252,0.12));
-        }
-        .primary-btn:disabled {
-            opacity: .45;
-            cursor: not-allowed;
-            transform: none;
-        }
+        .primary-btn:hover:not(:disabled) { transform: translateY(-3px) scale(1.01); filter: drop-shadow(0 8px 26px rgba(187,134,252,0.12)); }
+        .primary-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
 
         .secondary-btn {
-            padding: 9px 12px;
-            border-radius: 8px;
-            border: none;
+            padding: 9px 12px; border-radius: 8px; border: none;
             background: linear-gradient(90deg, rgba(33,150,243,1), rgba(3,218,198,0.85));
-            color: #fff;
-            font-weight: 700;
-            cursor: pointer;
-            transition: transform .08s;
+            color: #fff; font-weight: 700; cursor: pointer; transition: transform .08s;
         }
         .secondary-btn:hover:not(:disabled) { transform: translateY(-2px); }
 
         /* addon list */
         .addon-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
         .addon-item {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            padding: 12px;
-            border-radius: 12px;
+            display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px;
             background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-            border-left: 4px solid rgba(187,134,252,0.85);
-            transition: transform .08s, box-shadow .12s;
+            border-left: 4px solid rgba(187,134,252,0.85); transition: transform .2s, box-shadow .2s, opacity .3s;
             box-shadow: 0 6px 18px rgba(0,0,0,0.6);
         }
         .addon-item:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(11,8,20,0.7); }
+        .addon-item.disabled { opacity: 0.5; border-left-color: #555; filter: grayscale(50%); }
 
         .addon-icon { width:56px; height:56px; border-radius:10px; object-fit:cover; background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); display:block; }
-
-        /* NUOVO: Placeholder per icone mancanti */
-        .addon-icon-placeholder {
-            width: 56px;
-            height: 56px;
-            flex-shrink: 0; /* Impedisce che si restringa */
-        }
+        .addon-icon-placeholder { width: 56px; height: 56px; flex-shrink: 0; }
 
         .addon-details h3 {
             margin: 0; color: #F3F3FF; font-weight: 700; font-size: 1.02rem; font-family: 'Orbitron', sans-serif;
@@ -201,15 +144,21 @@
         .addon-details p { margin: 4px 0 0 0; color: rgba(230,230,230,0.65); font-size: 0.9rem; line-height:1.25; max-width: 48ch; }
 
         /* controls */
-        .controls-container { display:flex; align-items:center; gap:10px; margin-left:auto; }
+        .controls-container { display:flex; align-items:center; gap:6px; margin-left:auto; }
         .move-controls { display:grid; grid-template-columns: 1fr 1fr; gap:4px; width:74px; }
         .controls-btn {
-            background: rgba(0,0,0,0.45);
-            border: 1px solid rgba(255,255,255,0.03);
-            color: #EDEDED;
-            padding:6px 4px; height:34px; border-radius:8px; cursor:pointer; font-weight:700;
+            background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.03);
+            color: #EDEDED; padding:6px 4px; height:34px; border-radius:8px; cursor:pointer; font-weight:700;
         }
         .controls-btn:hover:not(:disabled) { box-shadow: 0 6px 18px rgba(0,0,0,0.6); transform: translateY(-2px); }
+        
+        .icon-btn {
+            background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.03);
+            color: #EDEDED; width: 34px; height: 34px; border-radius: 8px;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem;
+        }
+        .icon-btn:hover:not(:disabled) { transform: translateY(-2px); background: rgba(30,30,30,0.6); }
 
         .remove-btn {
             background: linear-gradient(90deg, rgba(207,102,121,1), rgba(255,112,140,0.9));
@@ -218,30 +167,28 @@
         }
         
         /* status indicator */
-        .status-indicator {
-            width: 10px; height: 10px; border-radius: 50%; display: inline-block;
-            box-shadow: 0 0 8px 1px var(--status-color, #888);
-            transition: background-color .3s;
-        }
+        .status-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px 1px var(--status-color, #888); transition: background-color .3s; }
         .status-unchecked { --status-color: #808080; background-color: #808080; }
         .status-ok { --status-color: #03DAC6; background-color: #03DAC6; }
         .status-error { --status-color: #CF6679; background-color: #CF6679; }
-        .status-checking {
-            --status-color: #BB86FC; background-color: #BB86FC;
-            animation: pulse 1.5s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(0.9); opacity: 0.7; }
-            50% { transform: scale(1.1); opacity: 1; }
-            100% { transform: scale(0.9); opacity: 0.7; }
-        }
+        .status-checking { --status-color: #BB86FC; background-color: #BB86FC; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.7; } }
 
-
-        /* edit name */
+        /* Stile per interruttore Abilita/Disabilita */
+        .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; inset: 0; background-color: #333; transition: .4s; border-radius: 24px; }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background-color: white;
+            transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background-color: #03DAC6; }
+        input:checked + .slider:before { transform: translateX(20px); }
+        
         .edit-name-input { padding:8px 10px; border-radius:8px; border:1px solid rgba(187,134,252,0.12); background:#121016; color:#fff; }
-
         .save-edit-btn { padding:7px 10px; border-radius:8px; border:none; background: linear-gradient(90deg,#03DAC6,#7CFFEF); font-weight:700; cursor:pointer; }
-
+        
         /* logs */
         .log-section { margin-top:1rem; background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.25)); border-radius:12px; padding:14px; border:1px solid rgba(187,134,252,0.04); max-height:360px; overflow:auto; }
         .log-item { display:flex; gap:8px; padding:8px; border-radius:8px; align-items:flex-start; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border:1px solid rgba(255,255,255,0.02); margin-bottom:8px; }
@@ -249,58 +196,28 @@
         .log-message { color: rgba(230,230,230,0.92); font-size:0.95rem; word-break: break-word; }
         .log-details { font-style: italic; color: rgba(230,230,230,0.6); }
 
-
         .error { color: #FF6B7A; margin-top:8px; font-weight:700; }
         .success-message { color: #7FF7E1; margin-top:8px; font-weight:700; text-align:center; }
 
-        /* sidebar improvements (more visible) */
+        /* sidebar */
         .sidebar {
             background: linear-gradient(145deg, rgba(12,6,20,0.88), rgba(6,3,12,0.85));
-            border-radius: 14px;
-            padding: 16px;
-            border: 1px solid rgba(140, 60, 255, 0.18);
+            border-radius: 14px; padding: 16px; border: 1px solid rgba(140, 60, 255, 0.18);
             box-shadow: 0 12px 40px rgba(99,37,199,0.12), inset 0 1px 0 rgba(255,255,255,0.02);
-            backdrop-filter: blur(10px) saturate(110%);
-            color: #E8E8FF;
-            min-height: 220px;
-            position: relative;
+            backdrop-filter: blur(10px) saturate(110%); color: #E8E8FF; min-height: 220px; position: relative;
         }
         .sidebar h3 { margin: 0 0 10px 0; color: #B9A3FF; font-family: 'Orbitron', sans-serif; font-size: 1.05rem; }
-
         .sidebar .info {
             background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
-            border-radius: 10px;
-            padding: 10px;
-            margin-bottom: 12px;
-            border: 1px solid rgba(255,255,255,0.03);
+            border-radius: 10px; padding: 10px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.03);
         }
         .sidebar .info strong { color: #fff; display:inline-block; width:90px; }
 
         /* responsive */
-        @media (max-width: 1024px) {
-            .top-grid { grid-template-columns: 1fr 320px; }
-        }
-        @media (max-width: 920px) {
-            .top-grid { grid-template-columns: 1fr; }
-            .sidebar { order: 2; }
-        }
+        @media (max-width: 1024px) { .top-grid { grid-template-columns: 1fr 320px; } }
+        @media (max-width: 920px) { .top-grid { grid-template-columns: 1fr; } .sidebar { order: 2; } }
 
-        /* small animated glow accents */
-        .neon-accent {
-            position: absolute;
-            pointer-events: none;
-            z-index: 2;
-            mix-blend-mode: screen;
-            filter: blur(30px);
-            opacity: 0.9;
-        }
-
-        /* footer small */
-        .footer {
-            display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:6px;
-            color: rgba(230,230,230,0.5); font-size:0.86rem;
-        }
-
+        .footer { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-top:6px; color: rgba(230,230,230,0.5); font-size:0.86rem; }
     </style>
 </head>
 <body>
@@ -344,7 +261,6 @@
                             {{ isLoading ? 'Monitoraggio in corso...' : 'MONITORA UTENTE' }}
                         </button>
                     </form>
-
                     <p v-if="error" class="error">{{ error }}</p>
                 </div>
 
@@ -378,6 +294,10 @@
                     </div>
                     
                     <div style="margin-top:14px;">
+                        <div class="panel" style="padding:10px; margin-bottom: 1rem;">
+                           <input type="text" v-model="searchQuery" placeholder="🔍 Cerca addon per nome..." style="background: rgba(0,0,0,0.2);">
+                        </div>
+
                         <div style="margin-bottom:12px;">
                              <button @click="checkAllAddonsStatus" class="primary-btn" :disabled="isLoading" style="width:100%; background: linear-gradient(90deg,#555,#888); color:#fff;">
                                  📡 Verifica Stato Addon
@@ -385,40 +305,49 @@
                         </div>
                         
                         <ul v-if="!isLoading && addons.length > 0" class="addon-list">
-                            <li v-for="(addon, i) in addons" :key="addon.manifest.id + addon.transportUrl" class="addon-item">
+                            <li v-for="addon in filteredAddons" :key="addon.manifest.id + addon.transportUrl" :class="['addon-item', { disabled: !addon.isEnabled }]">
                                 
                                 <img v-if="addon.manifest.logo" 
                                      :src="addon.manifest.logo" 
                                      class="addon-icon" 
                                      @error="event => event.target.style.display = 'none'">
                                 <div v-else class="addon-icon-placeholder"></div>
+                                
                                 <div class="addon-details">
                                     <h3 v-if="!addon.isEditing">
                                         <span :class="['status-indicator', `status-${addon.status}`]" :title="`Stato: ${addon.status}`"></span>
                                         {{ addon.manifest.name }}
-                                        <span @click="startEdit(i)" class="edit-icon" title="Modifica Nome" style="cursor:pointer; font-size:0.9rem; margin-left:8px; color:rgba(200,200,255,0.7);">🖊️</span>
+                                        <span @click="startEdit(addon)" class="edit-icon" title="Modifica Nome" style="cursor:pointer; font-size:0.9rem; margin-left:8px; color:rgba(200,200,255,0.7);">🖊️</span>
                                     </h3>
                                     <div v-else style="display:flex; align-items:center; margin-bottom:0.25rem;">
-                                        <input type="text" v-model="addon.newLocalName" class="edit-name-input" @keyup.enter="finishEdit(i)">
-                                        <button @click="finishEdit(i)" class="save-edit-btn" style="margin-left:8px;">Salva</button>
+                                        <input type="text" v-model="addon.newLocalName" class="edit-name-input" @keyup.enter="finishEdit(addon)">
+                                        <button @click="finishEdit(addon)" class="save-edit-btn" style="margin-left:8px;">Salva</button>
                                     </div>
-
                                     <p>{{ addon.manifest.description || 'Nessuna descrizione' }}</p>
                                 </div>
 
                                 <div class="controls-container">
+                                    <label class="toggle-switch" title="Abilita/Disabilita Addon">
+                                        <input type="checkbox" v-model="addon.isEnabled" @change="toggleAddonEnabled(addon)">
+                                        <span class="slider"></span>
+                                    </label>
+                                    
+                                    <button v-if="addon.manifest.behaviorHints && addon.manifest.behaviorHints.configurable" @click="openConfiguration(addon)" class="icon-btn" title="Configura Addon">⚙️</button>
+                                    <button @click="copyManifestUrl(addon)" class="icon-btn" title="Copia URL Manifesto">📋</button>
+                                    
                                     <div class="move-controls" aria-hidden="true">
-                                        <button @click="moveTop(i)" :disabled="i === 0" class="controls-btn" title="Sposta in Cima">🔝</button>
-                                        <button @click="moveBottom(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta in Fondo">⬇️</button>
-                                        <button @click="moveUp(i)" :disabled="i === 0" class="controls-btn" title="Sposta Su">▲</button>
-                                        <button @click="moveDown(i)" :disabled="i === addons.length - 1" class="controls-btn" title="Sposta Giù">▼</button>
+                                        <button @click="moveTop(addon)" :disabled="addons.indexOf(addon) === 0" class="controls-btn" title="Sposta in Cima">🔝</button>
+                                        <button @click="moveBottom(addon)" :disabled="addons.indexOf(addon) === addons.length - 1" class="controls-btn" title="Sposta in Fondo">⬇️</button>
+                                        <button @click="moveUp(addon)" :disabled="addons.indexOf(addon) === 0" class="controls-btn" title="Sposta Su">▲</button>
+                                        <button @click="moveDown(addon)" :disabled="addons.indexOf(addon) === addons.length - 1" class="controls-btn" title="Sposta Giù">▼</button>
                                     </div>
 
-                                    <button @click="removeAddon(i)" class="remove-btn" :disabled="isLoading" title="Rimuovi">🗑️</button>
+                                    <button @click="removeAddon(addon)" class="remove-btn" :disabled="isLoading" title="Rimuovi">🗑️</button>
                                 </div>
                             </li>
                         </ul>
-
+                        
+                        <p v-if="!isLoading && filteredAddons.length === 0 && addons.length > 0">Nessun addon corrisponde alla tua ricerca.</p>
                         <p v-if="!isLoading && addons.length === 0">Nessun addon trovato per questo account.</p>
                     </div>
 
@@ -438,7 +367,7 @@
 
                 <div class="info" style="margin-bottom:10px;">
                     <div><strong>Account:</strong> <span style="opacity:.9">{{ email || targetEmail || '—' }}</span></div>
-                    <div style="margin-top:6px;"><strong>Addons:</strong> <span style="opacity:.9">{{ addons.length }}</span></div>
+                    <div><strong>Addons:</strong> <span style="opacity:.9">{{ addons.length }} ({{ addons.filter(a => a.isEnabled).length }} attivi)</span></div>
                 </div>
 
                 <div style="flex:1;">
@@ -448,42 +377,24 @@
                             <li v-for="log in activityLogs" :key="log.timestamp + Math.random()" class="log-item">
                                 <span class="log-timestamp">{{ formatLogTime(log.timestamp) }}</span>
                                 <span :class="['log-message', `log-type-${log.type}`]">
-                                    <template v-if="log.type === 'login_success'">
-                                        Login effettuato con successo.
+                                    <template v-if="log.type === 'login_success'">Login effettuato con successo.</template>
+                                    <template v-else-if="log.type === 'login_fail'"><span class="error">Login fallito:</span> {{ log.message }}</template>
+                                    <template v-else-if="log.type === 'addon_save_success'">✅ Addon salvati su Stremio.</template>
+                                    <template v-else-if="log.type === 'addon_save_fail'"><span class="error">Salvataggio fallito:</span> {{ log.message }}</template>
+                                    <template v-else-if="log.type === 'addon_add'">➕ Aggiunto addon: <span class="log-details">"{{ log.payload.name }}"</span></template>
+                                    <template v-else-if="log.type === 'addon_remove'">➖ Rimosso addon: <span class="log-details">"{{ log.payload.name }}"</span></template>
+                                    <template v-else-if="log.type === 'addon_move'">🔃 Spostato addon <span class="log-details">"{{ log.payload.name }}"</span> verso {{ log.payload.direction }}.</template>
+                                    <template v-else-if="log.type === 'addon_rename'">✏️ Rinominato addon da <span class="log-details">"{{ log.payload.oldName }}"</span> a <span class="log-details">"{{ log.payload.newName }}"</span>.</template>
+                                    <template v-else-if="log.type === 'backup_export'">📤 Esportato backup addon.</template>
+                                    <template v-else-if="log.type === 'backup_import'">📥 Importato backup con <span class="log-details">{{ log.payload.count }} addon</span>.</template>
+                                    <template v-else-if="log.type === 'status_check'">📡 Avviata verifica stato addon.</template>
+                                    <template v-else-if="log.type === 'addon_toggle'">
+                                        <template v-if="log.payload.enabled">🟢</template><template v-else>🔴</template>
+                                        {{ log.payload.enabled ? 'Abilitato' : 'Disabilitato' }} addon: <span class="log-details">"{{ log.payload.name }}"</span>
                                     </template>
-                                    <template v-else-if="log.type === 'login_fail'">
-                                        <span class="error">Login fallito:</span> {{ log.message }}
-                                    </template>
-                                    <template v-else-if="log.type === 'addon_save_success'">
-                                        ✅ Addon salvati su Stremio.
-                                    </template>
-                                    <template v-else-if="log.type === 'addon_save_fail'">
-                                        <span class="error">Salvataggio fallito:</span> {{ log.message }}
-                                    </template>
-                                    <template v-else-if="log.type === 'addon_add'">
-                                        ➕ Aggiunto addon: <span class="log-details">"{{ log.payload.name }}"</span>
-                                    </template>
-                                    <template v-else-if="log.type === 'addon_remove'">
-                                        ➖ Rimosso addon: <span class="log-details">"{{ log.payload.name }}"</span>
-                                    </template>
-                                     <template v-else-if="log.type === 'addon_move'">
-                                        🔃 Spostato addon <span class="log-details">"{{ log.payload.name }}"</span> verso {{ log.payload.direction }}.
-                                    </template>
-                                     <template v-else-if="log.type === 'addon_rename'">
-                                        ✏️ Rinominato addon da <span class="log-details">"{{ log.payload.oldName }}"</span> a <span class="log-details">"{{ log.payload.newName }}"</span>.
-                                    </template>
-                                     <template v-else-if="log.type === 'backup_export'">
-                                        📤 Esportato backup addon.
-                                    </template>
-                                     <template v-else-if="log.type === 'backup_import'">
-                                        📥 Importato backup con <span class="log-details">{{ log.payload.count }} addon</span>.
-                                    </template>
-                                      <template v-else-if="log.type === 'status_check'">
-                                        📡 Avviata verifica stato addon.
-                                    </template>
-                                    <template v-else>
-                                        {{ log.message }}
-                                    </template>
+                                    <template v-else-if="log.type === 'addon_configure'">⚙️ Aperta configurazione per <span class="log-details">"{{ log.payload.name }}"</span></template>
+                                    <template v-else-if="log.type === 'addon_copy_url'">📋 Copiato URL per <span class="log-details">"{{ log.payload.name }}"</span></template>
+                                    <template v-else>{{ log.message }}</template>
                                 </span>
                             </li>
                             <li v-if="activityLogs.length === 0 && !isLoadingLogs" style="color:rgba(230,230,230,0.6); padding:8px;">Nessuna attività recente.</li>
@@ -502,108 +413,61 @@
     </div>
 
 <script>
-    /*************************************************************************
-     * ANIMATED BACKGROUND: neon wave fields
-     *************************************************************************/
     (function initBackground() {
         const canvas = document.getElementById('bgCanvas');
         const ctx = canvas.getContext('2d', { alpha: true });
         let w = canvas.width = innerWidth;
         let h = canvas.height = innerHeight;
         let tStart = performance.now();
-
-        const layers = [
-            { amplitude: 60, wavelength: 0.0095, speed: 0.0009, hue: 265, alpha: 0.18, thickness: 1.6 },
-            { amplitude: 90, wavelength: 0.0072, speed: 0.0006, hue: 200, alpha: 0.12, thickness: 2.2 },
-            { amplitude: 120, wavelength: 0.0055, speed: 0.0004, hue: 300, alpha: 0.09, thickness: 2.8 },
-            { amplitude: 240, wavelength: 0.0036, speed: 0.00025, hue: 150, alpha: 0.06, thickness: 3.6 }
-        ];
-
-        function resize() {
-            w = canvas.width = innerWidth;
-            h = canvas.height = innerHeight;
-        }
+        const layers = [ { amplitude: 60, wavelength: 0.0095, speed: 0.0009, hue: 265, alpha: 0.18, thickness: 1.6 }, { amplitude: 90, wavelength: 0.0072, speed: 0.0006, hue: 200, alpha: 0.12, thickness: 2.2 }, { amplitude: 120, wavelength: 0.0055, speed: 0.0004, hue: 300, alpha: 0.09, thickness: 2.8 }, { amplitude: 240, wavelength: 0.0036, speed: 0.00025, hue: 150, alpha: 0.06, thickness: 3.6 } ];
+        function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; }
         addEventListener('resize', resize);
-
         function drawBackdrop() {
             const g = ctx.createLinearGradient(0, 0, w, h);
-            g.addColorStop(0, 'rgba(6,2,12,1)');
-            g.addColorStop(0.3, 'rgba(12,6,20,1)');
-            g.addColorStop(1, 'rgba(3,2,8,1)');
-            ctx.fillStyle = g;
-            ctx.fillRect(0, 0, w, h);
-
+            g.addColorStop(0, 'rgba(6,2,12,1)'); g.addColorStop(0.3, 'rgba(12,6,20,1)'); g.addColorStop(1, 'rgba(3,2,8,1)');
+            ctx.fillStyle = g; ctx.fillRect(0, 0, w, h);
             const vg = ctx.createRadialGradient(w * 0.15, h * 0.12, Math.min(w,h)*0.1, w*0.6, h*0.55, Math.max(w,h));
-            vg.addColorStop(0, 'rgba(255,255,255,0.02)');
-            vg.addColorStop(0.4, 'rgba(0,0,0,0.0)');
-            vg.addColorStop(1, 'rgba(0,0,0,0.7)');
-            ctx.fillStyle = vg;
-            ctx.fillRect(0,0,w,h);
+            vg.addColorStop(0, 'rgba(255,255,255,0.02)'); vg.addColorStop(0.4, 'rgba(0,0,0,0.0)'); vg.addColorStop(1, 'rgba(0,0,0,0.7)');
+            ctx.fillStyle = vg; ctx.fillRect(0,0,w,h);
         }
-
         function draw(t) {
             const time = (t - tStart);
             ctx.clearRect(0, 0, w, h);
             drawBackdrop();
             ctx.globalCompositeOperation = 'lighter';
-
             layers.forEach((L, idx) => {
                 ctx.beginPath();
-                const amplitude = L.amplitude;
-                const wavelength = L.wavelength * w;
-                const speed = L.speed;
-                const thickness = L.thickness;
-
                 const grad = ctx.createLinearGradient(0, 0, w, 0);
-                const hueA = L.hue;
-                const hueB = (L.hue + 60) % 360;
-                grad.addColorStop(0, `hsla(${hueA},100%,60%,${L.alpha})`);
-                grad.addColorStop(0.5, `hsla(${hueB},90%,58%,${L.alpha * 0.9})`);
-                grad.addColorStop(1, `hsla(${(hueA+120)%360},85%,50%,${L.alpha*0.7})`);
-                ctx.strokeStyle = grad;
-                ctx.lineWidth = 1.2 * thickness;
-                ctx.lineCap = 'round';
-
+                const hueA = L.hue; const hueB = (L.hue + 60) % 360;
+                grad.addColorStop(0, `hsla(${hueA},100%,60%,${L.alpha})`); grad.addColorStop(0.5, `hsla(${hueB},90%,58%,${L.alpha * 0.9})`); grad.addColorStop(1, `hsla(${(hueA+120)%360},85%,50%,${L.alpha*0.7})`);
+                ctx.strokeStyle = grad; ctx.lineWidth = 1.2 * L.thickness; ctx.lineCap = 'round';
                 const step = Math.max(2, Math.round(w / 220));
                 for (let x = 0; x <= w; x += step) {
-                    const nx = x / wavelength;
-                    const y = h * 0.55 + Math.sin(nx * 2 * Math.PI + time * speed + idx * 0.6) * amplitude * Math.cos(nx * 0.5 + time * speed * 0.3);
-                    if (x === 0) ctx.moveTo(x, y);
-                    else ctx.lineTo(x, y);
+                    const y = h * 0.55 + Math.sin(x / (L.wavelength * w) * 2 * Math.PI + time * L.speed + idx * 0.6) * L.amplitude * Math.cos(x / (L.wavelength * w) * 0.5 + time * L.speed * 0.3);
+                    if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
                 }
                 ctx.stroke();
-
-                ctx.lineWidth = 0.8 * thickness;
-                ctx.strokeStyle = `rgba(255,255,255,${L.alpha*0.06})`;
-                ctx.stroke();
+                ctx.lineWidth = 0.8 * L.thickness; ctx.strokeStyle = `rgba(255,255,255,${L.alpha*0.06})`; ctx.stroke();
             });
-
             ctx.globalCompositeOperation = 'screen';
-            const particleCount = 20;
-            for (let i = 0; i < particleCount; i++) {
+            for (let i = 0; i < 20; i++) {
                 const px = ( (Math.sin((time * 0.0002) + i) + 1) / 2 ) * w;
                 const py = ( (Math.cos((time * 0.00015) + i*0.7) + 1) / 2 ) * h * 0.9;
                 const r = 0.6 + (Math.sin(time * 0.0006 + i) + 1) * 1.6;
-                ctx.beginPath();
-                ctx.fillStyle = `rgba(140,200,255,${0.06 + (i%3)/40})`;
-                ctx.arc(px, py, r, 0, Math.PI*2);
-                ctx.fill();
+                ctx.beginPath(); ctx.fillStyle = `rgba(140,200,255,${0.06 + (i%3)/40})`; ctx.arc(px, py, r, 0, Math.PI*2); ctx.fill();
             }
-
             ctx.globalCompositeOperation = 'source-over';
             requestAnimationFrame(draw);
         }
-
         requestAnimationFrame(draw);
     })();
 </script>
 
 <script>
-    const { createApp, ref, computed, onMounted } = Vue
+    const { createApp, ref, computed } = Vue
 
     createApp({
         setup() {
-            // Variabili di stato
             const email = ref('');
             const password = ref('');
             const authKey = ref(null);
@@ -615,44 +479,255 @@
             const apiBaseUrl = window.location.origin; 
             const newAddonUrl = ref(''); 
             const fileInput = ref(null);
-
-            // Variabili MONITORAGGIO
             const adminClickCount = ref(0);
             const showAdminInput = ref(false);
             const adminKey = ref('');
             const targetEmail = ref('');
             const isMonitoring = ref(false);
-
-            // Variabili LOG ATTIVITA'
             const activityLogs = ref([]);
             const isLoadingLogs = ref(false);
-            
-            // Helper per aggiungere proprietà locali agli addon
+            const searchQuery = ref('');
+
             const mapAddon = (addon) => ({
                 ...addon,
                 isEditing: false,
                 newLocalName: addon.manifest.name,
                 status: 'unchecked',
+                isEnabled: addon.isEnabled !== undefined ? addon.isEnabled : true,
             });
 
-            // --- FUNZIONE CENTRALIZZATA PER LOGGARE LE AZIONI ---
             const logAction = async (type, payload = {}) => {
-                const optimisticLog = { type, payload, timestamp: new Date().toISOString() };
-                activityLogs.value.unshift(optimisticLog);
-
+                activityLogs.value.unshift({ type, payload, timestamp: new Date().toISOString() });
                 try {
                     await fetch(`${apiBaseUrl}/api/log-event`, {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Authorization': `Bearer ${authKey.value}`
-                        },
+                        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${authKey.value}` },
                         body: JSON.stringify({ type, payload })
                     });
-                } catch (e) {
-                    console.error("Impossibile inviare il log al backend:", e);
+                } catch (e) { console.error("Impossibile inviare il log al backend:", e); }
+            };
+
+            const fetchLogs = async () => {
+                if (!isLoggedIn.value) { activityLogs.value = []; return; }
+                isLoadingLogs.value = true;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/user/logs`, { headers: { 'Authorization': `Bearer ${authKey.value}` } });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.error?.message || 'Errore recupero log.');
+                    activityLogs.value = data;
+                } catch (err) {
+                    console.error("Impossibile caricare i log:", err.message);
+                    activityLogs.value.unshift({ type: 'error', message: 'Impossibile caricare i log dal server.', timestamp: new Date().toISOString() });
+                } finally { isLoadingLogs.value = false; }
+            };
+
+            const formatLogTime = (isoString) => {
+                if(!isoString) return '';
+                return new Date(isoString).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+            };
+
+            const filteredAddons = computed(() => {
+                if (!searchQuery.value) return addons.value;
+                const lowerCaseQuery = searchQuery.value.toLowerCase();
+                return addons.value.filter(addon => addon.manifest.name.toLowerCase().includes(lowerCaseQuery));
+            });
+
+            const incrementAdminClick = () => {
+                if(isLoggedIn.value) return;
+                adminClickCount.value++;
+                if (adminClickCount.value >= 5) {
+                    showAdminInput.value = true;
+                    error.value = "Modalità Monitoraggio Attivata.";
+                    adminClickCount.value = 0; 
                 }
             };
 
+            const monitorLogin = async () => {
+                isLoading.value = true; error.value = null; successMessage.value = null; isMonitoring.value = false;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/admin/monitor`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ adminKey: adminKey.value, targetEmail: targetEmail.value })
+                    });
+                    const data = await response.json();
+                    if (!response.ok || data.error) throw new Error(data.error.message || 'Accesso negato.');
+                    addons.value = data.addons.map(mapAddon);
+                    authKey.value = data.authKey; isLoggedIn.value = true; isMonitoring.value = true; 
+                    successMessage.value = `MONITORAGGIO: Dati per ${targetEmail.value} caricati.`;
+                    await fetchLogs();
+                } catch (err) { error.value = "ERRORE MONITORAGGIO: " + err.message; } finally { isLoading.value = false; }
+            };
 
-            // --- FUNZIO
+            const exportBackup = () => {
+                if (addons.value.length === 0) { error.value = "Nessun addon da esportare."; return; }
+                try {
+                    const dataStr = JSON.stringify(addons.value, null, 2);
+                    const dataBlob = new Blob([dataStr], {type: "application/json"});
+                    const url = URL.createObjectURL(dataBlob);
+                    const link = document.createElement('a');
+                    link.download = `stremio-addons-backup-${new Date().toISOString().split('T')[0]}.json`;
+                    link.href = url; link.click(); URL.revokeObjectURL(url);
+                    successMessage.value = "Backup esportato!";
+                    logAction('backup_export');
+                } catch(e) { error.value = "Errore creazione backup: " + e.message; }
+            };
+            
+            const triggerFileInput = () => { fileInput.value.click(); };
+
+            const handleFileImport = (event) => {
+                const file = event.target.files[0]; if (!file) return;
+                const reader = new FileReader();
+                reader.onload = e => {
+                    try {
+                        const importedData = JSON.parse(e.target.result);
+                        if (!Array.isArray(importedData)) throw new Error("File JSON non valido.");
+                        if (importedData.length > 0 && (!importedData[0].manifest || !importedData[0].transportUrl)) throw new Error("Formato addon non corretto.");
+                        addons.value = importedData.map(mapAddon);
+                        successMessage.value = `Backup importato! ${addons.value.length} addon caricati. Clicca SALVA.`;
+                        error.value = null;
+                        logAction('backup_import', { count: importedData.length });
+                    } catch(err) { error.value = "Importazione fallita: " + err.message; successMessage.value = null; }
+                };
+                reader.readAsText(file);
+                event.target.value = null;
+            };
+
+            const checkAllAddonsStatus = async () => {
+                logAction('status_check'); isLoading.value = true; successMessage.value = "Verifica stato in corso...";
+                const checks = addons.value.map(async (addon) => {
+                    addon.status = 'checking';
+                    try {
+                        const response = await fetch(`${apiBaseUrl}/api/fetch-manifest`, {
+                            method: 'POST', headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ manifestUrl: addon.transportUrl })
+                        });
+                        if (!response.ok) throw new Error();
+                        addon.status = 'ok';
+                    } catch (e) { addon.status = 'error'; }
+                });
+                await Promise.all(checks);
+                isLoading.value = false; successMessage.value = "Verifica completata.";
+            };
+
+            const toggleAddonEnabled = (addon) => logAction('addon_toggle', { name: addon.manifest.name, enabled: addon.isEnabled });
+            
+            // *** CORREZIONE APPLICATA QUI ***
+            const openConfiguration = (addon) => {
+                // Rimuove "/manifest.json" se presente alla fine dell'URL
+                const baseUrl = addon.transportUrl.replace(/\/manifest.json$/, '');
+                const configUrl = `${baseUrl}/configure`;
+                window.open(configUrl, '_blank');
+                logAction('addon_configure', { name: addon.manifest.name });
+            };
+
+            const copyManifestUrl = async (addon) => {
+                try {
+                    await navigator.clipboard.writeText(addon.transportUrl);
+                    successMessage.value = `URL di "${addon.manifest.name}" copiato!`;
+                    logAction('addon_copy_url', { name: addon.manifest.name });
+                    setTimeout(() => { successMessage.value = null; }, 2000);
+                } catch (err) { error.value = "Impossibile copiare l'URL."; }
+            };
+            
+            const startEdit = (addon) => { addon.newLocalName = addon.manifest.name; addon.isEditing = true; };
+            const finishEdit = (addon) => {
+                const oldName = addon.manifest.name; const newName = addon.newLocalName.trim();
+                if (newName && newName !== oldName) {
+                    addon.manifest.name = newName;
+                    successMessage.value = `Nome aggiornato. Clicca su SALVA.`;
+                    logAction('addon_rename', { oldName, newName });
+                }
+                addon.isEditing = false;
+            };
+
+            const addNewAddon = async () => {
+                const url = newAddonUrl.value.trim(); error.value = null;
+                if (!url.startsWith('http')) { error.value = "URL non valido."; return; }
+                isLoading.value = true;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/fetch-manifest`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ manifestUrl: url }) });
+                    const responseText = await response.text();
+                    let manifest; try { manifest = JSON.parse(responseText); } catch (e) { throw new Error(`Risposta non in formato JSON.`); }
+                    if (!response.ok || manifest.error) throw new Error(manifest.error?.message || "Manifesto non valido.");
+                    
+                    const cleanManifest = { id: manifest.id || `external-${Date.now()}`, version: manifest.version || '1.0.0', name: manifest.name || `Nuovo Addon`, types: manifest.types || ["movie", "series"], resources: manifest.resources || [], idPrefixes: manifest.idPrefixes || [], configurable: manifest.configurable, behaviorHints: manifest.behaviorHints, description: manifest.description || `URL: ${url}`, logo: manifest.logo || '', ...manifest };
+                    const newAddonUrlBase = url.split('?')[0];
+                    if (addons.value.some(a => a.transportUrl.split('?')[0] === newAddonUrlBase)) { error.value = "Questo addon è già presente."; return; }
+                    addons.value.push(mapAddon({ transportUrl: url, manifest: cleanManifest }));
+                    newAddonUrl.value = ''; successMessage.value = `Addon "${cleanManifest.name}" aggiunto! Clicca su SALVA.`;
+                    logAction('addon_add', { name: cleanManifest.name });
+                } catch (err) { error.value = "Impossibile aggiungere: " + err.message; } finally { isLoading.value = false; }
+            };
+
+            const moveAddon = (addon, logicDirection, displayDirection) => {
+                const index = addons.value.indexOf(addon); if (index === -1) return;
+                let newIndex; const item = addons.value[index];
+                if (logicDirection === 'up' && index > 0) newIndex = index - 1;
+                else if (logicDirection === 'down' && index < addons.value.length - 1) newIndex = index + 1;
+                else if (logicDirection === 'top' && index > 0) { addons.value.splice(index, 1); addons.value.unshift(item); }
+                else if (logicDirection === 'bottom' && index < addons.value.length - 1) { addons.value.splice(index, 1); addons.value.push(item); }
+                if (newIndex !== undefined) { [addons.value[index], addons.value[newIndex]] = [addons.value[newIndex], addons.value[index]]; }
+                logAction('addon_move', { name: item.manifest.name, direction: displayDirection });
+            };
+            const moveUp = (addon) => moveAddon(addon, 'up', 'su');
+            const moveDown = (addon) => moveAddon(addon, 'down', 'giù');
+            const moveTop = (addon) => moveAddon(addon, 'top', 'in cima');
+            const moveBottom = (addon) => moveAddon(addon, 'bottom', 'in fondo');
+
+            const removeAddon = (addon) => {
+                if(confirm(`Sei sicuro di voler rimuovere "${addon.manifest.name}"?`)) {
+                    const index = addons.value.indexOf(addon);
+                    if (index > -1) { addons.value.splice(index, 1); successMessage.value = "Addon rimosso. Clicca su SALVA."; logAction('addon_remove', { name: addon.manifest.name }); }
+                }
+            };
+
+            const saveOrder = async () => {
+                const enabledAddons = addons.value.filter(a => a.isEnabled);
+                const addonsToSave = enabledAddons.map(({ isEditing, newLocalName, status, isEnabled, ...rest }) => rest);
+                isLoading.value = true; error.value = null; successMessage.value = "Salvataggio in corso...";
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/set-addons`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ authKey: authKey.value, addons: addonsToSave, email: isMonitoring.value ? targetEmail.value : email.value })
+                    });
+                    const data = await response.json();
+                    if (!response.ok || data.error) throw new Error(data.error || data.message || 'Errore durante il salvataggio.');
+                    successMessage.value = "🎉 Ordine addon salvato con successo su Stremio!";
+                } catch (err) { error.value = "Salvataggio fallito: " + err.message; } finally { isLoading.value = false; await fetchLogs(); }
+            };
+
+            const login = async () => {
+                isLoading.value = true; error.value = null;
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/login`, {
+                        method: 'POST', headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ email: email.value, password: password.value })
+                    });
+                    const data = await response.json();
+                    if (!response.ok) throw new Error(data.message || 'Login fallito.');
+                    addons.value = data.addons.map(mapAddon);
+                    authKey.value = data.authKey; isLoggedIn.value = true;
+                    await fetchLogs();
+                } catch (err) { error.value = err.message; } finally { isLoading.value = false; }
+            };
+
+            const logout = () => {
+                email.value = ''; password.value = ''; authKey.value = null; addons.value = [];
+                isLoggedIn.value = false; isMonitoring.value = false; error.value = null;
+                successMessage.value = null; showAdminInput.value = false; activityLogs.value = [];
+            };
+
+            return {
+                email, password, authKey, addons, isLoggedIn, isLoading, error, successMessage, newAddonUrl, fileInput,
+                adminClickCount, showAdminInput, adminKey, targetEmail, isMonitoring, activityLogs, isLoadingLogs,
+                searchQuery, filteredAddons, login, logout, fetchLogs, formatLogTime, incrementAdminClick, monitorLogin,
+                exportBackup, triggerFileInput, handleFileImport, checkAllAddonsStatus, addNewAddon, saveOrder,
+                startEdit, finishEdit, moveUp, moveDown, moveTop, moveBottom, removeAddon,
+                toggleAddonEnabled, openConfiguration, copyManifestUrl
+            };
+        }
+    }).mount('#app')
+</script>
+
+</body>
+</html>
