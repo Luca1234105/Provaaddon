@@ -2,12 +2,16 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8" />
+    <!-- VIEWPORT META TAG (ESSENZIALE PER IL MOBILE) -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>STREMIO | CONSOLE DI COMANDO ADDON</title>
+    <!-- Il titolo ora è dinamico in base alla lingua -->
+    <title>{{ t('meta.title') }}</title>
 
     <link href="https://fonts.googleapis.comcom/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
+    <script src="https://unpkg.com/vuedraggable@next/dist/vuedraggable.umd.js"></script>
 
     <style>
         /* ====== RESET & BASE ====== */
@@ -147,7 +151,9 @@
         .secondary-btn:hover:not(:disabled) { transform: translateY(-2px); }
 
         /* addon list */
-        .addon-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+        .addon-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; cursor: grab; }
+        .addon-list:grabbing { cursor: grabbing; }
+
         .addon-item {
             display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px;
             background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
@@ -157,9 +163,23 @@
         .addon-item:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(11,8,20,0.7); }
         .addon-item.disabled { opacity: 0.5; border-left-color: #555; filter: grayscale(50%); }
 
+        /* Styles for drag-and-drop feedback */
+        .addon-item.ghost-class {
+            opacity: 0.5;
+            background: rgba(187,134,252,0.08);
+            border: 1px dashed rgba(187,134,252,0.4);
+            box-shadow: none;
+        }
+        .addon-item.sortable-chosen {
+            cursor: grabbing;
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 16px 45px rgba(11,8,20,0.8);
+        }
+
         .addon-icon { width:56px; height:56px; border-radius:10px; object-fit:cover; background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); display:block; }
         .addon-icon-placeholder { width: 56px; height: 56px; flex-shrink: 0; }
 
+        .addon-details { flex: 1; min-width: 0; /* Aggiunto per corretto wrapping */ }
         .addon-details h3 {
             margin: 0; color: #F3F3FF; font-weight: 700; font-size: 1.02rem; font-family: 'Orbitron', sans-serif;
             display:flex; align-items:center; gap:8px;
@@ -211,13 +231,16 @@
         /* Stili per Filtri e Azioni */
         .actions-panel {
             display: flex;
+            flex-wrap: wrap; /* MODIFICATO: Permette il wrapping su mobile */
             justify-content: space-between;
             align-items: center;
             gap: 10px;
             padding: 10px;
             margin-bottom: 1rem;
         }
-        .filter-group .secondary-btn, .action-group .secondary-btn {
+        /* RIMOSSO .sort-group da questa regola */
+        .filter-group .secondary-btn, 
+        .action-group .secondary-btn {
             background: rgba(0,0,0,0.2);
             border: 1px solid rgba(255,255,255,0.05);
         }
@@ -259,15 +282,137 @@
         }
         .sidebar .info strong { color: #fff; display:inline-block; width:90px; }
 
-        /* responsive */
-        @media (max-width: 1024px) { .top-grid { grid-template-columns: 1fr 320px; } }
-        @media (max-width: 920px) { .top-grid { grid-template-columns: 1fr; } .sidebar { order: 2; } }
-
         .footer {
             display:flex; align-items:center; justify-content:space-between; gap:12px;
             color: rgba(230,230,230,0.5); font-size:0.86rem;
             margin-top: auto;      /* <-- FIXED: Pushes footer to the bottom */
             padding-top: 16px;     /* <-- FIXED: Adds space above the footer */
+            flex-wrap: wrap;       /* AGGIUNTO: per wrapping lingua su mobile */
+        }
+        
+        /* ====== RESPONSIVE (Tablet & Mobile) ====== */
+
+        /* Tablet (già esistente) */
+        @media (max-width: 1024px) { 
+            .top-grid { grid-template-columns: 1fr 320px; } 
+        }
+        @media (max-width: 920px) { 
+            .top-grid { grid-template-columns: 1fr; } 
+            .sidebar { order: 2; } 
+        }
+
+        /* Mobile (AGGIUNTO) - Target: 768px per controlli addon */
+        @media (max-width: 768px) {
+            .addon-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 14px;
+            }
+            .addon-details {
+                width: 100%;
+            }
+            .controls-container {
+                margin-left: 0;
+                margin-top: 10px;
+                width: 100%;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+            /* Nasconde i controlli di movimento manuale su mobile (drag-drop è preferito) */
+            .move-controls {
+                display: none;
+            }
+        }
+
+        /* Mobile (AGGIUNTO) - Target: 640px per layout generale */
+        @media (max-width: 640px) {
+            #app {
+                width: calc(100% - 24px); /* Meno margine orizzontale */
+                margin: 12px auto;      /* Meno margine verticale */
+                padding: 1.2rem;          /* Padding ridotto */
+            }
+            header { gap: 4px; }
+            h1 { font-size: 1.4rem; gap: 8px; }
+            h1::after { display: none; } /* Nasconde la linea sul titolo */
+            .subtitle { font-size: 0.85rem; }
+
+            /* Pannello "Aggiungi Addon" a colonna */
+            .add-addon-panel {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            /* Pannello "Backup" a colonna */
+            .backup-actions {
+                flex-direction: column;
+            }
+            .backup-actions .secondary-btn {
+                width: 100%;
+            }
+            
+            /* Pannello Azioni (Filtri, Sort, Undo) a colonna e centrato */
+            .actions-panel {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px; /* Più spazio tra i gruppi */
+            }
+            /* RIMOSSO .sort-group */
+            .filter-group, .action-group {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: center;
+                gap: 8px;
+            }
+            .actions-panel .secondary-btn {
+                flex-grow: 1; /* Fa espandere i bottoni per riempire lo spazio */
+            }
+            
+            /* Migliora leggibilità log su mobile */
+            .log-item {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 4px;
+            }
+            .log-timestamp {
+                min-width: unset;
+                font-size: 0.75rem;
+            }
+            .log-message {
+                font-size: 0.9rem;
+            }
+
+            /* Footer del sidebar a colonna */
+            .footer {
+                flex-direction: column;
+                align-items: center;
+                text-align: center;
+                gap: 6px;
+            }
+        }
+        
+        /* AGGIUNTO: Stile per selettore lingua */
+        .lang-switcher {
+            display: flex; 
+            gap: 8px; 
+            align-items: center;
+            margin-left: auto; /* Spinge a destra su desktop */
+        }
+        .lang-switcher .secondary-btn {
+            padding: 4px 8px; 
+            font-size: 0.8rem; 
+            background: none; 
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        .lang-switcher .secondary-btn.active {
+            background: linear-gradient(90deg, rgba(33,150,243,1), rgba(3,218,198,0.85));
+            border-color: transparent;
+            color: #fff;
+        }
+        @media (max-width: 640px) {
+            .lang-switcher {
+                margin-left: 0; /* Centra su mobile (essendo nel footer a colonna) */
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -276,28 +421,29 @@
     <canvas id="bgCanvas"></canvas>
     <div class="grain" aria-hidden="true"></div>
 
-    <div id="app">
+    <!-- Aggiunto :lang="lang" per accessibilità -->
+    <div id="app" :lang="lang">
         <header>
-            <h1 @click="incrementAdminClick">STREMIO | CONSOLE DI COMANDO ADDON</h1>
-            <div class="subtitle" v-if="!isLoggedIn && !isMonitoring">Per accedere inserisci le credenziali dell'account Stremio</div>
-            <div class="subtitle" v-else-if="isMonitoring">Modalità Monitoraggio attiva</div>
-            <div class="subtitle" v-else-if="isLoggedIn">Console rapida per gestire, ordinare e salvare gli addon</div>
+            <h1 @click="incrementAdminClick">{{ t('h1') }}</h1>
+            <div class="subtitle" v-if="!isLoggedIn && !isMonitoring">{{ t('subtitle.login') }}</div>
+            <div class="subtitle" v-else-if="isMonitoring">{{ t('subtitle.monitoring') }}</div>
+            <div class="subtitle" v-else-if="isLoggedIn">{{ t('subtitle.loggedIn') }}</div>
         </header>
 
         <div class="top-grid">
             <div class="panel">
                 <div v-if="!isLoggedIn">
                     <form @submit.prevent="login" v-if="!showAdminInput" style="margin-bottom:14px;">
-                        <h2 style="margin:0 0 8px 0; color:#BB86FC; font-family:'Orbitron',sans-serif;">Accesso Utente</h2>
-                        <div class="form-group" style="margin-bottom:12px;"><input type="email" v-model="email" placeholder="Stremio E-mail" required></div>
-                        <div class="form-group" style="margin-bottom:12px;"><input type="password" v-model="password" placeholder="Stremio Password" required></div>
-                        <button type="submit" class="primary-btn" :disabled="isLoading">{{ isLoading ? 'Accesso in corso...' : 'LOGIN' }}</button>
+                        <h2 style="margin:0 0 8px 0; color:#BB86FC; font-family:'Orbitron',sans-serif;">{{ t('login.title') }}</h2>
+                        <div class="form-group" style="margin-bottom:12px;"><input type="email" v-model="email" :placeholder="t('login.emailPlaceholder')" required></div>
+                        <div class="form-group" style="margin-bottom:12px;"><input type="password" v-model="password" :placeholder="t('login.passwordPlaceholder')" required></div>
+                        <button type="submit" class="primary-btn" :disabled="isLoading">{{ isLoading ? t('login.loading') : t('login.button') }}</button>
                     </form>
                     <form v-if="showAdminInput" @submit.prevent="monitorLogin" class="panel" style="margin-top:10px; padding:12px;">
-                        <h2 style="margin:0 0 8px 0; color:#FFA500; font-family:'Orbitron',sans-serif;">Modalità Monitoraggio</h2>
-                        <div class="form-group" style="margin-bottom:10px;"><input type="password" v-model="adminKey" placeholder="La tua Chiave di Monitoraggio" required></div>
-                        <div class="form-group" style="margin-bottom:12px;"><input type="email" v-model="targetEmail" placeholder="E-mail dell'utente da controllare" required></div>
-                        <button type="submit" class="primary-btn" :disabled="isLoading" style="background: linear-gradient(90deg,#FFA500,#FFB86C); color:#111;">{{ isLoading ? 'Monitoraggio...' : 'MONITORA UTENTE' }}</button>
+                        <h2 style="margin:0 0 8px 0; color:#FFA500; font-family:'Orbitron',sans-serif;">{{ t('monitor.title') }}</h2>
+                        <div class="form-group" style="margin-bottom:10px;"><input type="password" v-model="adminKey" :placeholder="t('monitor.keyPlaceholder')" required></div>
+                        <div class="form-group" style="margin-bottom:12px;"><input type="email" v-model="targetEmail" :placeholder="t('monitor.emailPlaceholder')" required></div>
+                        <button type="submit" class="primary-btn" :disabled="isLoading" style="background: linear-gradient(90deg,#FFA500,#FFB86C); color:#111;">{{ isLoading ? t('monitor.loading') : t('monitor.button') }}</button>
                     </form>
                     <p v-if="error" class="error">{{ error }}</p>
                 </div>
@@ -305,138 +451,166 @@
                 <div v-if="isLoggedIn">
                     <h2 style="margin:0 0 12px 0; color:#7FD1FF; font-family:'Orbitron',sans-serif;">
                         <template v-if="isMonitoring">MONITORAGGIO: {{ targetEmail }}</template>
-                        <template v-else>Lista Addon ({{ addons.length }})</template>
+                        <!-- Tradotto con interpolazione -->
+                        <template v-else>{{ t('list.title', { count: addons.length }) }}</template>
                     </h2>
 
                     <div style="margin-bottom:12px;">
                         <button @click="saveOrder" :class="['primary-btn', { 'unsaved-changes': hasUnsavedChanges }]" :disabled="isLoading" style="width:100%;">
                             <span v-if="hasUnsavedChanges" class="unsaved-indicator"></span>
-                            💾 Salva Ordine e Modifiche su Stremio
+                            💾 {{ t('list.saveButton') }}
                         </button>
                     </div>
 
                     <p v-if="successMessage" class="success-message">{{ successMessage }}</p>
                     <p v-if="error" class="error">{{ error }}</p>
 
-                    <div class="panel" style="display:flex; gap:10px; align-items:center; padding:12px;">
-                        <input type="text" v-model="newAddonUrl" placeholder="Incolla l'URL del manifesto addon (https://.../manifest.json)" style="flex:1;">
-                        <button @click="addNewAddon" class="secondary-btn" :disabled="isLoading || !newAddonUrl.trim()">+ Aggiungi</button>
+                    <!-- AGGIUNTA CLASSE 'add-addon-panel' per responsive -->
+                    <div class="panel add-addon-panel" style="display:flex; gap:10px; align-items:center; padding:12px;">
+                        <input type="text" v-model="newAddonUrl" :placeholder="t('list.addPlaceholder')" style="flex:1;">
+                        <button @click="addNewAddon" class="secondary-btn" :disabled="isLoading || !newAddonUrl.trim()">+ {{ t('list.addButton') }}</button>
                     </div>
                     
                     <div class="panel" style="margin-top:1rem; padding:12px;">
-                        <h3 style="margin:0 0 10px 0; color:#B9A3FF; font-family:'Orbitron',sans-serif; font-size:1.05rem;">Gestione Backup</h3>
-                        <div style="display:flex; gap:10px;">
-                            <button @click="exportBackup" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #4CAF50, #81C784);">Esporta Backup (.json)</button>
-                            <button @click="triggerFileInput" class="secondary-btn" style="flex:1;">Importa Backup (.json)</button>
+                        <h3 style="margin:0 0 10px 0; color:#B9A3FF; font-family:'Orbitron',sans-serif; font-size:1.05rem;">{{ t('backup.title') }}</h3>
+                        <!-- AGGIUNTA CLASSE 'backup-actions' per responsive -->
+                        <div style="display:flex; gap:10px;" class="backup-actions">
+                            <button @click="exportBackup" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #4CAF50, #81C784);">{{ t('backup.exportButton') }}</button>
+                            <button @click="triggerFileInput" class="secondary-btn" style="flex:1;">{{ t('backup.importButton') }}</button>
                             <input type="file" ref="fileInput" @change="handleFileImport" accept=".json" style="display: none;">
                         </div>
                     </div>
                     
                     <div style="margin-top:14px;">
                         <div class="panel" style="padding:10px; margin-bottom: 1rem;">
-                           <input type="text" v-model="searchQuery" placeholder="🔍 Cerca addon per nome..." style="background: rgba(0,0,0,0.2);">
+                           <input type="text" v-model="searchQuery" :placeholder="t('search.placeholder')" style="background: rgba(0,0,0,0.2);">
                         </div>
 
+                        <!-- MODIFICATO: Rimossi i bottoni di ordinamento -->
                         <div class="panel actions-panel">
                             <div class="action-group" style="display:flex; gap: 8px;">
-                                <button @click="undo" class="secondary-btn" :disabled="history.length === 0" title="Annulla ultima azione">↩️ Annulla</button>
-                                <button @click="redo" class="secondary-btn" :disabled="redoStack.length === 0" title="Ripristina ultima azione">↪️ Ripristina</button>
+                                <button @click="undo" class="secondary-btn" :disabled="history.length === 0" :title="t('actions.undo')">↩️ {{ t('actions.undoLabel') }}</button>
+                                <button @click="redo" class="secondary-btn" :disabled="redoStack.length === 0" :title="t('actions.redo')">↪️ {{ t('actions.redoLabel') }}</button>
                             </div>
+                            
+                            <!-- RIMOSSO: Gruppo Azioni di Ordinamento -->
+
                             <div class="filter-group" style="display:flex; gap: 8px;">
-                                <button @click="activeFilter = 'all'" :class="['secondary-btn', {active: activeFilter === 'all'}]">Tutti</button>
-                                <button @click="activeFilter = 'enabled'" :class="['secondary-btn', {active: activeFilter === 'enabled'}]">Attivi</button>
-                                <button @click="activeFilter = 'disabled'" :class="['secondary-btn', {active: activeFilter === 'disabled'}]">Disattivati</button>
-                                <button @click="activeFilter = 'errors'" :class="['secondary-btn', {active: activeFilter === 'errors'}]">Con Errori</button>
+                                <button @click="activeFilter = 'all'" :class="['secondary-btn', {active: activeFilter === 'all'}]">{{ t('filters.all') }}</button>
+                                <button @click="activeFilter = 'enabled'" :class="['secondary-btn', {active: activeFilter === 'enabled'}]">{{ t('filters.enabled') }}</button>
+                                <button @click="activeFilter = 'disabled'" :class="['secondary-btn', {active: activeFilter === 'disabled'}]">{{ t('filters.disabled') }}</button>
+                                <button @click="activeFilter = 'errors'" :class="['secondary-btn', {active: activeFilter === 'errors'}]">{{ t('filters.errors') }}</button>
                             </div>
                         </div>
 
                         <div style="margin-top: 1rem; margin-bottom:12px;">
                              <button @click="checkAllAddonsStatus" class="primary-btn" :disabled="isLoading" style="width:100%; background: linear-gradient(90deg,#555,#888); color:#fff;">
-                                 📡 Verifica Stato Addon
+                                 📡 {{ t('list.checkStatusButton') }}
                              </button>
                         </div>
                         
-                        <ul v-if="!isLoading && addons.length > 0" class="addon-list">
-                            <li v-for="addon in filteredAddons" :key="addon.transportUrl" :class="['addon-item', { disabled: !addon.isEnabled }]">
-                                <img v-if="addon.manifest.logo" :src="addon.manifest.logo" class="addon-icon" @error="event => event.target.style.display = 'none'">
-                                <div v-else class="addon-icon-placeholder"></div>
-                                <div class="addon-details">
-                                    <h3 v-if="!addon.isEditing">
-                                        <span :class="['status-indicator', `status-${addon.status}`]" :title="`Stato: ${addon.status}`"></span>
-                                        {{ addon.manifest.name }}
-                                        <span @click="startEdit(addon)" class="edit-icon" title="Modifica Nome" style="cursor:pointer; font-size:0.9rem; margin-left:8px; color:rgba(200,200,255,0.7);">🖊️</span>
-                                    </h3>
-                                    <div v-else style="display:flex; align-items:center; margin-bottom:0.25rem;">
-                                        <input type="text" v-model="addon.newLocalName" class="edit-name-input" @keyup.enter="finishEdit(addon)">
-                                        <button @click="finishEdit(addon)" class="save-edit-btn" style="margin-left:8px;">Salva</button>
+                        <draggable
+                            v-if="!isLoading && filteredAddons.length > 0"
+                            v-model="draggableList"
+                            @end="onDragEnd"
+                            item-key="transportUrl"
+                            class="addon-list"
+                            ghost-class="ghost-class"
+                            animation="200"
+                            handle=".addon-item">
+                            <template #item="{ element: addon }">
+                                <li :class="['addon-item', { disabled: !addon.isEnabled }]">
+                                    <img v-if="addon.manifest.logo" :src="addon.manifest.logo" class="addon-icon" @error="event => event.target.style.display = 'none'">
+                                    <div v-else class="addon-icon-placeholder"></div>
+                                    <div class="addon-details">
+                                        <h3 v-if="!addon.isEditing">
+                                            <span :class="['status-indicator', `status-${addon.status}`]" :title="t('addon.statusTitle', { status: addon.status })"></span>
+                                            {{ addon.manifest.name }}
+                                            <span @click="startEdit(addon)" class="edit-icon" :title="t('addon.editTitle')" style="cursor:pointer; font-size:0.9rem; margin-left:8px; color:rgba(200,200,255,0.7);">🖊️</span>
+                                        </h3>
+                                        <div v-else style="display:flex; align-items:center; margin-bottom:0.25rem;">
+                                            <input type="text" v-model="addon.newLocalName" class="edit-name-input" @keyup.enter="finishEdit(addon)">
+                                            <button @click="finishEdit(addon)" class="save-edit-btn" style="margin-left:8px;">{{ t('addon.saveButton') }}</button>
+                                        </div>
+                                        <p>{{ addon.manifest.description || t('addon.noDescription') }}</p>
                                     </div>
-                                    <p>{{ addon.manifest.description || 'Nessuna descrizione' }}</p>
-                                </div>
-                                <div class="controls-container">
-                                    <label class="toggle-switch" title="Abilita/Disabilita Addon"><input type="checkbox" v-model="addon.isEnabled" @change="toggleAddonEnabled(addon)"><span class="slider"></span></label>
-                                    <button v-if="addon.manifest.behaviorHints && addon.manifest.behaviorHints.configurable" @click="openConfiguration(addon)" class="icon-btn" title="Configura Addon">⚙️</button>
-                                    <button @click="copyManifestUrl(addon)" class="icon-btn" title="Copia URL Manifesto">📋</button>
-                                    <div class="move-controls" aria-hidden="true">
-                                        <button @click="moveTop(addon)" :disabled="addons.indexOf(addon) === 0" class="controls-btn" title="Sposta in Cima">🔝</button>
-                                        <button @click="moveBottom(addon)" :disabled="addons.indexOf(addon) === addons.length - 1" class="controls-btn" title="Sposta in Fondo">⬇️</button>
-                                        <button @click="moveUp(addon)" :disabled="addons.indexOf(addon) === 0" class="controls-btn" title="Sposta Su">▲</button>
-                                        <button @click="moveDown(addon)" :disabled="addons.indexOf(addon) === addons.length - 1" class="controls-btn" title="Sposta Giù">▼</button>
+                                    <div class="controls-container">
+                                        <label class="toggle-switch" :title="t('addon.toggleTitle')"><input type="checkbox" v-model="addon.isEnabled" @change="toggleAddonEnabled(addon)"><span class="slider"></span></label>
+                                        <button v-if="addon.manifest.behaviorHints && addon.manifest.behaviorHints.configurable" @click="openConfiguration(addon)" class="icon-btn" :title="t('addon.configureTitle')">⚙️</button>
+                                        <button @click="copyManifestUrl(addon)" class="icon-btn" :title="t('addon.copyTitle')">📋</button>
+                                        <div class="move-controls" aria-hidden="true">
+                                            <button @click="moveTop(addon)" :disabled="addons.indexOf(addon) === 0" class="controls-btn" :title="t('addon.moveTopTitle')">🔝</button>
+                                            <button @click="moveBottom(addon)" :disabled="addons.indexOf(addon) === addons.length - 1" class="controls-btn" :title="t('addon.moveBottomTitle')">⬇️</button>
+                                            <button @click="moveUp(addon)" :disabled="addons.indexOf(addon) === 0" class="controls-btn" :title="t('addon.moveUpTitle')">▲</button>
+                                            <button @click="moveDown(addon)" :disabled="addons.indexOf(addon) === addons.length - 1" class="controls-btn" :title="t('addon.moveDownTitle')">▼</button>
+                                        </div>
+                                        <button @click="removeAddon(addon)" class="remove-btn" :disabled="isLoading" :title="t('addon.removeTitle')">🗑️</button>
                                     </div>
-                                    <button @click="removeAddon(addon)" class="remove-btn" :disabled="isLoading" title="Rimuovi">🗑️</button>
-                                </div>
-                            </li>
-                        </ul>
-                        <p v-if="!isLoading && filteredAddons.length === 0 && addons.length > 0">Nessun addon corrisponde alla tua ricerca.</p>
-                        <p v-if="!isLoading && addons.length === 0">Nessun addon trovato per questo account.</p>
+                                </li>
+                            </template>
+                        </draggable>
+
+                        <p v-if="!isLoading && filteredAddons.length === 0 && addons.length > 0">{{ t('list.noResults') }}</p>
+                        <p v-if="!isLoading && addons.length === 0">{{ t('list.noAddons') }}</p>
                     </div>
-                    <div style="margin-top:12px; display:flex; gap:10px;"><button @click="logout" class="primary-btn logout-btn" style="background: linear-gradient(90deg,#333,#111); color:#fff;">LOGOUT</button></div>
+                    <div style="margin-top:12px; display:flex; gap:10px;"><button @click="logout" class="primary-btn logout-btn" style="background: linear-gradient(90deg,#333,#111); color:#fff;">{{ t('list.logoutButton') }}</button></div>
                 </div>
             </div>
 
             <aside class="sidebar" aria-label="Info Rapide e Log">
                 <div v-if="isLoggedIn" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
-                    <h3 style="margin:0;">Info Rapide</h3>
-                    <button @click="fetchLogs" class="secondary-btn" :disabled="isLoadingLogs">{{ isLoadingLogs ? '...' : 'Aggiorna Log' }}</button>
+                    <h3 style="margin:0;">{{ t('sidebar.infoTitle') }}</h3>
+                    <button @click="fetchLogs" class="secondary-btn" :disabled="isLoadingLogs">{{ isLoadingLogs ? '...' : t('sidebar.refreshLog') }}</button>
                 </div>
                 <div class="info">
-                    <div><strong>Account:</strong> <span style="opacity:.9">{{ email || targetEmail || '—' }}</span></div>
-                    <div><strong>Addons:</strong> <span style="opacity:.9">{{ addons.length }} ({{ addons.filter(a => a.isEnabled).length }} attivi)</span></div>
+                    <div><strong>{{ t('sidebar.account') }}:</strong> <span style="opacity:.9">{{ email || targetEmail || '—' }}</span></div>
+                    <div><strong>{{ t('sidebar.addons') }}:</strong> <span style="opacity:.9">{{ addons.length }} ({{ addons.filter(a => a.isEnabled).length }} {{ t('sidebar.active') }})</span></div>
                 </div>
                 
                 <div style="flex: 1; display: flex; flex-direction: column; min-height: 0; margin-top: 1rem;">
-                    <h3 style="margin: 0 0 10px 0; font-size:0.95rem;">Log Attività Recenti</h3>
+                    <h3 style="margin: 0 0 10px 0; font-size:0.95rem;">{{ t('sidebar.logTitle') }}</h3>
                     <div class="log-section" style="flex: 1;">
                         <ul class="log-list" style="padding:0; margin:0;">
                             <li v-for="log in activityLogs" :key="log.timestamp + Math.random()" class="log-item">
                                 <span class="log-timestamp">{{ formatLogTime(log.timestamp) }}</span>
                                 <span :class="['log-message', `log-type-${log.type}`]">
-                                    <template v-if="log.type === 'login_success'">Login effettuato.</template>
-                                    <template v-else-if="log.type === 'addon_save_success'">✅ Addon salvati su Stremio.</template>
-                                    <template v-else-if="log.type === 'addon_add'">➕ Aggiunto: <span class="log-details">"{{ log.payload.name }}"</span></template>
-                                    <template v-else-if="log.type === 'addon_remove'">➖ Rimosso: <span class="log-details">"{{ log.payload.name }}"</span></template>
-                                    <template v-else-if="log.type === 'addon_move'">🔃 Spostato <span class="log-details">"{{ log.payload.name }}"</span> verso {{ log.payload.direction }}.</template>
-                                    <template v-else-if="log.type === 'addon_rename'">✏️ Rinominato: <span class="log-details">"{{ log.payload.newName }}"</span></template>
-                                    <template v-else-if="log.type === 'backup_export'">📤 Backup esportato.</template>
-                                    <template v-else-if="log.type === 'backup_import'">📥 Importato backup con <span class="log-details">{{ log.payload.count }} addon</span>.</template>
-                                    <template v-else-if="log.type === 'status_check'">📡 Avviata verifica stato.</template>
+                                    <!-- Log tradotti -->
+                                    <template v-if="log.type === 'login_success'">{{ t('logs.login_success') }}</template>
+                                    <template v-else-if="log.type === 'addon_save_success'">{{ t('logs.addon_save_success') }}</template>
+                                    <template v-else-if="log.type === 'addon_add'">{{ t('logs.addon_add', { name: log.payload.name }) }}</template>
+                                    <template v-else-if="log.type === 'addon_remove'">{{ t('logs.addon_remove', { name: log.payload.name }) }}</template>
+                                    <template v-else-if="log.type === 'addon_move'">{{ t('logs.addon_move', { name: log.payload.name, direction: log.payload.direction }) }}</template>
+                                    <!-- RIMOSSO log.type === 'addon_sort' -->
+                                    <template v-else-if="log.type === 'addon_rename'">{{ t('logs.addon_rename', { newName: log.payload.newName }) }}</template>
+                                    <template v-else-if="log.type === 'backup_export'">{{ t('logs.backup_export') }}</template>
+                                    <template v-else-if="log.type === 'backup_import'">{{ t('logs.backup_import', { count: log.payload.count }) }}</template>
+                                    <template v-else-if="log.type === 'status_check'">{{ t('logs.status_check') }}</template>
                                     <template v-else-if="log.type === 'addon_toggle'">
                                         <template v-if="log.payload.enabled">🟢</template><template v-else>🔴</template>
-                                        {{ log.payload.enabled ? 'Abilitato' : 'Disabilitato' }}: <span class="log-details">"{{ log.payload.name }}"</span>
+                                        {{ log.payload.enabled ? t('logs.addon_enabled', { name: log.payload.name }) : t('logs.addon_disabled', { name: log.payload.name }) }}
                                     </template>
-                                    <template v-else-if="log.type === 'addon_configure'">⚙️ Aperta config per <span class="log-details">"{{ log.payload.name }}"</span></template>
-                                    <template v-else-if="log.type === 'addon_copy_url'">📋 Copiato URL per <span class="log-details">"{{ log.payload.name }}"</span></template>
+                                    <template v-else-if="log.type === 'addon_configure'">{{ t('logs.addon_configure', { name: log.payload.name }) }}</template>
+                                    <template v-else-if="log.type === 'addon_copy_url'">{{ t('logs.addon_copy_url', { name: log.payload.name }) }}</template>
                                     <template v-else>{{ log.message }}</template>
                                 </span>
                             </li>
-                            <li v-if="activityLogs.length === 0 && !isLoadingLogs" style="color:rgba(230,230,230,0.6); padding:8px;">Nessuna attività recente.</li>
-                            <li v-if="isLoadingLogs" style="color:rgba(230,230,230,0.6); padding:8px;">Caricamento log...</li>
+                            <li v-if="activityLogs.length === 0 && !isLoadingLogs" style="color:rgba(230,230,230,0.6); padding:8px;">{{ t('logs.noActivity') }}</li>
+                            <li v-if="isLoadingLogs" style="color:rgba(230,230,230,0.6); padding:8px;">{{ t('logs.loading') }}</li>
                         </ul>
                     </div>
                 </div>
 
                 <div class="footer">
-                    <div style="font-size:0.85rem;">© Stremio Console</div>
-                    <div style="font-size:0.85rem; opacity:0.8;">Cyberpunk skin • by Luca</div>
+                    <div>
+                        <div style="font-size:0.85rem;">{{ t('footer.copyright') }}</div>
+                        <div style="font-size:0.85rem; opacity:0.8;">{{ t('footer.skin') }}</div>
+                    </div>
+                    <!-- AGGIUNTO: Selettore Lingua -->
+                    <div class="lang-switcher">
+                        <span style="font-size: 0.85rem; opacity: 0.8;">{{ t('footer.language') }}:</span>
+                        <button @click="lang = 'it'" :class="['secondary-btn', {active: lang === 'it'}]">IT</button>
+                        <button @click="lang = 'en'" :class="['secondary-btn', {active: lang === 'en'}]">EN</button>
+                    </div>
                 </div>
             </aside>
         </div>
@@ -471,9 +645,9 @@
 </script>
 
 <script>
-    const { createApp, ref, computed, onMounted, onBeforeUnmount } = Vue
+    const { createApp, ref, computed, onMounted, onBeforeUnmount, watch } = Vue
 
-    createApp({
+    const app = createApp({
         setup() {
             const email = ref(''); const password = ref(''); const authKey = ref(null); const addons = ref([]); 
             const isLoggedIn = ref(false); const isLoading = ref(false); const error = ref(null); const successMessage = ref(null);
@@ -482,6 +656,239 @@
             const isMonitoring = ref(false); const activityLogs = ref([]); const isLoadingLogs = ref(false); const searchQuery = ref('');
             
             const hasUnsavedChanges = ref(false); const history = ref([]); const redoStack = ref([]); const activeFilter = ref('all');
+            
+            // AGGIUNTO: Gestione Lingua
+            const lang = ref('it'); // 'it' o 'en'
+            const translations = {
+                it: {
+                    meta: { title: "STREMIO | CONSOLE DI COMANDO ADDON" },
+                    h1: "STREMIO | CONSOLE DI COMANDO ADDON",
+                    subtitle: {
+                        login: "Per accedere inserisci le credenziali dell'account Stremio",
+                        monitoring: "Modalità Monitoraggio attiva",
+                        loggedIn: "Console rapida per gestire, ordinare e salvare gli addon"
+                    },
+                    login: {
+                        title: "Accesso Utente",
+                        emailPlaceholder: "Stremio E-mail",
+                        passwordPlaceholder: "Stremio Password",
+                        button: "LOGIN",
+                        loading: "Accesso in corso..."
+                    },
+                    monitor: {
+                        title: "Modalità Monitoraggio",
+                        keyPlaceholder: "La tua Chiave di Monitoraggio",
+                        emailPlaceholder: "E-mail dell'utente da controllare",
+                        button: "MONITORA UTENTE",
+                        loading: "Monitoraggio..."
+                    },
+                    list: {
+                        title: "Lista Addon ({{count}})",
+                        saveButton: "Salva Ordine e Modifiche su Stremio",
+                        addPlaceholder: "Incolla l'URL del manifesto addon (https://.../manifest.json)",
+                        addButton: "Aggiungi",
+                        checkStatusButton: "Verifica Stato Addon",
+                        noResults: "Nessun addon corrisponde alla tua ricerca.",
+                        noAddons: "Nessun addon trovato per questo account.",
+                        logoutButton: "LOGOUT"
+                    },
+                    backup: {
+                        title: "Gestione Backup",
+                        exportButton: "Esporta Backup (.json)",
+                        importButton: "Importa Backup (.json)"
+                    },
+                    search: {
+                        placeholder: "🔍 Cerca addon per nome..."
+                    },
+                    actions: {
+                        undo: "Annulla ultima azione",
+                        undoLabel: "Annulla",
+                        redo: "Ripristina ultima azione",
+                        redoLabel: "Ripristina"
+                    },
+                    filters: {
+                        all: "Tutti",
+                        enabled: "Attivi",
+                        disabled: "Disattivati",
+                        errors: "Con Errori"
+                    },
+                    addon: {
+                        statusTitle: "Stato: {{status}}",
+                        editTitle: "Modifica Nome",
+                        saveButton: "Salva",
+                        noDescription: "Nessuna descrizione",
+                        toggleTitle: "Abilita/Disabilita Addon",
+                        configureTitle: "Configura Addon",
+                        copyTitle: "Copia URL Manifesto",
+                        moveTopTitle: "Sposta in Cima",
+                        moveBottomTitle: "Sposta in Fondo",
+                        moveUpTitle: "Sposta Su",
+                        moveDownTitle: "Sposta Giù",
+                        removeTitle: "Rimuovi"
+                    },
+                    sidebar: {
+                        infoTitle: "Info Rapide",
+                        refreshLog: "Aggiorna Log",
+                        account: "Account",
+                        addons: "Addons",
+                        active: "attivi",
+                        logTitle: "Log Attività Recenti"
+                    },
+                    logs: {
+                        login_success: "Login effettuato.",
+                        addon_save_success: "✅ Addon salvati su Stremio.",
+                        addon_add: "➕ Aggiunto: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_remove: "➖ Rimosso: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_move: "🔃 Spostato <span class=\"log-details\">\"{{name}}\"</span> verso {{direction}}.",
+                        addon_rename: "✏️ Rinominato: <span class=\"log-details\">\"{{newName}}\"</span>",
+                        backup_export: "📤 Backup esportato.",
+                        backup_import: "📥 Importato backup con <span class=\"log-details\">{{count}} addon</span>.",
+                        status_check: "📡 Avviata verifica stato.",
+                        addon_enabled: "🟢 Abilitato: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_disabled: "🔴 Disabilitato: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_configure: "⚙️ Aperta config per <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_copy_url: "📋 Copiato URL per <span class=\"log-details\">\"{{name}}\"</span>",
+                        noActivity: "Nessuna attività recente.",
+                        loading: "Caricamento log..."
+                    },
+                    footer: {
+                        copyright: "© Stremio Console",
+                        skin: "Cyberpunk skin • by Luca",
+                        language: "Lingua"
+                    }
+                },
+                en: {
+                    meta: { title: "STREMIO | ADDON COMMAND CONSOLE" },
+                    h1: "STREMIO | ADDON COMMAND CONSOLE",
+                    subtitle: {
+                        login: "Enter your Stremio account credentials to log in",
+                        monitoring: "Monitoring Mode active",
+                        loggedIn: "Quick console to manage, sort, and save addons"
+                    },
+                    login: {
+                        title: "User Login",
+                        emailPlaceholder: "Stremio E-mail",
+                        passwordPlaceholder: "Stremio Password",
+                        button: "LOGIN",
+                        loading: "Logging in..."
+                    },
+                    monitor: {
+                        title: "Monitoring Mode",
+                        keyPlaceholder: "Your Monitoring Key",
+                        emailPlaceholder: "User E-mail to monitor",
+                        button: "MONITOR USER",
+                        loading: "Monitoring..."
+                    },
+                    list: {
+                        title: "Addon List ({{count}})",
+                        saveButton: "Save Order and Changes to Stremio",
+                        addPlaceholder: "Paste addon manifest URL (https://.../manifest.json)",
+                        addButton: "Add",
+                        checkStatusButton: "Check Addon Status",
+                        noResults: "No addons match your search.",
+                        noAddons: "No addons found for this account.",
+                        logoutButton: "LOGOUT"
+                    },
+                    backup: {
+                        title: "Backup Management",
+                        exportButton: "Export Backup (.json)",
+                        importButton: "Import Backup (.json)"
+                    },
+                    search: {
+                        placeholder: "🔍 Search addons by name..."
+                    },
+                    actions: {
+                        undo: "Undo last action",
+                        undoLabel: "Undo",
+                        redo: "Redo last action",
+                        redoLabel: "Redo"
+                    },
+                    filters: {
+                        all: "All",
+                        enabled: "Enabled",
+                        disabled: "Disabled",
+                        errors: "With Errors"
+                    },
+                    addon: {
+                        statusTitle: "Status: {{status}}",
+                        editTitle: "Edit Name",
+                        saveButton: "Save",
+                        noDescription: "No description",
+                        toggleTitle: "Enable/Disable Addon",
+                        configureTitle: "Configure Addon",
+                        copyTitle: "Copy Manifest URL",
+                        moveTopTitle: "Move to Top",
+                        moveBottomTitle: "Move to Bottom",
+                        moveUpTitle: "Move Up",
+                        moveDownTitle: "Move Down",
+                        removeTitle: "Remove"
+                    },
+                    sidebar: {
+                        infoTitle: "Quick Info",
+                        refreshLog: "Refresh Log",
+                        account: "Account",
+                        addons: "Addons",
+                        active: "active",
+                        logTitle: "Recent Activity Log"
+                    },
+                    logs: {
+                        login_success: "Login successful.",
+                        addon_save_success: "✅ Addons saved to Stremio.",
+                        addon_add: "➕ Added: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_remove: "➖ Removed: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_move: "🔃 Moved <span class=\"log-details\">\"{{name}}\"</span> {{direction}}.",
+                        addon_rename: "✏️ Renamed: <span class=\"log-details\">\"{{newName}}\"</span>",
+                        backup_export: "📤 Exported backup.",
+                        backup_import: "📥 Imported backup with <span class=\"log-details\">{{count}} addons</span>.",
+                        status_check: "📡 Started status check.",
+                        addon_enabled: "🟢 Enabled: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_disabled: "🔴 Disabled: <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_configure: "⚙️ Opened config for <span class=\"log-details\">\"{{name}}\"</span>",
+                        addon_copy_url: "📋 Copied URL for <span class=\"log-details\">\"{{name}}\"</span>",
+                        noActivity: "No recent activity.",
+                        loading: "Loading logs..."
+                    },
+                    footer: {
+                        copyright: "© Stremio Console",
+                        skin: "Cyberpunk skin • by Luca",
+                        language: "Language"
+                    }
+                }
+            };
+
+            // Funzione di traduzione (computed)
+            const t = computed(() => {
+                return (key, interpolations = {}) => {
+                    const keys = key.split('.');
+                    let res = translations[lang.value];
+                    for (const k of keys) {
+                        if (res === undefined) {
+                            res = undefined;
+                            break;
+                        };
+                        res = res[k];
+                    }
+                    let translation = res || key;
+                    
+                    // Gestisce interpolazioni come {{count}}
+                    Object.entries(interpolations).forEach(([varName, value]) => {
+                        translation = translation.replace(new RegExp(`{{${varName}}}`, 'g'), value);
+                    });
+
+                    return translation;
+                }
+            });
+            
+            // Watcher per cambiare la lingua del documento e il titolo
+            watch(lang, (newLang) => {
+                document.documentElement.lang = newLang;
+                document.title = t.value('meta.title');
+            });
+            
+            onMounted(() => {
+                document.title = t.value('meta.title');
+            });
+            // --- Fine Gestione Lingua
 
             const mapAddon = (addon) => ({
                 ...addon, isEditing: false, newLocalName: addon.manifest.name, status: 'unchecked',
@@ -521,6 +928,51 @@
                 const lowerCaseQuery = searchQuery.value.toLowerCase();
                 return filtered.filter(addon => addon.manifest.name.toLowerCase().includes(lowerCaseQuery));
             });
+            
+            // Computed property con getter/setter per abilitare drag-and-drop su liste filtrate.
+            const draggableList = computed({
+                get() {
+                    return filteredAddons.value;
+                },
+                set(reorderedFilteredList) {
+                    const filteredUrlsSet = new Set(reorderedFilteredList.map(a => a.transportUrl));
+                    
+                    const newFullList = [];
+                    const itemsToReinsert = [...reorderedFilteredList];
+
+                    addons.value.forEach(originalAddon => {
+                        if (filteredUrlsSet.has(originalAddon.transportUrl)) {
+                            // Questo item era visibile e parte dell'operazione di drag.
+                            // Aggiungeremo gli item riordinati in sequenza dopo.
+                        } else {
+                            // Questo item non era visibile, mantienilo.
+                            newFullList.push(originalAddon);
+                        }
+                    });
+
+                    // Reinserisci gli item trascinati in base al loro nuovo ordine relativo
+                    const originalFilteredIndices = addons.value
+                        .map((addon, index) => filteredUrlsSet.has(addon.transportUrl) ? index : -1)
+                        .filter(index => index !== -1);
+                    
+                    if (originalFilteredIndices.length === reorderedFilteredList.length) {
+                        reorderedFilteredList.forEach((addon, i) => {
+                            newFullList.splice(originalFilteredIndices[i], 0, addon);
+                        });
+                        addons.value = newFullList;
+                    } else {
+                        // Fallback per sicurezza
+                        console.error("Mismatch durante il riordinamento, la lista potrebbe essere errata.");
+                        addons.value = reorderedFilteredList.concat(newFullList);
+                    }
+                }
+            });
+            
+            // Gestore per quando un'operazione di drag è completata.
+            const onDragEnd = () => {
+                recordHistory();
+                logAction('addon_move', { name: 'lista', direction: 'riordinata' });
+            };
 
             const logAction = async (type, payload = {}) => {
                 activityLogs.value.unshift({ type, payload, timestamp: new Date().toISOString() });
@@ -545,6 +997,8 @@
                     successMessage.value = `MONITORAGGIO: Dati per ${targetEmail.value} caricati.`;
                 } catch (err) { error.value = "ERRORE MONITORAGGIO: " + err.message; } finally { isLoading.value = false; }
             };
+
+            // ========== RIMOSSE FUNZIONI DI ORDINAMENTO ==========
 
             const exportBackup = () => {
                 if (addons.value.length === 0) { error.value = "Nessun addon da esportare."; return; }
@@ -687,7 +1141,12 @@
             };
 
             const beforeUnloadHandler = (event) => { if (hasUnsavedChanges.value) { event.preventDefault(); event.returnValue = ''; } };
-            onMounted(() => window.addEventListener('beforeunload', beforeUnloadHandler));
+            // Aggiunto 'watch' all'import Vue
+            onMounted(() => {
+                window.addEventListener('beforeunload', beforeUnloadHandler);
+                document.documentElement.lang = lang.value; // Imposta lingua iniziale
+                document.title = t.value('meta.title'); // Imposta titolo iniziale
+            });
             onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnloadHandler));
             
             return {
@@ -697,11 +1156,20 @@
                 exportBackup, triggerFileInput, handleFileImport, checkAllAddonsStatus, addNewAddon, saveOrder,
                 startEdit, finishEdit, moveUp, moveDown, moveTop, moveBottom, removeAddon,
                 toggleAddonEnabled, openConfiguration, copyManifestUrl,
-                hasUnsavedChanges, history, redoStack, undo, redo, activeFilter
+                hasUnsavedChanges, history, redoStack, undo, redo, activeFilter,
+                draggableList, onDragEnd,
+                // AGGIUNTI: 'lang' e 't' per la traduzione
+                lang, t
+                // RIMOSSI: sortByName, sortByStatus, sortByEnabled
             };
         }
-    }).mount('#app')
+    });
+
+    app.component('draggable', window.vuedraggable);
+
+    app.mount('#app');
 </script>
 
 </body>
 </html>
+
