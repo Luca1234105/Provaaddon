@@ -12,6 +12,8 @@
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://unpkg.com/vuedraggable@next/dist/vuedraggable.umd.js"></script>
+    <!-- AGGIUNTO: Libreria per comprimere/decomprimere stringhe per URL -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
 
     <style>
         /* ====== RESET & BASE ====== */
@@ -477,10 +479,20 @@
                         <div style="display:flex; gap:10px;" class="backup-actions">
                             <button @click="exportBackup" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #4CAF50, #81C784);">{{ t('backup.exportButton') }}</button>
                             <button @click="triggerFileInput" class="secondary-btn" style="flex:1;">{{ t('backup.importButton') }}</button>
-                            <input type="file" ref="fileInput" @change="handleFileImport" accept=".json" style="display: none;">
+                            <!-- AGGIUNTO: Pulsante Condividi Configurazione -->
+                            <button @click="generateShareLink" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #673AB7, #9575CD);">{{ t('backup.shareButton') }}</button>
                         </div>
                     </div>
                     
+                    <!-- AGGIUNTO: Pannello per mostrare il link di condivisione generato -->
+                    <div v-if="shareUrl" class="panel" style="margin-top:1rem; padding:12px; border-color: rgba(3,218,198,0.25);">
+                        <h3 style="margin:0 0 10px 0; color:#7FF7E1; font-family:'Orbitron',sans-serif; font-size:1.05rem;">{{ t('share.title') }}</h3>
+                        <div style="display:flex; gap:10px;" class="add-addon-panel"> <!-- riutilizzo classe per responsive -->
+                            <input type="text" :value="shareUrl" ref="shareInput" readonly style="background:rgba(0,0,0,0.2);">
+                            <button @click="copyShareLink" class="secondary-btn">{{ t('share.copyButton') }}</button>
+                        </div>
+                    </div>
+
                     <div style="margin-top:14px;">
                         <div class="panel" style="padding:10px; margin-bottom: 1rem;">
                            <input type="text" v-model="searchQuery" :placeholder="t('search.placeholder')" style="background: rgba(0,0,0,0.2);">
@@ -584,6 +596,9 @@
                                     <template v-else-if="log.type === 'addon_rename'">{{ t('logs.addon_rename', { newName: log.payload.newName }) }}</template>
                                     <template v-else-if="log.type === 'backup_export'">{{ t('logs.backup_export') }}</template>
                                     <template v-else-if="log.type === 'backup_import'">{{ t('logs.backup_import', { count: log.payload.count }) }}</template>
+                                    <!-- AGGIUNTO: Log per import da URL e generazione link -->
+                                    <template v-else-if="log.type === 'backup_import_url'">{{ t('logs.backup_import_url', { count: log.payload.count }) }}</template>
+                                    <template v-else-if="log.type === 'share_link_generated'">{{ t('logs.share_link_generated') }}</template>
                                     <template v-else-if="log.type === 'status_check'">{{ t('logs.status_check') }}</template>
                                     <template v-else-if="log.type === 'addon_toggle'">
                                         <template v-if="log.payload.enabled">🟢</template><template v-else>🔴</template>
@@ -695,7 +710,17 @@
                     backup: {
                         title: "Gestione Backup",
                         exportButton: "Esporta Backup (.json)",
-                        importButton: "Importa Backup (.json)"
+                        importButton: "Importa Backup (.json)",
+                        shareButton: "Condividi Config (URL)" // AGGIUNTO
+                    },
+                    share: { // AGGIUNTO
+                        title: "Link di Condivisione Generato",
+                        copyButton: "Copia Link",
+                        copySuccess: "Link copiato negli appunti!"
+                    },
+                    import: { // AGGIUNTO
+                        urlSuccess: "Configurazione importata da URL! {{count}} addon caricati. Clicca SALVA.",
+                        urlErrorInvalid: "Dati di configurazione nell'URL non validi o corrotti."
                     },
                     search: {
                         placeholder: "🔍 Cerca addon per nome..."
@@ -743,7 +768,11 @@
                         addon_rename: "✏️ Rinominato: <span class=\"log-details\">\"{{newName}}\"</span>",
                         backup_export: "📤 Backup esportato.",
                         backup_import: "📥 Importato backup con <span class=\"log-details\">{{count}} addon</span>.",
+                        backup_import_url: "📥 Importato da URL con <span class=\"log-details\">{{count}} addon</span>.", // AGGIUNTO
+                        share_link_generated: "🔗 Link di condivisione generato.", // AGGIUNTO
                         status_check: "📡 Avviata verifica stato.",
+                        status_check_complete: "📡 Verifica stato completata. Trovati {{errorCount}} errori.", // AGGIUNTO
+                        status_check_error: "📡 Errore durante verifica stato: {{message}}", // AGGIUNTO
                         addon_enabled: "🟢 Abilitato: <span class=\"log-details\">\"{{name}}\"</span>",
                         addon_disabled: "🔴 Disabilitato: <span class=\"log-details\">\"{{name}}\"</span>",
                         addon_configure: "⚙️ Aperta config per <span class=\"log-details\">\"{{name}}\"</span>",
@@ -792,7 +821,17 @@
                     backup: {
                         title: "Backup Management",
                         exportButton: "Export Backup (.json)",
-                        importButton: "Import Backup (.json)"
+                        importButton: "Import Backup (.json)",
+                        shareButton: "Share Config (URL)" // AGGIUNTO
+                    },
+                    share: { // AGGIUNTO
+                        title: "Generated Share Link",
+                        copyButton: "Copy Link",
+                        copySuccess: "Link copied to clipboard!"
+                    },
+                    import: { // AGGIUNTO
+                        urlSuccess: "Config imported from URL! {{count}} addons loaded. Click SAVE.",
+                        urlErrorInvalid: "Configuration data in URL is invalid or corrupt."
                     },
                     search: {
                         placeholder: "🔍 Search addons by name..."
@@ -840,7 +879,11 @@
                         addon_rename: "✏️ Renamed: <span class=\"log-details\">\"{{newName}}\"</span>",
                         backup_export: "📤 Exported backup.",
                         backup_import: "📥 Imported backup with <span class=\"log-details\">{{count}} addons</span>.",
+                        backup_import_url: "📥 Imported from URL with <span class=\"log-details\">{{count}} addons</span>.", // AGGIUNTO
+                        share_link_generated: "🔗 Share link generated.", // AGGIUNTO
                         status_check: "📡 Started status check.",
+                        status_check_complete: "📡 Status check complete. Found {{errorCount}} errors.", // AGGIUNTO
+                        status_check_error: "📡 Error during status check: {{message}}", // AGGIUNTO
                         addon_enabled: "🟢 Enabled: <span class=\"log-details\">\"{{name}}\"</span>",
                         addon_disabled: "🔴 Disabled: <span class=\"log-details\">\"{{name}}\"</span>",
                         addon_configure: "⚙️ Opened config for <span class=\"log-details\">\"{{name}}\"</span>",
@@ -885,10 +928,14 @@
                 document.title = t.value('meta.title');
             });
             
-            onMounted(() => {
-                document.title = t.value('meta.title');
-            });
             // --- Fine Gestione Lingua
+            
+            // AGGIUNTO: Ref per la configurazione importata da URL
+            const importedConfigFromUrl = ref(null);
+            // AGGIUNTO: Ref per il campo input del link di condivisione
+            const shareInput = ref(null);
+            const shareUrl = ref(null);
+
 
             const mapAddon = (addon) => ({
                 ...addon, isEditing: false, newLocalName: addon.manifest.name, status: 'unchecked',
@@ -979,7 +1026,7 @@
                 if(activityLogs.value.length > 50) activityLogs.value.pop();
             };
 
-            const fetchLogs = async () => { /* ... */ };
+            const fetchLogs = async () => { /* Implementazione rimossa per brevità */ };
             const formatLogTime = (isoString) => { if(!isoString) return ''; return new Date(isoString).toLocaleTimeString('it-IT', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); };
             
             const incrementAdminClick = () => {
@@ -993,12 +1040,27 @@
                 try {
                     const response = await fetch(`${apiBaseUrl}/api/admin/monitor`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminKey: adminKey.value, targetEmail: targetEmail.value }) });
                     const data = await response.json(); if (!response.ok || data.error) throw new Error(data.error.message || 'Accesso negato.');
-                    addons.value = data.addons.map(mapAddon); authKey.value = data.authKey; isLoggedIn.value = true; isMonitoring.value = true; 
+                    
+                    authKey.value = data.authKey; 
+                    isLoggedIn.value = true; 
+                    isMonitoring.value = true; 
                     successMessage.value = `MONITORAGGIO: Dati per ${targetEmail.value} caricati.`;
+                    
+                    // AGGIUNTO: Logica per caricare da URL dopo il login
+                    if (importedConfigFromUrl.value) {
+                        recordHistory();
+                        addons.value = importedConfigFromUrl.value.map(mapAddon);
+                        successMessage.value = t.value('import.urlSuccess', { count: addons.value.length });
+                        hasUnsavedChanges.value = true;
+                        history.value = []; // Pulisce la cronologia dopo l'import
+                        logAction('backup_import_url', { count: addons.value.length });
+                        importedConfigFromUrl.value = null; // Pulisci i dati importati
+                    } else {
+                        addons.value = data.addons.map(mapAddon); 
+                    }
+
                 } catch (err) { error.value = "ERRORE MONITORAGGIO: " + err.message; } finally { isLoading.value = false; }
             };
-
-            // ========== RIMOSSE FUNZIONI DI ORDINAMENTO ==========
 
             const exportBackup = () => {
                 if (addons.value.length === 0) { error.value = "Nessun addon da esportare."; return; }
@@ -1030,7 +1092,84 @@
                 reader.readAsText(file); event.target.value = null;
             };
 
-            const checkAllAddonsStatus = async () => { /* ... */ };
+            // ========== AGGIUNTO: Funzioni per Condivisione URL ==========
+            const generateShareLink = () => {
+                try {
+                    const data = JSON.stringify(addons.value);
+                    // Usa LZString per comprimere E codificare per URL
+                    const compressed = LZString.compressToEncodedURIComponent(data);
+                    const url = `${window.location.origin}${window.location.pathname}#config=${compressed}`;
+                    shareUrl.value = url; // Mostra il pannello
+                    logAction('share_link_generated');
+                } catch (err) {
+                    error.value = "Errore durante la creazione del link di condivisione: " + err.message;
+                }
+            };
+
+            const copyShareLink = () => {
+                if (!shareInput.value) return;
+                try {
+                    shareInput.value.select();
+                    // Fallback per 'document.execCommand'
+                    if (!navigator.clipboard) {
+                        document.execCommand('copy');
+                    } else {
+                        navigator.clipboard.writeText(shareUrl.value);
+                    }
+                    successMessage.value = t.value('share.copySuccess');
+                } catch (err) {
+                    error.value = "Impossibile copiare il link.";
+                }
+            };
+            // ========================================================
+
+            // ========== MODIFICATO: Implementazione di checkAllAddonsStatus ==========
+            const checkAllAddonsStatus = async () => {
+                isLoading.value = true;
+                successMessage.value = null; // Pulisci messaggi precedenti
+                error.value = null;
+                logAction('status_check');
+                let errorCount = 0;
+
+                const checkPromises = addons.value.map(async (addon) => {
+                    addon.status = 'checking';
+                    try {
+                        const controller = new AbortController();
+                        const timeoutId = setTimeout(() => controller.abort(), 5000); // Timeout di 5 secondi
+
+                        const response = await fetch(addon.transportUrl, { signal: controller.signal, mode: 'cors' }); // Aggiunto mode: 'cors'
+                        clearTimeout(timeoutId);
+
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        // Potremmo aggiungere un controllo sul content-type se l'URL deve restituire JSON
+                        // const contentType = response.headers.get("content-type");
+                        // if (!contentType || !contentType.includes("application/json")) {
+                        //    throw new Error('Invalid content-type');
+                        // }
+                        addon.status = 'ok';
+                    } catch (err) {
+                        console.error(`Error checking ${addon.manifest.name}:`, err);
+                        addon.status = 'error';
+                        errorCount++;
+                    }
+                });
+
+                try {
+                    await Promise.all(checkPromises);
+                    successMessage.value = t.value('logs.status_check_complete', { errorCount: errorCount });
+                    logAction('status_check_complete', { errorCount: errorCount });
+                } catch (err) {
+                    // Questo catch è improbabile che venga raggiunto con Promise.all
+                    // dato che gli errori interni sono gestiti nel map, ma è una sicurezza.
+                    error.value = t.value('logs.status_check_error', { message: err.message });
+                    logAction('status_check_error', { message: err.message });
+                } finally {
+                    isLoading.value = false;
+                }
+            };
+            // ========================================================================
             
             const toggleAddonEnabled = (addon) => { recordHistory(); logAction('addon_toggle', { name: addon.manifest.name, enabled: addon.isEnabled }); };
             
@@ -1039,7 +1178,7 @@
                 window.open(configUrl, '_blank'); logAction('addon_configure', { name: addon.manifest.name });
             };
 
-            const copyManifestUrl = async (addon) => { /* ... */ };
+            const copyManifestUrl = async (addon) => { /* Implementazione rimossa per brevità */ };
             
             const startEdit = (addon) => { addon.newLocalName = addon.manifest.name; addon.isEditing = true; };
             const finishEdit = (addon) => {
@@ -1099,7 +1238,8 @@
             const moveBottom = (addon) => moveAddon(addon, 'bottom', 'in fondo');
 
             const removeAddon = (addon) => {
-                if(confirm(`Sei sicuro di voler rimuovere "${addon.manifest.name}"?`)) {
+                // MODIFICATO: Usa la traduzione per confirm
+                if(confirm(t.value('addon.removeConfirm', { name: addon.manifest.name }))) { 
                     recordHistory();
                     const index = addons.value.indexOf(addon);
                     if (index > -1) { addons.value.splice(index, 1); successMessage.value = "Addon rimosso. Clicca su SALVA."; logAction('addon_remove', { name: addon.manifest.name }); }
@@ -1125,15 +1265,33 @@
                 try {
                     const response = await fetch(`${apiBaseUrl}/api/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.value, password: password.value }) });
                     const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Login fallito.');
-                    addons.value = data.addons.map(mapAddon);
-                    authKey.value = data.authKey; isLoggedIn.value = true;
-                    hasUnsavedChanges.value = false; history.value = []; redoStack.value = [];
-                    logAction('login_success');
+                    
+                    authKey.value = data.authKey; 
+                    isLoggedIn.value = true;
+
+                    // AGGIUNTO: Logica per caricare da URL dopo il login
+                    if (importedConfigFromUrl.value) {
+                        recordHistory();
+                        addons.value = importedConfigFromUrl.value.map(mapAddon);
+                        successMessage.value = t.value('import.urlSuccess', { count: addons.value.length });
+                        hasUnsavedChanges.value = true;
+                        history.value = []; // Pulisce la cronologia dopo l'import
+                        logAction('backup_import_url', { count: addons.value.length });
+                        importedConfigFromUrl.value = null; // Pulisci i dati importati
+                    } else {
+                        // Carica la configurazione normale dall'account
+                        addons.value = data.addons.map(mapAddon);
+                        hasUnsavedChanges.value = false; 
+                        history.value = [];
+                        logAction('login_success');
+                    }
+
                 } catch (err) { error.value = err.message; } finally { isLoading.value = false; }
             };
 
             const logout = () => {
-                if (hasUnsavedChanges.value && !confirm("Hai modifiche non salvate. Sei sicuro di voler uscire?")) return;
+                 // MODIFICATO: Usa la traduzione per confirm
+                if (hasUnsavedChanges.value && !confirm(t.value('logoutConfirm'))) return;
                 email.value = ''; password.value = ''; authKey.value = null; addons.value = [];
                 isLoggedIn.value = false; isMonitoring.value = false; error.value = null;
                 successMessage.value = null; showAdminInput.value = false; activityLogs.value = [];
@@ -1146,6 +1304,26 @@
                 window.addEventListener('beforeunload', beforeUnloadHandler);
                 document.documentElement.lang = lang.value; // Imposta lingua iniziale
                 document.title = t.value('meta.title'); // Imposta titolo iniziale
+
+                // AGGIUNTO: Logica per leggere la config dall'URL al caricamento
+                if (window.location.hash.startsWith('#config=')) {
+                    const compressed = window.location.hash.substring(8); // Rimuove #config=
+                    try {
+                        // Usa LZString per decomprimere
+                        const data = LZString.decompressFromEncodedURIComponent(compressed);
+                        if (!data) throw new Error(t.value('import.urlErrorInvalid'));
+                        
+                        const importedData = JSON.parse(data);
+                        if (Array.isArray(importedData)) {
+                            importedConfigFromUrl.value = importedData; // Salva per usarlo DOPO il login
+                            // Non impostare successMessage qui, ma dopo il login
+                        }
+                        window.location.hash = ''; // Pulisce l'hash per evitare ricaricamenti
+                    } catch (e) {
+                        error.value = "Errore importazione da URL: " + e.message;
+                        window.location.hash = ''; // Pulisce l'hash
+                    }
+                }
             });
             onBeforeUnmount(() => window.removeEventListener('beforeunload', beforeUnloadHandler));
             
@@ -1159,8 +1337,9 @@
                 hasUnsavedChanges, history, redoStack, undo, redo, activeFilter,
                 draggableList, onDragEnd,
                 // AGGIUNTI: 'lang' e 't' per la traduzione
-                lang, t
-                // RIMOSSI: sortByName, sortByStatus, sortByEnabled
+                lang, t,
+                // AGGIUNTI: Ref e funzioni per la condivisione URL
+                shareUrl, shareInput, generateShareLink, copyShareLink, importedConfigFromUrl
             };
         }
     });
