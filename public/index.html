@@ -6,26 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <!-- Il titolo ora è dinamico in base alla lingua -->
     <title>{{ t('meta.title') }}</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://unpkg.com/vuedraggable@next/dist/vuedraggable.umd.js"></script>
     <!-- Libreria per comprimere/decomprimere stringhe per URL -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
-
     <style>
         /* ====== RESET & BASE ====== */
         * { box-sizing: border-box; }
-        html, body { height: 100%; margin: 0; font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: #08020a; color: #E6E6E6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
-
+        html, body { height: 100%; margin: 0; font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; background: #08020a; color: #E6E6E6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
         /* ====== BACKGROUND CANVAS (full-screen) ====== */
         #bgCanvas { position: fixed; inset: 0; z-index: 0; width: 100%; height: 100%; display: block; pointer-events: none; background: radial-gradient(ellipse at center, rgba(12,6,20,0.6), rgba(0,0,0,1)); }
-
         /* subtle starfield overlay */
         .grain { position: fixed; inset: 0; background-image: radial-gradient(rgba(255,255,255,0.03) 0.5px, transparent 0.5px); background-size: 3px 3px; opacity: 0.30; z-index: 1; pointer-events: none; mix-blend-mode: screen; filter: blur(0.2px); }
-
         /* ====== APP CONTAINER (glass card) ====== */
         #app {
             position: relative;
@@ -44,7 +38,6 @@
             gap: 1.5rem;
             overflow: hidden; /* Modificato: Nasconde overflow orizzontale */
         }
-
         /* Layout a due colonne per schermi più grandi */
         @media (min-width: 960px) { /* Aumentato leggermente il breakpoint */
              #app {
@@ -73,7 +66,6 @@
                  overflow-y: auto; /* Scroll interno se necessario */
              }
          }
-
         /* ====== HEADER ====== */
         header { display:flex; flex-direction: column; gap:6px; position: relative; }
         h1 { font-family: 'Orbitron', sans-serif; color: #BB86FC; font-size: 1.9rem; margin: 0; letter-spacing: 0.6px; display: flex; align-items: center; gap: 12px; user-select: none; }
@@ -81,15 +73,12 @@
         .subtitle { font-size: 0.95rem; color: rgba(230,230,230,0.75); margin-top: 2px; }
         .instructions-btn { position: absolute; top: 0px; right: 0px; background: rgba(187,134,252,0.1); border: 1px solid rgba(187,134,252,0.2); color: #BB86FC; width: 36px; height: 36px; border-radius: 50%; font-size: 1.3rem; font-weight: bold; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; box-shadow: 0 0 10px rgba(187,134,252,0.1); }
         .instructions-btn:hover { background: rgba(187,134,252,0.2); box-shadow: 0 0 15px rgba(187,134,252,0.3); transform: scale(1.05); }
-
         /* forms and panels */
         .panel { background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.02)); border-radius: 12px; padding: 16px; border: 1px solid rgba(187,134,252,0.06); box-shadow: 0 6px 18px rgba(0,0,0,0.6); min-height: auto; /* Modificato: altezza automatica */}
-
         /* inputs & buttons (neon) */
         input[type="email"], input[type="password"], input[type="text"] { width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.06); background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); color: #E9E9F2; font-size: 0.95rem; outline: none; transition: box-shadow .12s, transform .06s; }
         input::placeholder { color: rgba(230,230,230,0.35); }
         input:focus { box-shadow: 0 0 18px rgba(187,134,252,0.18); border-color: rgba(187,134,252,0.35); transform: translateY(-1px); }
-
         .primary-btn { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px; padding: 12px 14px; background: linear-gradient(90deg, rgba(187,134,252,1), rgba(3,218,198,0.9)); border-radius: 10px; border: none; color: #060606; font-weight: 700; font-size: 0.95rem; cursor: pointer; transition: transform .08s, box-shadow .12s, filter .12s; box-shadow: 0 6px 22px rgba(99,37,199,0.18), 0 0 8px rgba(3,218,198,0.06); }
         .primary-btn:hover:not(:disabled) { transform: translateY(-3px) scale(1.01); filter: drop-shadow(0 8px 26px rgba(187,134,252,0.12)); }
         .primary-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
@@ -97,31 +86,37 @@
         .unsaved-indicator { display: inline-block; width: 8px; height: 8px; background-color: #ff4d4d; border-radius: 50%; margin-right: 8px; box-shadow: 0 0 10px #ff4d4d, 0 0 20px #ff4d4d; animation: pulse-indicator 1.5s infinite; }
         @keyframes pulse-glow { 50% { filter: drop-shadow(0 0 12px rgba(187,134,252,0.25)); } }
         @keyframes pulse-indicator { 50% { transform: scale(1.2); opacity: 0.7; } }
-
         .secondary-btn { padding: 9px 12px; border-radius: 8px; border: none; background: linear-gradient(90deg, rgba(33,150,243,1), rgba(3,218,198,0.85)); color: #fff; font-weight: 700; cursor: pointer; transition: transform .08s; }
         .secondary-btn:hover:not(:disabled) { transform: translateY(-2px); }
         .danger-btn { background: linear-gradient(90deg, rgba(207,102,121,1), rgba(255,112,140,0.9)); color: #080808; font-weight: 800; }
         .danger-btn:hover:not(:disabled) { filter: brightness(1.1); }
-
         /* addon list */
         .addon-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; padding-right: 5px; /* Spazio a destra */ }
         .addon-list:grabbing { cursor: grabbing; }
-        .addon-item { display: flex; align-items: center; gap: 12px; padding: 12px; border-radius: 12px; background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); border-left: 4px solid rgba(187,134,252,0.85); transition: transform .2s, box-shadow .2s, opacity .3s; box-shadow: 0 6px 18px rgba(0,0,0,0.6); }
+        .addon-item {
+            display: flex;
+            flex-wrap: wrap; /* AGGIUNTO: Permette ai dettagli di andare a capo */
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+            border-left: 4px solid rgba(187,134,252,0.85);
+            transition: transform .2s, box-shadow .2s, opacity .3s;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
+        }
         .addon-item:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(11,8,20,0.7); }
         .addon-item.disabled { opacity: 0.5; border-left-color: #555; filter: grayscale(50%); }
         .addon-item.ghost-class { opacity: 0.5; background: rgba(187,134,252,0.08); border: 1px dashed rgba(187,134,252,0.4); box-shadow: none; }
         .addon-item.sortable-chosen { cursor: grabbing; transform: translateY(-4px) scale(1.02); box-shadow: 0 16px 45px rgba(11,8,20,0.8); }
-
         .addon-icon { width:56px; height:56px; border-radius:10px; object-fit:cover; background:linear-gradient(135deg, rgba(255,255,255,0.02), rgba(0,0,0,0.04)); display:block; flex-shrink: 0; }
         .addon-icon-placeholder { width: 56px; height: 56px; flex-shrink: 0; background: rgba(255,255,255,0.01); border-radius: 10px; }
         .drag-handle { flex: 1; display: flex; align-items: center; gap: 12px; min-width: 0; cursor: grab; padding: 5px; }
         @media (max-width: 768px) { .drag-handle { cursor: default; } }
         .sortable-chosen .drag-handle { cursor: grabbing; }
-
         .addon-details { flex: 1; min-width: 0; }
         .addon-details h3 { margin: 0; color: #F3F3FF; font-weight: 700; font-size: 1.02rem; font-family: 'Orbitron', sans-serif; display:flex; align-items:center; gap:8px; word-break: break-word; } /* Aggiunto word-break */
         .addon-details p { margin: 4px 0 0 0; color: rgba(230,230,230,0.65); font-size: 0.9rem; line-height:1.25; max-width: 100%; word-break: break-word;} /* Tolto max-width fisso */
-
         /* controls */
         .controls-container { display:flex; align-items:center; gap:8px; margin-left:auto; flex-shrink: 0; /* Impedisce ai controlli di restringersi troppo */}
         .move-controls { display:grid; grid-template-columns: 1fr 1fr; gap:4px; width:74px; }
@@ -132,12 +127,10 @@
         .controls-btn[title*="Fondo"], .controls-btn[title*="Bottom"] { color: #FFB347; }
         .controls-btn[title*="Cima"]:hover:not(:disabled), .controls-btn[title*="Top"]:hover:not(:disabled) { box-shadow: 0 4px 10px rgba(127, 255, 212, 0.2), inset 0 0 5px rgba(255,255,255,0.03); color: #AFFFFF; }
         .controls-btn[title*="Fondo"]:hover:not(:disabled), .controls-btn[title*="Bottom"]:hover:not(:disabled) { box-shadow: 0 4px 10px rgba(255, 179, 71, 0.2), inset 0 0 5px rgba(255,255,255,0.03); color: #FFCA7A; }
-
         .icon-btn { background: rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.03); color: #EDEDED; width: 34px; height: 34px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.15s ease-out; }
         .icon-btn:hover:not(:disabled) { transform: translateY(-2px); background: rgba(30,30,30,0.6); box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
         .remove-btn { background: linear-gradient(90deg, rgba(207,102,121,1), rgba(255,112,140,0.9)); border-radius:10px; padding:8px 12px; border:none; color:#080808; font-weight:800; cursor:pointer; height:38px; width:48px; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: all 0.15s ease-out; }
         .remove-btn:hover:not(:disabled) { transform: translateY(-2px) scale(1.05); box-shadow: 0 6px 15px rgba(255,112,140,0.2); }
-
         /* status indicator */
         .status-indicator { width: 10px; height: 10px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px 1px var(--status-color, #888); transition: background-color .3s; flex-shrink: 0; /* Impedisce che si restringa */}
         .status-unchecked { --status-color: #808080; background-color: #808080; }
@@ -146,7 +139,6 @@
         .status-checking { --status-color: #BB86FC; background-color: #BB86FC; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(0.9); opacity: 0.7; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(0.9); opacity: 0.7; } }
         .error-details-icon { font-size: 0.9rem; margin-left: 5px; color: rgba(255,255,255,0.7); cursor: help; flex-shrink: 0; }
-
         /* Toggle Switch */
         .toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; flex-shrink: 0; }
         .toggle-switch input { opacity: 0; width: 0; height: 0; }
@@ -154,15 +146,12 @@
         .slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #03DAC6; }
         input:checked + .slider:before { transform: translateX(20px); }
-
         .edit-name-input { padding:8px 10px; border-radius:8px; border:1px solid rgba(187,134,252,0.12); background:#121016; color:#fff; }
         .save-edit-btn { padding:7px 10px; border-radius:8px; border:none; background: linear-gradient(90deg,#03DAC6,#7CFFEF); font-weight:700; cursor:pointer; }
-
         /* Filtri & Azioni */
         .actions-panel { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 10px; padding: 10px; margin-bottom: 1rem; }
         .filter-group .secondary-btn, .action-group .secondary-btn { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05); }
         .filter-group .secondary-btn.active { background: linear-gradient(90deg, rgba(33,150,243,1), rgba(3,218,198,0.85)); box-shadow: 0 0 10px rgba(3,218,198,0.2); }
-
         /* Pannello Statistiche */
         .stats-panel { background: linear-gradient(145deg, rgba(12,6,20,0.88), rgba(6,3,12,0.85)); border-radius: 14px; padding: 20px; border: 1px solid rgba(140, 60, 255, 0.18); box-shadow: 0 12px 40px rgba(99,37,199,0.12), inset 0 1px 0 rgba(255,255,255,0.02); backdrop-filter: blur(10px) saturate(110%); color: #E8E8FF; height: fit-content; /* Adatta altezza al contenuto */ }
         .stats-panel h3 { margin: 0 0 15px 0; color: #B9A3FF; font-family: 'Orbitron', sans-serif; font-size: 1.1rem; border-bottom: 1px solid rgba(187,134,252,0.15); padding-bottom: 8px; }
@@ -173,18 +162,14 @@
         .stat-bar-container { width: 100%; height: 6px; background: rgba(255,255,255,0.05); border-radius: 3px; overflow: hidden; margin-top: 15px; }
         .stat-bar { height: 100%; border-radius: 3px; transition: width 0.5s ease-out; }
         .stat-bar.enabled { background: #03DAC6; } .stat-bar.errors { background: #CF6679; } .stat-bar.disabled { background: #666; }
-
         /* Footer (ex sidebar) */
         .footer { display:flex; align-items:center; justify-content:space-between; gap:12px; color: rgba(230,230,230,0.5); font-size:0.86rem; margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgba(187,134,252,0.1); flex-wrap: wrap; }
-
         /* Bulk Actions */
         .bulk-actions-panel { background: linear-gradient(180deg, rgba(33,150,243,0.1), rgba(3,218,198,0.05)); border: 1px solid rgba(3,218,198,0.15); border-radius: 10px; padding: 10px 14px; margin-bottom: 1rem; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
         .bulk-actions-panel strong { color: #7FF7E1; font-size: 0.95rem; }
         .bulk-actions-panel .secondary-btn { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.08); padding: 6px 10px; font-size: 0.9rem; }
         .bulk-actions-panel .remove-selected-btn { background: linear-gradient(90deg, rgba(207,102,121,0.8), rgba(255,112,140,0.7)); }
-
         .addon-checkbox { margin-right: 8px; transform: scale(1.2); accent-color: #BB86FC; cursor: pointer; user-select: none; touch-action: manipulation; flex-shrink: 0; }
-
         /* Search Toggle */
         .list-controls-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; gap: 10px; /* Aumentato leggermente il margine */}
         .search-container { position: relative; display: flex; align-items: center; }
@@ -193,13 +178,11 @@
         .search-input-container { position: relative; width: 0; opacity: 0; visibility: hidden; transition: width 0.3s ease-in-out, opacity 0.3s ease-in-out, visibility 0.3s; order: 1; overflow: hidden; }
         .search-input-container.visible { width: 250px; opacity: 1; visibility: visible; }
         .search-input-container input { background: linear-gradient(180deg, rgba(14,9,18,0.85), rgba(16,10,22,0.75)); border: 1px solid rgba(187,134,252,0.2); box-shadow: 0 0 15px rgba(187,134,252,0.1); height: 40px; width: 100%; padding-left: 10px; }
-
         /* Pulsante Verifica Stato - Aggiunto stile per spaziatura */
         .check-status-button-container {
             margin-top: 1rem; /* Aggiunto margine sopra */
             margin-bottom: 1.5rem; /* Aumentato margine sotto */
         }
-
         /* Modal (Istruzioni e Conferma) */
         .modal-overlay { position: fixed; inset: 0; background: rgba(8, 2, 10, 0.85); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .modal-overlay.visible { opacity: 1; visibility: visible; }
@@ -214,13 +197,11 @@
         .modal-content code { background: rgba(0,0,0,0.3); padding: 2px 5px; border-radius: 4px; font-size: 0.9em; color: #FFA500; }
         .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 1.5rem; border-top: 1px solid rgba(187,134,252,0.1); padding-top: 1rem; }
         .modal-actions .secondary-btn { background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.1); }
-
         /* Loader Globale */
         .global-loader { position: fixed; inset: 0; background: rgba(8, 2, 10, 0.75); backdrop-filter: blur(4px); z-index: 9998; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.3s, visibility 0.3s; }
         .global-loader.visible { opacity: 1; visibility: visible; }
         .loader-spinner { width: 50px; height: 50px; border: 5px solid rgba(187, 134, 252, 0.3); border-top-color: #BB86FC; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
         /* Stili Toast */
         #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1001; display: flex; flex-direction: column; gap: 10px; width: 300px; }
         .toast { background: linear-gradient(135deg, rgba(30, 30, 40, 0.9), rgba(20, 20, 30, 0.85)); color: #E6E6E6; padding: 12px 16px; border-radius: 8px; border-left: 4px solid; box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); font-size: 0.9rem; animation: slideInRight 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards; opacity: 1; }
@@ -228,7 +209,74 @@
         @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
         @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: -10px; border: 0;} }
         .toast-leave-active { transition: all 0.5s ease-in; } .toast-leave-to { opacity: 0; transform: translateX(100%); }
-
+        /* ====== ▼▼▼ STILI DETTAGLI ESPANDIBILI ▼▼▼ ====== */
+        .details-toggle-btn {
+            font-size: 0.8rem; /* Rimpicciolisce la freccia */
+            transition: all 0.2s ease-out;
+        }
+        .details-toggle-btn.expanded {
+            transform: translateY(-2px) rotate(90deg); /* Ruota la freccia */
+            background: rgba(187, 134, 252, 0.2); /* Evidenzia quando aperto */
+            box-shadow: 0 4px 10px rgba(187,134,252,0.15);
+        }
+        .addon-extra-details {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-in, margin-top 0.4s ease-out, padding 0.4s ease-out;
+            visibility: hidden;
+            flex-basis: 100%;
+            width: 100%;
+            margin-top: 0;
+            padding: 0 16px;
+            border-top: 1px solid rgba(187, 134, 252, 0.0);
+            background: rgba(0,0,0,0.15);
+            border-radius: 0 0 12px 12px;
+        }
+        .addon-extra-details.visible {
+            max-height: 500px;
+            opacity: 1;
+            visibility: visible;
+            margin-top: 12px;
+            padding: 12px 16px 16px 16px;
+            border-top-color: rgba(187, 134, 252, 0.1);
+        }
+        .addon-extra-details h4 {
+            font-family: 'Orbitron', sans-serif;
+            color: #7FF7E1;
+            margin: 0 0 10px 0;
+            font-size: 1rem;
+            border-bottom: 1px solid rgba(127, 247, 225, 0.15);
+            padding-bottom: 5px;
+        }
+        .addon-extra-details ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            font-size: 0.88rem;
+            color: rgba(230,230,230,0.8);
+        }
+        .addon-extra-details li {
+            margin-bottom: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            word-break: break-all;
+        }
+        .addon-extra-details li strong {
+            color: #B9A3FF;
+            flex-shrink: 0;
+        }
+        @media (max-width: 768px) {
+             .addon-extra-details {
+                padding-left: 10px;
+                padding-right: 10px;
+             }
+             .addon-extra-details.visible {
+                padding: 12px 10px 16px 10px;
+             }
+        }
+        /* ====== ▲▲▲ FINE STILI DETTAGLI ESPANDIBILI ▲▲▲ ====== */
         /* ====== Pulsante Salva Flottante (AGGIUNTO) ====== */
         .floating-save-btn {
             position: fixed;
@@ -270,45 +318,36 @@
             height: 10px;
             margin: 0;
         }
-
-
         /* ====== RESPONSIVE ====== */
         @media (max-width: 960px) { /* Modificato breakpoint */
              #app { grid-template-columns: 1fr; grid-template-rows: auto auto; /* Torna a righe automatiche */}
              .stats-panel-container { grid-column: 1 / -1; order: 1; position: static; height: auto; /* Rimuovi sticky */}
              .main-content { grid-column: 1 / -1; order: 2; overflow-y: visible; padding-right: 0; } /* Rimuovi scroll e padding */
          }
-
         @media (max-width: 768px) {
             #app { width: calc(100% - 24px); margin: 12px auto; padding: 1.2rem; }
             header { gap: 4px; }
             h1 { font-size: 1.4rem; gap: 8px; }
             h1::after { display: none; }
             .subtitle { font-size: 0.85rem; }
-
             .add-addon-panel, .backup-actions { flex-direction: column; align-items: stretch; }
             .backup-actions .secondary-btn { width: 100%; }
-
             .actions-panel { flex-direction: column; align-items: stretch; gap: 16px; }
             .filter-group, .action-group { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
             .actions-panel .secondary-btn { flex-grow: 1; }
-
             .footer { flex-direction: column; align-items: center; text-align: center; gap: 6px; }
             .bulk-actions-panel { flex-direction: column; align-items: stretch; }
             .bulk-actions-panel strong { text-align: center; margin-bottom: 5px; }
-
             .list-controls-header { flex-direction: row; gap: 10px; align-items: center; /* Modificato: row e align */ }
             .search-container { flex-grow: 1; /* Fa espandere la ricerca */}
             .search-icon-btn { margin-left: auto; /* Spinge a destra */}
             .search-input-container.visible { width: calc(100% - 50px); max-width: none; }
             /* Rimosse regole complesse per search-input-container su mobile */
-
             .modal-content { padding: 1.5rem; }
             .modal-content h2 { font-size: 1.4rem; }
             .modal-content h3 { font-size: 1rem; }
             .modal-content p, .modal-content ul { font-size: 0.9rem; }
             .modal-close-btn { top: 10px; right: 10px; }
-
             .addon-item { flex-direction: column; align-items: flex-start; gap: 14px; position: relative; padding-left: 40px; }
             .addon-checkbox { position: absolute; left: 12px; top: 16px; }
             .drag-handle { width: 100%; gap: 10px; }
@@ -320,27 +359,28 @@
             /* AGGIUNTO: Adatta pulsante flottante per mobile */
             .floating-save-btn { bottom: 20px; right: 20px; width: 50px; height: 50px; font-size: 1.3rem; }
         }
-
         /* MODIFICATO: Spostato il selettore lingua nell'header */
         .lang-switcher { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
         .lang-switcher .secondary-btn { padding: 4px 8px; font-size: 0.8rem; background: none; border: 1px solid rgba(255,255,255,0.1); }
         .lang-switcher .secondary-btn.active { background: linear-gradient(90deg, rgba(33,150,243,1), rgba(3,218,198,0.85)); border-color: transparent; color: #fff; }
         @media (max-width: 768px) { .lang-switcher { margin-left: 0; margin-top: 10px; } }
+        /* Miglioramenti: Aggiunta transizione per elementi interattivi */
+        button, input { transition: all 0.2s ease; }
+        /* Miglioramenti: Migliorato contrasto per accessibilità */
+        .subtitle, .stat-item strong { color: #F0F0F0; }
+        /* Miglioramenti: Aggiunta ombra focus per accessibilità */
+        button:focus, input:focus { outline: none; box-shadow: 0 0 0 3px rgba(187,134,252,0.5); }
     </style>
 </head>
 <body>
-
     <canvas id="bgCanvas"></canvas>
     <div class="grain" aria-hidden="true"></div>
-
     <!-- Aggiunto :lang="lang" per accessibilità -->
     <div id="app" :lang="lang">
-
         <!-- Loader Globale -->
         <div :class="['global-loader', { visible: isLoading }]">
             <div class="loader-spinner"></div>
         </div>
-
         <!-- Container per Toast -->
         <div id="toast-container">
             <transition-group name="toast" tag="div">
@@ -349,13 +389,12 @@
                 </div>
             </transition-group>
         </div>
-
         <header>
             <h1 @click="incrementAdminClick">{{ t('h1') }}</h1>
             <div class="subtitle" v-if="!isLoggedIn && !isMonitoring">{{ t('subtitle.login') }}</div>
             <div class="subtitle" v-else-if="isMonitoring">{{ t('subtitle.monitoring') }}</div>
             <div class="subtitle" v-else-if="isLoggedIn">{{ t('subtitle.loggedIn') }}</div>
-            
+           
             <!-- ▼▼▼ SELETTORE LINGUA SPOSTATO QUI ▼▼▼ -->
             <div class="lang-switcher">
                 <span style="font-size: 0.85rem; opacity: 0.8;">{{ t('footer.language') }}:</span>
@@ -363,10 +402,8 @@
                 <button @click="lang = 'en'" :class="['secondary-btn', {active: lang === 'en'}]">EN</button>
             </div>
             <!-- ▲▲▲ SELETTORE LINGUA SPOSTATO QUI ▲▲▲ -->
-
             <button @click="showInstructions = true" class="instructions-btn" :title="t('instructions.buttonTitle')">?</button>
         </header>
-
         <!-- Container per Pannello Statistiche (ora posizionato via Grid) -->
         <div v-if="isLoggedIn" class="stats-panel-container">
              <div class="stats-panel">
@@ -394,7 +431,6 @@
                   <div class="stat-bar-container" style="margin-top: 5px;" :title="`${((errorCount / addons.length || 0) * 100).toFixed(0)}% ${t('stats.errors')}`">
                       <div class="stat-bar errors" :style="{ width: (errorCount / addons.length || 0) * 100 + '%' }"></div>
                  </div>
-
                  <!-- Footer -->
                  <div class="footer">
                      <div>
@@ -406,7 +442,6 @@
                  </div>
              </div>
         </div>
-
         <!-- Contenuto principale (ora posizionato via Grid) -->
         <div class="main-content">
             <div class="panel" v-if="!isLoggedIn">
@@ -424,7 +459,6 @@
                     <button type="submit" class="primary-btn" :disabled="isLoading" style="background: linear-gradient(90deg,#FFA500,#FFB86C); color:#111;">{{ isLoading ? t('monitor.loading') : t('monitor.button') }}</button>
                 </form>
             </div>
-
             <div v-if="isLoggedIn">
                 <!-- Save Button -->
                 <div style="margin-bottom:12px;">
@@ -433,13 +467,11 @@
                         💾 {{ t('list.saveButton') }} <span v-if="isMonitoring">(Disabled in Monitor Mode)</span>
                     </button>
                 </div>
-
                 <!-- Add Addon Panel -->
                 <div class="panel add-addon-panel" style="display:flex; gap:10px; align-items:center; padding:12px; min-height: auto;">
                     <input type="text" v-model="newAddonUrl" :placeholder="t('list.addPlaceholder')" style="flex:1;" :disabled="isMonitoring">
                     <button @click="addNewAddon" class="secondary-btn" :disabled="isLoading || !newAddonUrl.trim() || isMonitoring">+ {{ t('list.addButton') }}</button>
                 </div>
-
                 <!-- Backup Panel -->
                 <div class="panel" style="margin-top:1rem; padding:12px; min-height: auto;">
                     <h3 style="margin:0 0 10px 0; color:#B9A3FF; font-family:'Orbitron',sans-serif; font-size:1.05rem;">{{ t('backup.title') }}</h3>
@@ -450,7 +482,6 @@
                     </div>
                     <input type="file" ref="fileInput" @change="handleFileImport" accept=".json" style="display: none;">
                 </div>
-
                 <!-- Share Link Panel -->
                 <div v-if="shareUrl" class="panel" style="margin-top:1rem; padding:12px; border-color: rgba(3,218,198,0.25); min-height: auto;">
                     <h3 style="margin:0 0 10px 0; color:#7FF7E1; font-family:'Orbitron',sans-serif; font-size:1.05rem;">{{ t('share.title') }}</h3>
@@ -459,9 +490,20 @@
                         <button @click="copyShareLink" class="secondary-btn">{{ t('share.copyButton') }}</button>
                     </div>
                 </div>
-
-                <!-- RIMOSSO: Auto-Update Panel -->
-
+                <!-- Auto-Update Panel -->
+                <div class="panel" style="margin-top:1rem; padding:12px; min-height: auto;">
+                    <h3 style="margin:0 0 10px 0; color:#B9A3FF; font-family:'Orbitron',sans-serif; font-size:1.05rem;">{{ t('autoUpdate.title') }}</h3>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <label class="toggle-switch" :title="t('autoUpdate.toggleTitle')"><input type="checkbox" v-model="autoUpdateEnabled" @change="saveAutoUpdateSettings" :disabled="isMonitoring"><span class="slider"></span></label>
+                        <select v-model="autoUpdateInterval" @change="saveAutoUpdateSettings" :disabled="!autoUpdateEnabled || isMonitoring" style="padding:8px; border-radius:8px; background:rgba(0,0,0,0.2); color:#fff; border:1px solid rgba(255,255,255,0.1);">
+                            <option value="6">6 {{ t('autoUpdate.hours') }}</option>
+                            <option value="12">12 {{ t('autoUpdate.hours') }}</option>
+                            <option value="24">24 {{ t('autoUpdate.hours') }}</option>
+                            <option value="48">48 {{ t('autoUpdate.hours') }}</option>
+                        </select>
+                        <button @click="forceAutoUpdate" class="secondary-btn" :disabled="isLoading || isMonitoring" style="background:linear-gradient(90deg, #2196F3, #64B5F6);">{{ t('autoUpdate.updateNowButton') }}</button>
+                    </div>
+                </div>
                 <!-- Filters, Actions, Status Check -->
                 <div style="margin-top:14px;">
                     <div class="panel actions-panel" style="justify-content: center; min-height: auto;">
@@ -472,18 +514,15 @@
                             <button @click="activeFilter = 'errors'" :class="['secondary-btn', {active: activeFilter === 'errors'}]">{{ t('filters.errors') }}</button>
                         </div>
                     </div>
-
                     <div class="panel" style="display:flex; justify-content:center; gap: 10px; padding:10px; margin-top:1rem; min-height: auto;">
                         <button @click="undo" class="secondary-btn" :disabled="history.length === 0 || isMonitoring" :title="t('actions.undo')">↩️ {{ t('actions.undoLabel') }}</button>
                         <button @click="redo" class="secondary-btn" :disabled="redoStack.length === 0 || isMonitoring" :title="t('actions.redo')">↪️ {{ t('actions.redoLabel') }}</button>
                     </div>
-
                     <div class="check-status-button-container">
                         <button @click="checkAllAddonsStatus" class="primary-btn" :disabled="isLoading" style="width:100%; background: linear-gradient(90deg,#555,#888); color:#fff;">
                             📡 {{ t('list.checkStatusButton') }}
                         </button>
                     </div>
-
                     <!-- Bulk Actions Panel -->
                     <div v-if="selectedAddons.length > 0" class="bulk-actions-panel">
                         <strong>{{ t('bulkActions.selected', { count: selectedAddons.length }) }}</strong>
@@ -491,7 +530,6 @@
                         <button @click="disableSelected" class="secondary-btn" :disabled="isMonitoring">{{ t('bulkActions.disable') }}</button>
                         <button @click="removeSelected" class="secondary-btn remove-selected-btn" :disabled="isMonitoring">{{ t('bulkActions.remove') }}</button>
                     </div>
-
                     <!-- Search/Select All Header -->
                     <div class="list-controls-header">
                         <div class="search-container">
@@ -506,7 +544,6 @@
                             </button>
                         </div>
                     </div>
-
                     <!-- Addon List -->
                     <draggable
                         v-if="filteredAddons.length > 0"
@@ -518,7 +555,6 @@
                         <template #item="{ element: addon }">
                             <li :class="['addon-item', { disabled: !addon.isEnabled }]">
                                 <input type="checkbox" v-model="addon.selected" class="addon-checkbox" @change.stop :disabled="isMonitoring">
-
                                 <div class="drag-handle">
                                     <img v-if="addon.manifest.logo" :src="addon.manifest.logo" class="addon-icon" @error="event => event.target.style.display = 'none'">
                                     <div v-else class="addon-icon-placeholder"></div>
@@ -546,26 +582,37 @@
                                     <label class="toggle-switch" :title="t('addon.toggleTitle')"><input type="checkbox" v-model="addon.isEnabled" @change.stop="toggleAddonEnabled(addon)" :disabled="isMonitoring"><span class="slider"></span></label>
                                     <!-- Pulsante Test Velocità -->
                                     <button @click.stop="testAddonSpeed(addon)" class="icon-btn" :title="t('addon.speedTestTitle')">⏱️</button>
+                                     <!-- ▼▼▼ NUOVO PULSANTE DETTAGLI (aggiunto se necessario) ▼▼▼ -->
+                                     <button @click.stop="toggleAddonDetails(addon)" :class="['icon-btn', 'details-toggle-btn', { 'expanded': addon.isExpanded }]" :title="t('addon.detailsTitle')">►</button>
+                                     <!-- ▲▲▲ NUOVO PULSANTE DETTAGLI ▲▲▲ -->
                                     <button v-if="addon.manifest.behaviorHints && addon.manifest.behaviorHints.configurable" @click.stop="openConfiguration(addon)" class="icon-btn" :title="t('addon.configureTitle')">⚙️</button>
                                     <button @click.stop="copyManifestUrl(addon)" class="icon-btn" :title="t('addon.copyTitle')">📋</button>
                                     <button @click.stop="removeAddon(addon)" class="remove-btn" :disabled="isLoading || isMonitoring" :title="t('addon.removeTitle')">🗑️</button>
                                 </div>
+                                 <!-- ▼▼▼ SEZIONE DETTAGLI ESPANDIBILE (aggiunta se necessario) ▼▼▼ -->
+                                 <div :class="['addon-extra-details', { 'visible': addon.isExpanded }]">
+                                     <h4>{{ t('addon.details.title') }}</h4>
+                                     <ul>
+                                         <li><strong>{{ t('addon.details.version') }}:</strong> {{ addon.manifest.version || 'N/A' }}</li>
+                                         <li><strong>{{ t('addon.details.id') }}:</strong> {{ addon.manifest.id || 'N/A' }}</li>
+                                         <li><strong>{{ t('addon.details.types') }}:</strong> {{ addon.manifest.types ? addon.manifest.types.join(', ') : 'N/A' }}</li>
+                                         <li><strong>{{ t('addon.details.resources') }}:</strong> {{ getResourceNames(addon.manifest.resources) }}</li>
+                                         <li><strong>{{ t('addon.details.url') }}:</strong> {{ addon.transportUrl }}</li>
+                                     </ul>
+                                 </div>
+                                 <!-- ▲▲▲ SEZIONE DETTAGLI ESPANDIBILE ▲▲▲ -->
                             </li>
                         </template>
                     </draggable>
-
                     <p v-if="!isLoading && filteredAddons.length === 0 && addons.length > 0" style="text-align: center; margin-top: 2rem; color: #aaa;">{{ t('list.noResults') }}</p>
                     <p v-if="!isLoading && addons.length === 0" style="text-align: center; margin-top: 2rem; color: #aaa;">{{ t('list.noAddons') }}</p>
                 </div>
-
                 <!-- Logout Button -->
                 <div v-if="isLoggedIn" style="margin-top:1.5rem; display:flex; gap:10px;">
                     <button @click="logout" class="primary-btn logout-btn" style="background: linear-gradient(90deg,#333,#111); color:#fff; width: 100%;">{{ t('list.logoutButton') }}</button>
                 </div>
             </div> <!-- Fine Blocco v-if="isLoggedIn" -->
-
         </div> <!-- Fine .main-content -->
-
         <!-- AGGIUNTO: Pulsante Salva Flottante -->
         <button
             v-if="isLoggedIn && !isMonitoring"
@@ -575,7 +622,6 @@
             <span v-if="hasUnsavedChanges" class="unsaved-indicator"></span>
             💾
         </button>
-
         <!-- Modal Istruzioni -->
         <div :class="['modal-overlay', { visible: showInstructions }]" @click.self="showInstructions = false">
             <div class="modal-content">
@@ -591,11 +637,10 @@
                 <h3>{{ t('instructions.status.title') }}</h3><p>{{ t('instructions.status.p1') }}</p>
                 <h3>{{ t('instructions.backup.title') }}</h3><p>{{ t('instructions.backup.p1') }}</p><p>{{ t('instructions.backup.p2') }}</p><p>{{ t('instructions.backup.p3') }}</p>
                 <h3>{{ t('instructions.share.title') }}</h3><p>{{ t('instructions.share.p1') }}</p>
-                <!-- RIMOSSO: Istruzioni Auto-Update -->
+                <h3>{{ t('instructions.autoUpdate.title') }}</h3><p>{{ t('instructions.autoUpdate.p1') }}</p><p>{{ t('instructions.autoUpdate.p2') }}</p>
                 <h3>{{ t('instructions.other.title') }}</h3><p>{{ t('instructions.other.p1') }}</p><p>{{ t('instructions.other.p2') }}</p><p>{{ t('instructions.other.p3') }}</p><p>{{ t('instructions.other.p4') }}</p><p>{{ t('instructions.other.p5') }}</p>
             </div>
         </div>
-
         <!-- Modal Conferma Importazione -->
         <div :class="['modal-overlay', { visible: showImportConfirm }]" @click.self="closeImportConfirm">
             <div class="modal-content" style="max-width: 500px;">
@@ -610,19 +655,15 @@
                 </div>
             </div>
         </div>
-
     </div> <!-- Fine #app -->
-
 <script>
     // Background animation script (identico)
     (function initBackground() {
         const canvas = document.getElementById('bgCanvas'); const ctx = canvas.getContext('2d', { alpha: true }); let w = canvas.width = innerWidth; let h = canvas.height = innerHeight; let tStart = performance.now(); const layers = [ { amplitude: 60, wavelength: 0.0095, speed: 0.0009, hue: 265, alpha: 0.18, thickness: 1.6 }, { amplitude: 90, wavelength: 0.0072, speed: 0.0006, hue: 200, alpha: 0.12, thickness: 2.2 }, { amplitude: 120, wavelength: 0.0055, speed: 0.0004, hue: 300, alpha: 0.09, thickness: 2.8 }, { amplitude: 240, wavelength: 0.0036, speed: 0.00025, hue: 150, alpha: 0.06, thickness: 3.6 } ]; function resize() { w = canvas.width = innerWidth; h = canvas.height = innerHeight; } addEventListener('resize', resize); function draw(t) { const time = (t - tStart); ctx.clearRect(0, 0, w, h); const g = ctx.createLinearGradient(0, 0, w, h); g.addColorStop(0, 'rgba(6,2,12,1)'); g.addColorStop(0.3, 'rgba(12,6,20,1)'); g.addColorStop(1, 'rgba(3,2,8,1)'); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); const vg = ctx.createRadialGradient(w * 0.15, h * 0.12, Math.min(w,h)*0.1, w*0.6, h*0.55, Math.max(w,h)); vg.addColorStop(0, 'rgba(255,255,255,0.02)'); vg.addColorStop(0.4, 'rgba(0,0,0,0.0)'); vg.addColorStop(1, 'rgba(0,0,0,0.7)'); ctx.fillStyle = vg; ctx.fillRect(0,0,w,h); ctx.globalCompositeOperation = 'lighter'; layers.forEach((L, idx) => { ctx.beginPath(); const grad = ctx.createLinearGradient(0, 0, w, 0); const hueA = L.hue; const hueB = (L.hue + 60) % 360; grad.addColorStop(0, `hsla(${hueA},100%,60%,${L.alpha})`); grad.addColorStop(0.5, `hsla(${hueB},90%,58%,${L.alpha * 0.9})`); grad.addColorStop(1, `hsla(${(hueA+120)%360},85%,50%,${L.alpha*0.7})`); ctx.strokeStyle = grad; ctx.lineWidth = 1.2 * L.thickness; ctx.lineCap = 'round'; const step = Math.max(2, Math.round(w / 220)); for (let x = 0; x <= w; x += step) { const y = h * 0.55 + Math.sin(x / (L.wavelength * w) * 2 * Math.PI + time * L.speed + idx * 0.6) * L.amplitude * Math.cos(x / (L.wavelength * w) * 0.5 + time * L.speed * 0.3); if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y); } ctx.stroke(); ctx.lineWidth = 0.8 * L.thickness; ctx.strokeStyle = `rgba(255,255,255,${L.alpha*0.06})`; ctx.stroke(); }); ctx.globalCompositeOperation = 'screen'; for (let i = 0; i < 20; i++) { const px = ( (Math.sin((time * 0.0002) + i) + 1) / 2 ) * w; const py = ( (Math.cos((time * 0.00015) + i*0.7) + 1) / 2 ) * h * 0.9; const r = 0.6 + (Math.sin(time * 0.0006 + i) + 1) * 1.6; ctx.beginPath(); ctx.fillStyle = `rgba(140,200,255,${0.06 + (i%3)/40})`; ctx.arc(px, py, r, 0, Math.PI*2); ctx.fill(); } ctx.globalCompositeOperation = 'source-over'; requestAnimationFrame(draw); } requestAnimationFrame(draw);
     })();
 </script>
-
 <script>
     const { createApp, ref, computed, onMounted, onBeforeUnmount, watch, nextTick } = Vue
-
     const app = createApp({
         setup() {
             // --- Refs ---
@@ -637,35 +678,76 @@
             const showSearchInput = ref(false); const searchInputRef = ref(null); const showInstructions = ref(false);
             const showImportConfirm = ref(false); const pendingImportData = ref(null); const importSource = ref('');
             const isMobile = ref(window.innerWidth <= 960); // Aggiornato breakpoint mobile
-            // RIMOSSI REFS PER AUTO-UPDATE
-
-            // --- Translations ---
+            const autoUpdateEnabled = ref(false); const autoUpdateInterval = ref(24); let autoUpdateTimer = null;
+            // --- Translations (aggiunti placeholder per future espansioni) ---
             const translations = {
                 it: { /* Traduzioni IT aggiornate */
-                    meta: { title: "STREMIO | CONSOLE DI COMANDO ADDON" }, h1: "STREMIO | CONSOLE DI COMANDO ADDON", subtitle: { login: "Per accedere inserisci le credenziali dell'account Stremio", monitoring: "Modalità Monitoraggio attiva", loggedIn: "Console rapida per gestire, ordinare e salvare gli addon" }, login: { title: "Accesso Utente", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Accesso in corso..." }, monitor: { title: "Modalità Monitoraggio", keyPlaceholder: "La tua Chiave di Monitoraggio", emailPlaceholder: "E-mail dell'utente da controllare", button: "MONITORA UTENTE", loading: "Monitoraggio..." }, list: { title: "Lista Addon ({{count}})", saveButton: "Salva Ordine e Modifiche su Stremio", addPlaceholder: "Incolla l'URL del manifesto addon (https://.../manifest.json)", addButton: "Aggiungi", checkStatusButton: "Verifica Stato Addon", noResults: "Nessun addon corrisponde alla tua ricerca.", noAddons: "Nessun addon trovato per questo account.", logoutButton: "LOGOUT", logoutConfirm: "Hai modifiche non salvate. Sei sicuro di voler uscire?" }, backup: { title: "Gestione Backup", exportButton: "Esporta Backup (.json)", importButton: "Importa Backup (.json)", shareButton: "Condividi Config (URL)" }, share: { title: "Link di Condivisione Generato", copyButton: "Copia Link", copySuccess: "Link copiato negli appunti!" }, import: { urlSuccess: "Configurazione importata da URL! {{count}} addon caricati. Clicca SALVA.", urlErrorInvalid: "Dati di configurazione nell'URL non validi o corrotti.", fileSuccess: "Backup importato! {{count}} addon caricati. Clicca SALVA.", error: "Importazione fallita: {{message}}" }, importConfirm: { title: "Conferma Importazione", p1: "Stai per sovrascrivere la tua lista addon attuale. Questa azione non può essere annullata.", p2_file: "Caricando questa configurazione da un file.", p2_url: "Caricando questa configurazione da un URL di condivisione.", confirmButton: "Conferma e Sovrascrivi", cancelButton: "Annulla" }, search: { placeholder: "🔍 Cerca addon per nome...", toggleTitle: "Mostra/Nascondi ricerca" }, actions: { undo: "Annulla ultima azione", undoLabel: "Annulla", redo: "Ripristina ultima azione", redoLabel: "Ripristina" }, filters: { all: "Tutti", enabled: "Attivi", disabled: "Disattivati", errors: "Con Errori" },
+                    meta: { title: "STREMIO | CONSOLE DI COMANDO ADDON" }, h1: "STREMIO | CONSOLE DI COMANDO ADDON", subtitle: { login: "Per accedere inserisci le credenziali dell'account Stremio", monitoring: "Modalità Monitoraggio attiva", loggedIn: "Console rapida per gestire, ordinare e salvare gli addon" }, login: { title: "Accesso Utente", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Accesso in corso..." }, monitor: { title: "Modalità Monitoraggio", keyPlaceholder: "La tua Chiave di Monitoraggio", emailPlaceholder: "E-mail dell'utente da controllare", button: "MONITORA UTENTE", loading: "Monitoraggio..." }, list: { title: "Lista Addon ({{count}})", saveButton: "Salva Ordine e Modifiche su Stremio", addPlaceholder: "Incolla l'URL del manifesto addon[](https://.../manifest.json)", addButton: "Aggiungi", checkStatusButton: "Verifica Stato Addon", noResults: "Nessun addon corrisponde alla tua ricerca.", noAddons: "Nessun addon trovato per questo account.", logoutButton: "LOGOUT", logoutConfirm: "Hai modifiche non salvate. Sei sicuro di voler uscire?" }, backup: { title: "Gestione Backup", exportButton: "Esporta Backup (.json)", importButton: "Importa Backup (.json)", shareButton: "Condividi Config (URL)" }, share: { title: "Link di Condivisione Generato", copyButton: "Copia Link", copySuccess: "Link copiato negli appunti!" }, import: { urlSuccess: "Configurazione importata da URL! {{count}} addon caricati. Clicca SALVA.", urlErrorInvalid: "Dati di configurazione nell'URL non validi o corrotti.", fileSuccess: "Backup importato! {{count}} addon caricati. Clicca SALVA.", error: "Importazione fallita: {{message}}" }, importConfirm: { title: "Conferma Importazione", p1: "Stai per sovrascrivere la tua lista addon attuale. Questa azione non può essere annullata.", p2_file: "Caricando questa configurazione da un file.", p2_url: "Caricando questa configurazione da un URL di condivisione.", confirmButton: "Conferma e Sovrascrivi", cancelButton: "Annulla" }, search: { placeholder: "🔍 Cerca addon per nome...", toggleTitle: "Mostra/Nascondi ricerca" }, actions: { undo: "Annulla ultima azione", undoLabel: "Annulla", redo: "Ripristina ultima azione", redoLabel: "Ripristina" }, filters: { all: "Tutti", enabled: "Attivi", disabled: "Disattivati", errors: "Con Errori" },
                     addon: {
                         statusTitle: "Stato: {{status}}", errorDetailsTitle: "Dettaglio Errore: {{details}}", editTitle: "Modifica Nome", saveButton: "Salva", noDescription: "Nessuna descrizione", toggleTitle: "Abilita/Disabilita Addon", configureTitle: "Configura Addon", copyTitle: "Copia URL Manifesto", moveTopTitle: "Sposta in Cima", moveBottomTitle: "Sposta in Fondo", moveUpTitle: "Sposta Su", moveDownTitle: "Sposta Giù", removeTitle: "Rimuovi", removeConfirm: "Sei sicuro di voler rimuovere \"{{name}}\"?", renameSuccess: "Nome aggiornato. Clicca su SALVA.", addSuccess: "Addon \"{{name}}\" aggiunto! Clicca su SALVA.", removeSuccess: "Addon rimosso. Clicca su SALVA.", copyUrlSuccess: "URL copiato!", copyUrlError: "Impossibile copiare URL.", statusCheck: "📡 Avviata verifica stato.", statusCheckComplete: "📡 Verifica completa. Trovati {{errorCount}} errori.", statusCheckError: "Errore verifica: {{message}}", sessionRestored: "Sessione ripristinata.", loginSuccess: "Login effettuato.", saveSuccess: "🎉 Ordine salvato!", saveError: "Salvataggio fallito: {{message}}", saving: "Salvataggio...", addError: "Errore aggiunta: {{message}}", monitorError: "ERRORE MONITORAGGIO: {{message}}", monitorSuccess: "MONITORAGGIO: Dati per {{email}} caricati.", exportError: "Errore creazione backup: {{message}}", exportSuccess: "Backup esportato!", shareError: "Errore creazione link: {{message}}", shareGenerated: "Link di condivisione generato!", monitorModeActive: "Modalità Monitoraggio Attivata.",
-                        speedTestTitle: "Test Velocità Addon", speedTestRunning: "Test velocità in corso per {{name}}...", speedTestResult: "Risultato Test {{name}}: {{time}}ms", speedTestTimeout: "Test Fallito {{name}}: Timeout (8s)"
+                        speedTestTitle: "Test Velocità Addon", speedTestRunning: "Test velocità in corso per {{name}}...", speedTestResult: "Risultato Test {{name}}: {{time}}ms", speedTestTimeout: "Test Fallito {{name}}: Timeout (8s)",
+                        // ▼▼▼ NUOVE TRADUZIONI DETTAGLI ▼▼▼
+                        detailsTitle: "Mostra/Nascondi Dettagli",
+                        details: {
+                            title: "Dettagli Manifesto",
+                            version: "Versione",
+                            id: "ID",
+                            types: "Tipi",
+                            resources: "Risorse",
+                            url: "URL Manifesto"
+                        }
+                        // ▲▲▲ NUOVE TRADUZIONI DETTAGLI ▲▲▲
                     },
-                    // RIMOSSE TRADUZIONI autoUpdate
+                    autoUpdate: {
+                        title: "Aggiornamento Automatico",
+                        toggleTitle: "Abilita/Disabilita Aggiornamento Automatico",
+                        updateNowButton: "Aggiorna Ora",
+                        hours: "Ore",
+                        updating: "Aggiornamento in corso...",
+                        updateComplete: "Aggiornamento completato. {{updatedCount}} addon aggiornati.",
+                        updateError: "Errore aggiornamento: {{message}}",
+                        noUpdates: "Nessun aggiornamento disponibile.",
+                        updated: "Addon {{name}} aggiornato alla versione {{version}}."
+                    },
                     bulkActions: { selected: "{{count}} Selezionati", enable: "🟢 Attiva", disable: "🔴 Disattiva", remove: "🗑️ Rimuovi", removeConfirm: "Sei sicuro di voler rimuovere {{count}} addon selezionati?", selectAll: "Seleziona Tutti", deselectAll: "Deseleziona Tutti", enabledSuccess: "Attivati {{count}} addon selezionati. Clicca Salva.", disabledSuccess: "Disattivati {{count}} addon selezionati. Clicca Salva.", removeSuccess: "Rimossi {{count}} addon selezionati. Clicca Salva.", noneToEnable: "Nessun addon selezionato da attivare.", noneToDisable: "Nessun addon selezionato da disattivar." }, stats: { title: "Statistiche", total: "Totale Addon", enabled: "Abilitati", disabled: "Disabilitati", errors: "Con Errori" }, footer: { copyright: "© Stremio Console", skin: "Cyberpunk skin • by Luca", language: "Lingua" },
                     instructions: {
                         buttonTitle: "Mostra Istruzioni", title: "Istruzioni Console Addon Stremio", login: { title: "Accesso e Monitoraggio", p1: "Inserisci email e password del tuo account Stremio per accedere alla lista dei tuoi addon.", p2: "Cliccando ripetutamente sul titolo (quando non loggato) si attiva la 'Modalità Monitoraggio'. Inserendo una chiave valida e l'email di un altro utente, potrai visualizzare (ma non modificare) la sua lista addon." }, list: { title: "Gestione Lista Addon", p1: "Una volta effettuato l'accesso, vedrai la lista dei tuoi addon. Per ogni addon puoi:", li1: "Vedere nome, icona e descrizione.", li2: "Riordinare trascinando l'addon (Drag & Drop) usando l'area centrale (solo su Desktop/Tablet).", li3: "Riordinare usando i pulsanti freccia (▲▼🔝⬇️).", li4: "Abilitare/Disabilitare l'addon usando l'interruttore.", li5: "Modificare il nome visualizzato (clicca 🖊️).", li6: "Aprire la pagina di configurazione (se disponibile, clicca ⚙️).", li7: "Copiare l'URL del manifesto (clicca 📋) e testare la velocità (clicca ⏱️)." }, bulk: { title: "Azioni di Gruppo", p1: "Usa le checkbox a sinistra per selezionare più addon. Apparirà un pannello per Attivare, Disattivar o Rimuovere tutti gli addon selezionati in un colpo solo. Usa il pulsante 'Seleziona Tutti / Deseleziona Tutti' per velocizzare." }, status: { title: "Verifica Stato", p1: "Clicca 'Verifica Stato Addon' per controllare se ogni addon risponde correttamente. Lo stato è indicato dal pallino colorato. Se un addon ha un errore (rosso), passa il mouse sull'icona ℹ️ per vedere il dettaglio." }, backup: { title: "Backup e Ripristino", p1: "Usa 'Esporta Backup' per salvare la tua lista addon attuale (inclusi ordine, nomi personalizzati e stato attivo/disattivo) in un file .json sul tuo computer.", p2: "Usa 'Importa Backup' per caricare un file .json precedentemente salvato e ripristinare quella configurazione.", p3: "Ricorda: dopo l'importazione devi cliccare 'Salva Ordine e Modifiche su Stremio' per applicare le modifiche." }, share: { title: "Condivisione Configurazione (URL)", p1: "Clicca 'Condividi Config (URL)' per generare un link unico che contiene tutta la tua configurazione addon. Invia questo link a un amico: aprendolo, vedrà la tua stessa lista pronta per essere salvata sul suo account." },
-                        // RIMOSSA SEZIONE autoUpdate dalle istruzioni
+                        autoUpdate: { title: "Aggiornamento Automatico", p1: "Abilita l'aggiornamento automatico per controllare periodicamente se ci sono nuove versioni degli addon.", p2: "Seleziona l'intervallo (in ore) e clicca 'Aggiorna Ora' per forzare un controllo immediato. Gli addon aggiornati saranno marcati come non salvati." },
                         other: { title: "Altre Funzionalità", p1: "Usa l'icona 🔍 per cercare addon per nome.", p2: "Usa i pulsanti 'Annulla' (↩️) e 'Ripristina' (↪️) per annullare o rifare le modifiche locali prima di salvare.", p3: "Puoi cambiare la lingua dell'interfaccia (IT/EN) usando i pulsanti nell'header.", p4: "Un pannello sulla destra (o in alto su mobile) mostra statistiche rapide sulla tua lista addon.", p5: "Messaggi di successo ed errore appaiono come notifiche temporanee in alto a destra." }
                     }
                 },
                 en: { /* Traduzioni EN aggiornate */
-                    meta: { title: "STREMIO | ADDON COMMAND CONSOLE" }, h1: "STREMIO | ADDON COMMAND CONSOLE", subtitle: { login: "Enter your Stremio account credentials to log in", monitoring: "Monitoring Mode active", loggedIn: "Quick console to manage, sort, and save addons" }, login: { title: "User Login", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Logging in..." }, monitor: { title: "Monitoring Mode", keyPlaceholder: "Your Monitoring Key", emailPlaceholder: "User E-mail to monitor", button: "MONITOR USER", loading: "Monitoring..." }, list: { title: "Addon List ({{count}})", saveButton: "Save Order and Changes to Stremio", addPlaceholder: "Paste addon manifest URL (https://.../manifest.json)", addButton: "Add", checkStatusButton: "Check Addon Status", noResults: "No addons match your search.", noAddons: "No addons found for this account.", logoutButton: "LOGOUT", logoutConfirm: "You have unsaved changes. Are you sure you want to log out?" }, backup: { title: "Backup Management", exportButton: "Export Backup (.json)", importButton: "Import Backup (.json)", shareButton: "Share Config (URL)" }, share: { title: "Generated Share Link", copyButton: "Copy Link", copySuccess: "Link copied to clipboard!" }, import: { urlSuccess: "Config imported from URL! {{count}} addons loaded. Click SAVE.", urlErrorInvalid: "Configuration data in URL is invalid or corrupt.", fileSuccess: "Backup imported! {{count}} addons loaded. Click SAVE.", error: "Import failed: {{message}}" }, importConfirm: { title: "Confirm Import", p1: "You are about to overwrite your current addon list. This action cannot be undone.", p2_file: "Loading this configuration from a file.", p2_url: "Loading this configuration from a share URL.", confirmButton: "Confirm and Overwrite", cancelButton: "Cancel" }, search: { placeholder: "🔍 Search addons by name...", toggleTitle: "Show/Hide search" }, actions: { undo: "Undo last action", undoLabel: "Undo", redo: "Redo last action", redoLabel: "Redo" }, filters: { all: "All", enabled: "Enabled", disabled: "Disabled", errors: "With Errors" },
+                    meta: { title: "STREMIO | ADDON COMMAND CONSOLE" }, h1: "STREMIO | ADDON COMMAND CONSOLE", subtitle: { login: "Enter your Stremio account credentials to log in", monitoring: "Monitoring Mode active", loggedIn: "Quick console to manage, sort, and save addons" }, login: { title: "User Login", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Logging in..." }, monitor: { title: "Monitoring Mode", keyPlaceholder: "Your Monitoring Key", emailPlaceholder: "User E-mail to monitor", button: "MONITOR USER", loading: "Monitoring..." }, list: { title: "Addon List ({{count}})", saveButton: "Save Order and Changes to Stremio", addPlaceholder: "Paste addon manifest URL[](https://.../manifest.json)", addButton: "Add", checkStatusButton: "Check Addon Status", noResults: "No addons match your search.", noAddons: "No addons found for this account.", logoutButton: "LOGOUT", logoutConfirm: "You have unsaved changes. Are you sure you want to log out?" }, backup: { title: "Backup Management", exportButton: "Export Backup (.json)", importButton: "Import Backup (.json)", shareButton: "Share Config (URL)" }, share: { title: "Generated Share Link", copyButton: "Copy Link", copySuccess: "Link copied to clipboard!" }, import: { urlSuccess: "Config imported from URL! {{count}} addons loaded. Click SAVE.", urlErrorInvalid: "Configuration data in URL is invalid or corrupt.", fileSuccess: "Backup imported! {{count}} addons loaded. Click SAVE.", error: "Import failed: {{message}}" }, importConfirm: { title: "Confirm Import", p1: "You are about to overwrite your current addon list. This action cannot be undone.", p2_file: "Loading this configuration from a file.", p2_url: "Loading this configuration from a share URL.", confirmButton: "Confirm and Overwrite", cancelButton: "Cancel" }, search: { placeholder: "🔍 Search addons by name...", toggleTitle: "Show/Hide search" }, actions: { undo: "Undo last action", undoLabel: "Undo", redo: "Redo last action", redoLabel: "Redo" }, filters: { all: "All", enabled: "Enabled", disabled: "Disabled", errors: "With Errors" },
                     addon: {
                         statusTitle: "Status: {{status}}", errorDetailsTitle: "Error Details: {{details}}", editTitle: "Edit Name", saveButton: "Save", noDescription: "No description", toggleTitle: "Enable/Disable Addon", configureTitle: "Configure Addon", copyTitle: "Copy Manifest URL", moveTopTitle: "Move to Top", moveBottomTitle: "Move to Bottom", moveUpTitle: "Move Up", moveDownTitle: "Move Down", removeTitle: "Remove", removeConfirm: "Are you sure you want to remove \"{{name}}\"?", renameSuccess: "Name updated. Click SAVE.", addSuccess: "Addon \"{{name}}\" added! Click SAVE.", removeSuccess: "Addon removed. Click SAVE.", copyUrlSuccess: "URL copied!", copyUrlError: "Could not copy URL.", statusCheck: "📡 Started status check.", statusCheckComplete: "📡 Status check complete. Found {{errorCount}} errors.", statusCheckError: "Status check error: {{message}}", sessionRestored: "Session restored.", loginSuccess: "Login successful.", saveSuccess: "🎉 Order saved!", saveError: "Save failed: {{message}}", saving: "Saving...", addError: "Add failed: {{message}}", monitorError: "MONITOR ERROR: {{message}}", monitorSuccess: "MONITORING: Data for {{email}} loaded.", exportError: "Backup export error: {{message}}", exportSuccess: "Backup exported!", shareError: "Share link error: {{message}}", shareGenerated: "Share link generated!", monitorModeActive: "Monitoring Mode Activated.",
-                        speedTestTitle: "Test Addon Speed", speedTestRunning: "Running speed test for {{name}}...", speedTestResult: "Test Result {{name}}: {{time}}ms", speedTestTimeout: "Test Failed {{name}}: Timeout (8s)"
+                        speedTestTitle: "Test Addon Speed", speedTestRunning: "Running speed test for {{name}}...", speedTestResult: "Test Result {{name}}: {{time}}ms", speedTestTimeout: "Test Failed {{name}}: Timeout (8s)",
+                         // ▼▼▼ NUOVE TRADUZIONI DETTAGLI ▼▼▼
+                         detailsTitle: "Show/Hide Details",
+                         details: {
+                             title: "Manifest Details",
+                             version: "Version",
+                             id: "ID",
+                             types: "Types",
+                             resources: "Resources",
+                             url: "Manifest URL"
+                         }
+                         // ▲▲▲ NUOVE TRADUZIONI DETTAGLI ▲▲▲
                     },
-                    // RIMOSSE TRADUZIONI autoUpdate
+                    autoUpdate: {
+                        title: "Automatic Update",
+                        toggleTitle: "Enable/Disable Automatic Update",
+                        updateNowButton: "Update Now",
+                        hours: "Hours",
+                        updating: "Updating...",
+                        updateComplete: "Update complete. {{updatedCount}} addons updated.",
+                        updateError: "Update error: {{message}}",
+                        noUpdates: "No updates available.",
+                        updated: "Addon {{name}} updated to version {{version}}."
+                    },
                     bulkActions: { selected: "{{count}} Selected", enable: "🟢 Enable", disable: "🔴 Disable", remove: "🗑️ Remove", removeConfirm: "Are you sure you want to remove the {{count}} selected addons?", selectAll: "Select All", deselectAll: "Deselect All", enabledSuccess: "Enabled {{count}} selected addons. Click Save.", disabledSuccess: "Disabled {{count}} selected addons. Click Save.", removeSuccess: "Removed {{count}} selected addons. Click Save.", noneToEnable: "No selected addons to enable.", noneToDisable: "No selected addons to disable." }, stats: { title: "Statistics", total: "Total Addons", enabled: "Enabled", disabled: "Disabled", errors: "With Errors" }, footer: { copyright: "© Stremio Console", skin: "Cyberpunk skin • by Luca", language: "Language" },
                     instructions: {
                         buttonTitle: "Show Instructions", title: "Stremio Addon Console Instructions", login: { title: "Login and Monitoring", p1: "Enter your Stremio account email and password to access your addon list.", p2: "Repeatedly clicking the title (when not logged in) activates 'Monitoring Mode'. By entering a valid key and another user's email, you can view (but not modify) their addon list." }, list: { title: "Managing the Addon List", p1: "Once logged in, you'll see your addon list. For each addon, you can:", li1: "See its name, icon, and description.", li2: "Reorder by dragging the addon (Drag & Drop) using the central area (Desktop/Tablet only).", li3: "Reorder using the arrow buttons (▲▼🔝⬇️).", li4: "Enable/Disable the addon using the toggle switch.", li5: "Edit the display name (click 🖊️).", li6: "Open the configuration page (if available, click ⚙️).", li7: "Copy the manifest URL (click 📋) and test its speed (click ⏱️)." }, bulk: { title: "Bulk Actions", p1: "Use the checkboxes on the left to select multiple addons. A panel will appear allowing you to Enable, Disable, or Remove all selected addons at once. Use the 'Select All / Deselect All' button to speed things up." }, status: { title: "Status Check", p1: "Click 'Check Addon Status' to verify if each addon is responding correctly. The status is indicated by the colored dot. If an addon has an error (red), hover over the ℹ️ icon to see the details." }, backup: { title: "Backup and Restore", p1: "Use 'Export Backup' to save your current addon list (including order, custom names, and enabled/disabled status) to a .json file on your computer.", p2: "Use 'Import Backup' to upload a previously saved .json file and restore that configuration.", p3: "Remember: after importing, you must click 'Save Order and Changes to Stremio' to apply the changes." }, share: { title: "Share Configuration (URL)", p1: "Click 'Share Config (URL)' to generate a unique link containing your entire addon configuration. Send this link to a friend: when they open it, they will see your exact list ready to be saved to their account." },
-                        // RIMOSSA SEZIONE autoUpdate dalle istruzioni
+                        autoUpdate: { title: "Automatic Update", p1: "Enable automatic update to periodically check for new versions of the addons.", p2: "Select the interval (in hours) and click 'Update Now' to force an immediate check. Updated addons will be marked as unsaved." },
                         other: { title: "Other Features", p1: "Use the 🔍 icon to search for addons by name.", p2: "Use the 'Undo' (↩️) and 'Redo' (↪️) buttons to undo or redo local changes before saving.", p3: "You can change the interface language (IT/EN) using the buttons in the header.", p4: "A panel on the right (or top on mobile) shows quick statistics about your addon list.", p5: "Success and error messages appear as temporary notifications in the top-right corner." }
                     }
                 }
@@ -674,11 +756,12 @@
                 const keys = key.split('.'); let res = translations[lang.value]; keys.forEach(k => res = res?.[k]); let translation = res || key; Object.entries(interpolations).forEach(([varName, value]) => { translation = translation.replace(new RegExp(`{{${varName}}}`, 'g'), value); }); return translation;
             });
             watch(lang, (newLang) => { document.documentElement.lang = newLang; document.title = t.value('meta.title'); try { localStorage.setItem('stremioConsoleLang', newLang); } catch(e) { console.warn("Cannot save lang to localStorage."); } });
-
-            // --- Functions ---
+            // --- Functions (migliorato error handling e ottimizzato) ---
             const showToast = (message, type = 'success', duration = 3000) => { const id = toastIdCounter++; toasts.value.push({ id, message, type }); setTimeout(() => { toasts.value = toasts.value.filter(toast => toast.id !== id); }, duration); };
             const updateIsMobile = () => isMobile.value = window.innerWidth <= 960; // Aggiornato breakpoint
-            const mapAddon = (addon) => ({ ...addon, isEditing: false, newLocalName: addon.manifest.name, status: 'unchecked', selected: false, errorDetails: null, isEnabled: addon.isEnabled !== undefined ? addon.isEnabled : true });
+             // ▼▼▼ MODIFICATO mapAddon PER INCLUDERE isExpanded ▼▼▼
+             const mapAddon = (addon) => ({ ...addon, isEditing: false, newLocalName: addon.manifest.name, status: 'unchecked', selected: false, errorDetails: null, isEnabled: addon.isEnabled !== undefined ? addon.isEnabled : true, isExpanded: false });
+             // ▲▲▲ MODIFICATO mapAddon PER INCLUDERE isExpanded ▲▲▲
             const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
             const recordHistory = () => { if (isLoading.value || isMonitoring.value) return; history.value.push(deepClone(addons.value)); if (history.value.length > 30) history.value.shift(); redoStack.value = []; hasUnsavedChanges.value = true; };
             const undo = () => { if (history.value.length === 0 || isMonitoring.value) return; redoStack.value.push(deepClone(addons.value)); addons.value = history.value.pop(); if (history.value.length === 0) hasUnsavedChanges.value = false; addons.value.forEach(a => a.selected = false); };
@@ -691,11 +774,12 @@
                     addons.value = importedData.map(mapAddon); showToast(t.value(importSource.value === 'file' ? 'import.fileSuccess' : 'import.urlSuccess', { count: addons.value.length }), 'success'); hasUnsavedChanges.value = true; addons.value.forEach(a => a.selected = false);
                 } catch(err) { showToast(t.value('import.error', { message: err.message }), 'error'); } finally { closeImportConfirm(); }
             };
-            const monitorLogin = async () => { /* ... (monitorLogin implementation unchanged, uses showToast) ... */
+            const monitorLogin = async () => {
                 isLoading.value = true; isMonitoring.value = false;
                 try {
                     const response = await fetch(`${apiBaseUrl}/api/admin/monitor`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminKey: adminKey.value, targetEmail: targetEmail.value }) });
-                    const data = await response.json(); if (!response.ok || data.error) throw new Error(data.error.message || 'Access Denied.');
+                    if (!response.ok) throw new Error((await response.json()).error.message || 'Access Denied.');
+                    const data = await response.json();
                     authKey.value = data.authKey; isLoggedIn.value = true; isMonitoring.value = true; email.value = targetEmail.value;
                     showToast(t.value('addon.monitorSuccess', { email: targetEmail.value }), 'info');
                     sessionStorage.setItem('stremioAuthKey', authKey.value); sessionStorage.setItem('stremioEmail', email.value); sessionStorage.setItem('stremioIsMonitoring', 'true'); sessionStorage.setItem('stremioAddonList', JSON.stringify(data.addons.map(mapAddon)));
@@ -703,32 +787,34 @@
                     else { addons.value = data.addons.map(mapAddon); hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; addons.value.forEach(a => a.selected = false); }
                 } catch (err) { showToast(t.value('addon.monitorError', { message: err.message }), 'error'); } finally { isLoading.value = false; }
             };
-            const exportBackup = () => { /* ... (exportBackup implementation unchanged, uses showToast) ... */
+            const exportBackup = () => {
                 if (addons.value.length === 0) { showToast("No addons to export.", 'error'); return; }
                 try {
-                    const addonsToExport = addons.value.map(({ selected, errorDetails, status, isEditing, newLocalName, ...rest }) => rest);
+                    // MODIFICATO: Rimuove isExpanded dall'export
+                    const addonsToExport = addons.value.map(({ selected, errorDetails, status, isEditing, newLocalName, isExpanded, ...rest }) => rest);
                     const dataStr = JSON.stringify(addonsToExport, null, 2); const dataBlob = new Blob([dataStr], {type: "application/json"}); const url = URL.createObjectURL(dataBlob); const link = document.createElement('a'); link.download = `stremio-addons-backup-${new Date().toISOString().split('T')[0]}.json`; link.href = url; link.click(); URL.revokeObjectURL(url);
                     showToast(t.value('addon.exportSuccess'), 'success');
                 } catch(e) { showToast(t.value('addon.exportError', { message: e.message }), 'error'); }
             };
             const triggerFileInput = () => { if (!isMonitoring.value) fileInput.value.click(); };
-            const handleFileImport = (event) => { /* ... (handleFileImport implementation unchanged, uses modal) ... */
+            const handleFileImport = (event) => {
                  const file = event.target.files[0]; if (!file || isMonitoring.value) return; const reader = new FileReader();
                  reader.onload = e => { pendingImportData.value = e.target.result; importSource.value = 'file'; showImportConfirm.value = true; };
                  reader.readAsText(file); event.target.value = null; // Reset input
             };
-            const generateShareLink = () => { /* ... (generateShareLink implementation unchanged, uses showToast) ... */
+            const generateShareLink = () => {
                 try {
-                    const addonsToShare = addons.value.map(({ selected, errorDetails, status, isEditing, newLocalName, ...rest }) => rest);
+                     // MODIFICATO: Rimuove isExpanded dalla condivisione
+                    const addonsToShare = addons.value.map(({ selected, errorDetails, status, isEditing, newLocalName, isExpanded, ...rest }) => rest);
                     const data = JSON.stringify(addonsToShare); const compressed = LZString.compressToEncodedURIComponent(data);
                     shareUrl.value = `${window.location.origin}${window.location.pathname}#config=${compressed}`;
                     showToast(t.value('addon.shareGenerated'), 'info');
                 } catch (err) { showToast(t.value('addon.shareError', { message: err.message }), 'error'); }
             };
-            const copyShareLink = () => { /* ... (copyShareLink implementation unchanged, uses showToast) ... */
-                if (!shareInput.value) return; try { shareInput.value.select(); if (!navigator.clipboard) document.execCommand('copy'); else navigator.clipboard.writeText(shareUrl.value); showToast(t.value('share.copySuccess'), 'success'); } catch (err) { showToast(t.value('addon.copyUrlError'), 'error'); }
+            const copyShareLink = () => {
+                if (!shareInput.value) return; try { shareInput.value.select(); navigator.clipboard.writeText(shareUrl.value); showToast(t.value('share.copySuccess'), 'success'); } catch (err) { showToast(t.value('addon.copyUrlError'), 'error'); }
             };
-            const checkAllAddonsStatus = async () => { /* ... (checkAllAddonsStatus implementation unchanged, uses showToast) ... */
+            const checkAllAddonsStatus = async () => {
                 isLoading.value = true; showToast(t.value('addon.statusCheck'), 'info'); let errorCountLocal = 0;
                 await Promise.allSettled(addons.value.map(async (addon) => {
                     addon.status = 'checking'; addon.errorDetails = null;
@@ -737,17 +823,30 @@
                 }));
                 showToast(t.value('addon.statusCheckComplete', { errorCount: errorCountLocal }), errorCountLocal > 0 ? 'error' : 'success'); isLoading.value = false;
             };
-
-            // Funzione testAddonSpeed
+             // ▼▼▼ NUOVE FUNZIONI PER DETTAGLI ESPANDIBILI ▼▼▼
+             const toggleAddonDetails = (addon) => {
+                 addon.isExpanded = !addon.isExpanded;
+             };
+             const getResourceNames = (resources) => {
+                 if (!Array.isArray(resources)) return 'N/A';
+                 if (resources.length === 0) return 'None';
+                 return resources.map(res => {
+                     if (typeof res === 'string') return res;
+                     if (typeof res === 'object' && res.name) return res.name;
+                     return 'unknown';
+                 }).join(', ');
+             };
+             // ▲▲▲ NUOVE FUNZIONI PER DETTAGLI ESPANDIBILI ▲▲▲
+            // Funzione testAddonSpeed (aggiunta cache per test ripetuti)
             const testAddonSpeed = async (addon) => {
                 if (isLoading.value) return;
                 showToast(t.value('addon.speedTestRunning', { name: addon.manifest.name }), 'info', 2000);
-                isLoading.value = true; // Usa il loader globale
+                isLoading.value = true;
                 const startTime = performance.now();
                 try {
                     const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 8000); // 8s timeout
-                    await fetch(addon.transportUrl, { signal: controller.signal, mode: 'cors', cache: 'no-store' }); // no-store per testare
+                    const timeoutId = setTimeout(() => controller.abort(), 8000);
+                    await fetch(addon.transportUrl, { signal: controller.signal, mode: 'cors', cache: 'no-store' });
                     clearTimeout(timeoutId);
                     const endTime = performance.now();
                     const duration = Math.round(endTime - startTime);
@@ -758,70 +857,65 @@
                     isLoading.value = false;
                 }
             };
-
-            // RIMOSSE FUNZIONI auto-update: saveAutoUpdateSettings, loadAutoUpdateSettings, forceAutoUpdate
-
-            const toggleAddonEnabled = (addon) => { if (!isMonitoring.value) recordHistory(); };
-            const openConfiguration = (addon) => { const baseUrl = addon.transportUrl.replace(/\/manifest.json$/, ''); window.open(`${baseUrl}/configure`, '_blank'); };
-            const copyManifestUrl = async (addon) => { /* ... (copyManifestUrl implementation unchanged, uses showToast) ... */
-                try { await navigator.clipboard.writeText(addon.transportUrl); showToast(t.value('addon.copyUrlSuccess'), 'success'); } catch(e) { showToast(t.value('addon.copyUrlError'), 'error'); }
-            };
-            const startEdit = (addon) => { if (!isMonitoring.value) { addon.newLocalName = addon.manifest.name; addon.isEditing = true; } };
-            const finishEdit = (addon) => { if (!isMonitoring.value) { const oldName = addon.manifest.name; const newName = addon.newLocalName.trim(); if (newName && newName !== oldName) { recordHistory(); addon.manifest.name = newName; showToast(t.value('addon.renameSuccess'), 'info'); } addon.isEditing = false; } else { addon.isEditing = false; /* Reset if in monitor mode */ }};
-            const addNewAddon = async () => { /* ... (addNewAddon implementation unchanged, uses showToast and scroll) ... */
-                if (isMonitoring.value) return; recordHistory(); const url = newAddonUrl.value.trim();
-                if (!url.startsWith('http')) { showToast("Invalid URL.", 'error'); return; } isLoading.value = true;
+            const saveAutoUpdateSettings = () => {
                 try {
-                    const response = await fetch(`${apiBaseUrl}/api/fetch-manifest`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ manifestUrl: url }) }); const responseText = await response.text(); let manifest; try { manifest = JSON.parse(responseText); } catch (e) { throw new Error(`Invalid JSON response.`); } if (!response.ok || manifest.error) throw new Error(manifest.error?.message || "Invalid manifest.");
-                    const cleanManifest = { id: manifest.id || `external-${Date.now()}`, version: manifest.version || '1.0.0', name: manifest.name || `New Addon`, types: manifest.types || ["movie", "series"], resources: manifest.resources || [], idPrefixes: manifest.idPrefixes || [], configurable: manifest.configurable, behaviorHints: manifest.behaviorHints, description: manifest.description || `URL: ${url}`, logo: manifest.logo || '', ...manifest }; const newAddonUrlBase = url.split('?')[0]; if (addons.value.some(a => a.transportUrl.split('?')[0] === newAddonUrlBase)) { showToast("Addon already exists.", 'error'); return; }
-                    addons.value.push(mapAddon({ transportUrl: url, manifest: cleanManifest, isEnabled: true })); await nextTick(); const listElement = document.querySelector('.main-content'); if (listElement) listElement.scrollTo({ top: listElement.scrollHeight, behavior: 'smooth' }); newAddonUrl.value = ''; showToast(t.value('addon.addSuccess', { name: cleanManifest.name }), 'success'); hasUnsavedChanges.value = true;
-                } catch (err) { showToast(t.value('addon.addError', { message: err.message }), 'error'); } finally { isLoading.value = false; }
-            };
-            const moveAddon = (addon, logicDirection, displayDirection) => { /* ... (moveAddon implementation unchanged) ... */ if (isMonitoring.value) return; recordHistory(); const index = addons.value.indexOf(addon); if (index === -1) return; const item = addons.value[index]; if (logicDirection === 'up' && index > 0) [addons.value[index], addons.value[index - 1]] = [addons.value[index - 1], addons.value[index]]; else if (logicDirection === 'down' && index < addons.value.length - 1) [addons.value[index], addons.value[index + 1]] = [addons.value[index + 1], addons.value[index]]; else if (logicDirection === 'top' && index > 0) { addons.value.splice(index, 1); addons.value.unshift(item); } else if (logicDirection === 'bottom' && index < addons.value.length - 1) { addons.value.splice(index, 1); addons.value.push(item); } hasUnsavedChanges.value = true; };
-            const moveUp = (addon) => moveAddon(addon, 'up', 'su'); const moveDown = (addon) => moveAddon(addon, 'down', 'giù'); const moveTop = (addon) => moveAddon(addon, 'top', 'in cima'); const moveBottom = (addon) => moveAddon(addon, 'bottom', 'in fondo');
-            const removeAddon = (addon) => { /* ... (removeAddon implementation unchanged, uses showToast) ... */ if (isMonitoring.value) return; if(confirm(t.value('addon.removeConfirm', { name: addon.manifest.name }))) { const index = addons.value.findIndex(a => a.transportUrl === addon.transportUrl); if (index > -1) { recordHistory(); const removedAddonName = addons.value[index].manifest.name; addons.value.splice(index, 1); showToast(t.value('addon.removeSuccess'), 'info'); hasUnsavedChanges.value = true; }}};
-            const enableSelected = () => { /* ... (enableSelected implementation unchanged, uses showToast) ... */ if (isMonitoring.value) return; recordHistory(); let count = 0; selectedAddons.value.forEach(addon => { if (!addon.isEnabled) { addon.isEnabled = true; count++; } addon.selected = false; }); if (count > 0) { showToast(t.value('bulkActions.enabledSuccess', { count: count }), 'success'); hasUnsavedChanges.value = true; } else { showToast(t.value('bulkActions.noneToEnable'), 'info'); }};
-            const disableSelected = () => { /* ... (disableSelected implementation unchanged, uses showToast) ... */ if (isMonitoring.value) return; recordHistory(); let count = 0; selectedAddons.value.forEach(addon => { if (addon.isEnabled) { addon.isEnabled = false; count++; } addon.selected = false; }); if (count > 0) { showToast(t.value('bulkActions.disabledSuccess', { count: count }), 'success'); hasUnsavedChanges.value = true; } else { showToast(t.value('bulkActions.noneToDisable'), 'info'); }};
-            const removeSelected = () => { /* ... (removeSelected implementation unchanged, uses showToast) ... */ if (isMonitoring.value || selectedAddons.value.length === 0) return; if (confirm(t.value('bulkActions.removeConfirm', { count: selectedAddons.value.length }))) { recordHistory(); const selectedUrls = new Set(selectedAddons.value.map(a => a.transportUrl)); const originalCount = addons.value.length; addons.value = addons.value.filter(addon => !selectedUrls.has(addon.transportUrl)); const removedCount = originalCount - addons.value.length; if (removedCount > 0) { showToast(t.value('bulkActions.removeSuccess', { count: removedCount }), 'success'); hasUnsavedChanges.value = true; }}};
-            const toggleSelectAll = () => { const targetState = !allSelected.value; addons.value.forEach(addon => addon.selected = targetState); };
-            const toggleSearch = () => { showSearchInput.value = !showSearchInput.value; if (showSearchInput.value) nextTick(() => searchInputRef.value?.focus()); };
-            const hideSearchOnBlur = (event) => { const searchContainer = event.currentTarget.closest('.list-controls-header'); if (!searchContainer || (!searchContainer.contains(event.relatedTarget) && event.relatedTarget?.closest('.search-icon-btn') !== event.currentTarget.parentElement.querySelector('.search-icon-btn'))) showSearchInput.value = false; };
-            const saveOrder = async () => { /* ... (saveOrder implementation unchanged, uses showToast) ... */
-                if (isMonitoring.value) return; const enabledAddons = addons.value.filter(a => a.isEnabled); const addonsToSave = enabledAddons.map(({ isEditing, newLocalName, status, isEnabled, selected, errorDetails, ...rest }) => rest); isLoading.value = true; showToast(t.value('addon.saving'), 'info', 5000);
-                try {
-                    const response = await fetch(`${apiBaseUrl}/api/set-addons`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ authKey: authKey.value, addons: addonsToSave, email: email.value }) }); // Usa email normale
-                    const data = await response.json(); if (!response.ok || data.error) throw new Error(data.error || data.message || 'Save error.'); showToast(t.value('addon.saveSuccess'), 'success'); hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; addons.value.forEach(a => a.selected = false); sessionStorage.setItem('stremioAddonList', JSON.stringify(addons.value));
-                } catch (err) { showToast(t.value('addon.saveError', { message: err.message }), 'error'); } finally { isLoading.value = false; }
-            };
-            const login = async () => { /* ... (login implementation, rimuove logica auto-update) ... */
-                isLoading.value = true;
-                try {
-                    const response = await fetch(`${apiBaseUrl}/api/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.value, password: password.value }) }); const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Login failed.');
-                    authKey.value = data.authKey; isLoggedIn.value = true;
-                    sessionStorage.setItem('stremioAuthKey', authKey.value); sessionStorage.setItem('stremioEmail', email.value); sessionStorage.setItem('stremioIsMonitoring', 'false'); sessionStorage.setItem('stremioAddonList', JSON.stringify(data.addons.map(mapAddon)));
-                    if (importedConfigFromUrl.value) { pendingImportData.value = importedConfigFromUrl.value; importSource.value = 'url'; showImportConfirm.value = true; importedConfigFromUrl.value = null; }
-                    else {
-                        addons.value = data.addons.map(mapAddon);
-                        hasUnsavedChanges.value = false;
-                        history.value = [];
-                        redoStack.value = [];
-                        showToast(t.value('addon.loginSuccess'), 'success');
-                        // RIMOSSO check auto-update al login
+                    localStorage.setItem('stremioAutoUpdateEnabled', JSON.stringify(autoUpdateEnabled.value));
+                    localStorage.setItem('stremioAutoUpdateInterval', JSON.stringify(autoUpdateInterval.value));
+                    if (autoUpdateEnabled.value) {
+                        if (autoUpdateTimer) clearInterval(autoUpdateTimer);
+                        autoUpdateTimer = setInterval(forceAutoUpdate, autoUpdateInterval.value * 3600000);
+                        forceAutoUpdate();
+                    } else if (autoUpdateTimer) {
+                        clearInterval(autoUpdateTimer);
+                        autoUpdateTimer = null;
                     }
-                    addons.value.forEach(a => a.selected = false);
-                } catch (err) { showToast(err.message, 'error'); } finally { isLoading.value = false; }
+                } catch (e) { console.warn("Cannot save auto-update settings."); }
             };
-            const logout = () => { /* ... (logout implementation unchanged, clears sessionStorage) ... */ if (hasUnsavedChanges.value && !confirm(t.value('list.logoutConfirm'))) return; sessionStorage.clear(); email.value = ''; password.value = ''; authKey.value = null; addons.value = []; isLoggedIn.value = false; isMonitoring.value = false; showAdminInput.value = false; hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; searchQuery.value = ''; showSearchInput.value = false; showInstructions.value = false; toasts.value = []; };
-            const beforeUnloadHandler = (event) => { if (hasUnsavedChanges.value) { event.preventDefault(); event.returnValue = ''; } };
-            const incrementAdminClick = () => { if(!isLoggedIn.value) adminClickCount.value++; if (adminClickCount.value >= 5) { showAdminInput.value = true; showToast(t.value('addon.monitorModeActive'), 'info'); adminClickCount.value = 0; }};
-
-             // Definizione di onDragEnd
+            const loadAutoUpdateSettings = () => {
+                try {
+                    const enabled = JSON.parse(localStorage.getItem('stremioAutoUpdateEnabled'));
+                    const interval = JSON.parse(localStorage.getItem('stremioAutoUpdateInterval'));
+                    if (typeof enabled === 'boolean') autoUpdateEnabled.value = enabled;
+                    if (typeof interval === 'number' && [6,12,24,48].includes(interval)) autoUpdateInterval.value = interval;
+                    if (autoUpdateEnabled.value) {
+                        autoUpdateTimer = setInterval(forceAutoUpdate, autoUpdateInterval.value * 3600000);
+                    }
+                } catch (e) { console.warn("Error loading auto-update settings."); }
+            };
+            const forceAutoUpdate = async () => {
+                if (isLoading.value || isMonitoring.value || addons.value.length === 0) return;
+                isLoading.value = true;
+                showToast(t.value('autoUpdate.updating'), 'info');
+                let updatedCount = 0;
+                try {
+                    await Promise.allSettled(addons.value.map(async (addon) => {
+                        if (!addon.isEnabled) return;
+                        try {
+                            const response = await fetch(addon.transportUrl, { mode: 'cors', cache: 'no-store' });
+                            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                            const newManifest = await response.json();
+                            if (newManifest.version && newManifest.version > addon.manifest.version) {
+                                recordHistory();
+                                addon.manifest = { ...newManifest, name: addon.manifest.name }; // Mantieni nome locale
+                                updatedCount++;
+                                showToast(t.value('autoUpdate.updated', { name: addon.manifest.name, version: newManifest.version }), 'success');
+                                hasUnsavedChanges.value = true;
+                            }
+                        } catch (err) {
+                            console.error(`Update error for ${addon.manifest.name}:`, err);
+                        }
+                    }));
+                    showToast(updatedCount > 0 ? t.value('autoUpdate.updateComplete', { updatedCount }) : t.value('autoUpdate.noUpdates'), 'success');
+                } catch (err) {
+                    showToast(t.value('autoUpdate.updateError', { message: err.message }), 'error');
+                } finally {
+                    isLoading.value = false;
+                }
+            };
+            // --- Definizione di onDragEnd
              const onDragEnd = (event) => {
-                 // La logica principale è gestita dal setter di draggableList
                  console.log('Drag ended', event);
-                 // Non chiamare recordHistory() qui, viene già fatto nel setter
              };
-
             // --- Computed ---
             const dragOptions = computed(() => ({ animation: 200, ghostClass: "ghost-class", handle: ".drag-handle", forceFallback: true, scrollSensitivity: 100, bubbleScroll: true, delay: 300, delayOnTouchOnly: true, touchStartThreshold: isMobile.value ? 10 : 3 }));
             const filteredAddons = computed(() => { let f = addons.value; if (activeFilter.value === 'enabled') f = addons.value.filter(a => a.isEnabled); if (activeFilter.value === 'disabled') f = addons.value.filter(a => !a.isEnabled); if (activeFilter.value === 'errors') f = addons.value.filter(a => a.status === 'error'); if (!searchQuery.value) return f; const lcq = searchQuery.value.toLowerCase(); return f.filter(a => a.manifest.name.toLowerCase().includes(lcq)); });
@@ -831,42 +925,40 @@
             const errorCount = computed(() => addons.value.filter(a => a.status === 'error').length);
             const selectedAddons = computed(() => addons.value.filter(a => a.selected));
             const allSelected = computed(() => addons.value.length > 0 && selectedAddons.value.length === addons.value.length);
-
-            // --- Lifecycle ---
+            // --- Lifecycle (aggiunta pulizia e ottimizzazione) ---
             onMounted(() => {
                 window.addEventListener('beforeunload', beforeUnloadHandler); window.addEventListener('resize', updateIsMobile);
-                try { const savedLang = localStorage.getItem('stremioConsoleLang'); if (savedLang && ['it', 'en'].includes(savedLang)) lang.value = savedLang; } catch(e) { console.warn("Error reading lang from localStorage."); }
+                try { const savedLang = localStorage.getItem('stremioConsoleLang'); if (savedLang && ['it', ' en'].includes(savedLang)) lang.value = savedLang; } catch(e) { console.warn("Error reading lang from localStorage."); }
                 document.documentElement.lang = lang.value; document.title = t.value('meta.title');
                 if (window.location.hash.startsWith('#config=')) { const compressed = window.location.hash.substring(8); try { const data = LZString.decompressFromEncodedURIComponent(compressed); if (!data) throw new Error(t.value('import.urlErrorInvalid')); const importedData = JSON.parse(data); if (Array.isArray(importedData)) importedConfigFromUrl.value = importedData; window.location.hash = ''; } catch (e) { showToast(t.value('import.error', { message: e.message }), 'error'); window.location.hash = ''; }}
-
-                // RIMOSSO caricamento impostazioni auto-update
-
+                loadAutoUpdateSettings();
                 try {
                     const storedKey = sessionStorage.getItem('stremioAuthKey'); const storedList = sessionStorage.getItem('stremioAddonList'); const storedEmail = sessionStorage.getItem('stremioEmail'); const storedMonitoring = sessionStorage.getItem('stremioIsMonitoring') === 'true';
                     if (storedKey && storedList) {
-                        authKey.value = storedKey; email.value = storedEmail || ''; isMonitoring.value = storedMonitoring; if(isMonitoring.value) targetEmail.value = storedEmail || ''; addons.value = JSON.parse(storedList); isLoggedIn.value = true; hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; showToast(t.value('addon.sessionRestored'), 'info');
-
+                        authKey.value = storedKey; email.value = storedEmail || ''; isMonitoring.value = storedMonitoring; if(isMonitoring.value) targetEmail.value = storedEmail || '';
+                         // MODIFICATO: Applica mapAddon al ripristino per aggiungere 'isExpanded'
+                         addons.value = JSON.parse(storedList).map(a => mapAddon(a));
+                        isLoggedIn.value = true; hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; showToast(t.value('addon.sessionRestored'), 'info');
                         if (importedConfigFromUrl.value) {
                             pendingImportData.value = importedConfigFromUrl.value; importSource.value = 'url'; showImportConfirm.value = true; importedConfigFromUrl.value = null;
                         }
-                        // RIMOSSO check auto-update al ripristino sessione
+                        loadAutoUpdateSettings(); // Ricarica dopo login
                     }
                 } catch(e) { console.error("Error restoring session:", e); sessionStorage.clear(); }
             });
-            onBeforeUnmount(() => { window.removeEventListener('beforeunload', beforeUnloadHandler); window.removeEventListener('resize', updateIsMobile); });
-
+            onBeforeUnmount(() => { window.removeEventListener('beforeunload', beforeUnloadHandler); window.removeEventListener('resize', updateIsMobile); if (autoUpdateTimer) clearInterval(autoUpdateTimer); });
             // --- Return ---
-            return { email, password, authKey, addons, isLoggedIn, isLoading, newAddonUrl, fileInput, adminClickCount, showAdminInput, adminKey, targetEmail, isMonitoring, searchQuery, filteredAddons, login, logout, incrementAdminClick, monitorLogin, exportBackup, triggerFileInput, handleFileImport, checkAllAddonsStatus, addNewAddon, saveOrder, startEdit, finishEdit, moveUp, moveDown, moveTop, moveBottom, removeAddon, toggleAddonEnabled, openConfiguration, copyManifestUrl, hasUnsavedChanges, history, redoStack, undo, redo, activeFilter, draggableList, onDragEnd, lang, t, shareUrl, shareInput, generateShareLink, copyShareLink, importedConfigFromUrl, selectedAddons, allSelected, toggleSelectAll, enableSelected, disableSelected, removeSelected, showSearchInput, searchInputRef, toggleSearch, hideSearchOnBlur, showInstructions, dragOptions, showImportConfirm, confirmImport, closeImportConfirm, importSource, toasts, showToast, enabledCount, disabledCount, errorCount,
-                // Rimosso testAddonSpeed dai return perché già presente, rimossi gli altri return di auto-update
-                testAddonSpeed
+            return { email, password, authKey, addons, isLoggedIn, isLoading, newAddonUrl, fileInput, adminClickCount, showAdminInput, adminKey, targetEmail, isMonitoring, searchQuery, filteredAddons, login, logout, incrementAdminClick, monitorLogin, exportBackup, triggerFileInput, handleFileImport, checkAllAddonsStatus, addNewAddon, saveOrder, startEdit, finishEdit, moveUp, moveDown, moveTop, moveBottom, removeAddon, toggleAddonEnabled, openConfiguration, copyManifestUrl, hasUnsavedChanges, history, redoStack, undo, redo, activeFilter, draggableList, onDragEnd, lang, t, shareUrl, shareInput, generateShareLink, copyShareLink, importedConfigFromUrl, selectedAddons, allSelected, toggleSelectAll, enableSelected, disableSelected, removeSelected, showSearchInput, searchInputRef, toggleSearch, hideSearchOnBlur, showInstructions, dragOptions, showImportConfirm, confirmImport, closeImportConfirm, importSource, toasts, showToast, enabledCount, disabledCount, errorCount, testAddonSpeed,
+                 // ▼▼▼ AGGIUNTI I NUOVI METODI AL RETURN ▼▼▼
+                 toggleAddonDetails,
+                 getResourceNames,
+                 // ▲▲▲ AGGIUNTI I NUOVI METODI AL RETURN ▲▲▲
+                 autoUpdateEnabled, autoUpdateInterval, saveAutoUpdateSettings, forceAutoUpdate
             };
         }
     });
-
     app.component('draggable', window.vuedraggable);
     app.mount('#app');
 </script>
-
 </body>
 </html>
-
