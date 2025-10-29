@@ -6,15 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <!-- Il titolo ora è dinamico in base alla lingua -->
     <title>{{ t('meta.title') }}</title>
-
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
-
     <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Sortable/1.15.0/Sortable.min.js"></script>
     <script src="https://unpkg.com/vuedraggable@next/dist/vuedraggable.umd.js"></script>
     <!-- Libreria per comprimere/decomprimere stringhe per URL -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/lz-string/1.5.0/lz-string.min.js"></script>
-
     <style>
         /* ====== RESET & BASE ====== */
         * { box-sizing: border-box; }
@@ -96,17 +93,17 @@
         /* addon list */
         .addon-list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; padding-right: 5px; /* Spazio a destra */ }
         .addon-list:grabbing { cursor: grabbing; }
-        .addon-item { 
-            display: flex; 
+        .addon-item {
+            display: flex;
             flex-wrap: wrap; /* AGGIUNTO: Permette ai dettagli di andare a capo */
-            align-items: center; 
-            gap: 12px; 
-            padding: 12px; 
-            border-radius: 12px; 
-            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00)); 
-            border-left: 4px solid rgba(187,134,252,0.85); 
-            transition: transform .2s, box-shadow .2s, opacity .3s; 
-            box-shadow: 0 6px 18px rgba(0,0,0,0.6); 
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.01), rgba(255,255,255,0.00));
+            border-left: 4px solid rgba(187,134,252,0.85);
+            transition: transform .2s, box-shadow .2s, opacity .3s;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.6);
         }
         .addon-item:hover { transform: translateY(-4px); box-shadow: 0 14px 40px rgba(11,8,20,0.7); }
         .addon-item.disabled { opacity: 0.5; border-left-color: #555; filter: grayscale(50%); }
@@ -205,14 +202,43 @@
         .global-loader.visible { opacity: 1; visibility: visible; }
         .loader-spinner { width: 50px; height: 50px; border: 5px solid rgba(187, 134, 252, 0.3); border-top-color: #BB86FC; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-        /* Stili Toast */
-        #toast-container { position: fixed; top: 20px; right: 20px; z-index: 1001; display: flex; flex-direction: column; gap: 10px; width: 300px; }
-        .toast { background: linear-gradient(135deg, rgba(30, 30, 40, 0.9), rgba(20, 20, 30, 0.85)); color: #E6E6E6; padding: 12px 16px; border-radius: 8px; border-left: 4px solid; box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); font-size: 0.9rem; animation: slideInRight 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards; opacity: 1; }
+       /* ====== ▼▼▼ Stili Toast MODIFICATI (FIXED) ▼▼▼ ====== */
+       #toast-container {
+            position: fixed; /* MODIFICATO: Riportato a fixed per visibilità globale */
+            top: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            width: 300px;
+            pointer-events: none; /* Permette di cliccare "attraverso" il container */
+        }
+        .toast {
+            background: linear-gradient(135deg, rgba(30, 30, 40, 0.9), rgba(20, 20, 30, 0.85));
+            color: #E6E6E6; padding: 12px 16px; border-radius: 8px; border-left: 4px solid;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5); backdrop-filter: blur(5px); font-size: 0.9rem;
+            animation: slideInDown 0.3s ease-out, fadeOut 0.5s ease-in 2.5s forwards;
+            opacity: 1;
+            pointer-events: auto; /* Ripristina i click per i toast stessi */
+            width: 100%; /* Occupa la larghezza del container */
+        }
+        .toast:hover {
+         animation: none; /* Pausa animazioni su hover */
+         opacity: 1;
+     }
         .toast.success { border-left-color: #03DAC6; } .toast.error { border-left-color: #CF6679; color: #FFBABA; } .toast.info { border-left-color: #BB86FC; }
-        @keyframes slideInRight { from { transform: translateX(100%); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-        @keyframes fadeOut { from { opacity: 1; } to { opacity: 0; height: 0; padding-top: 0; padding-bottom: 0; margin-bottom: -10px; border: 0;} }
-        .toast-leave-active { transition: all 0.5s ease-in; } .toast-leave-to { opacity: 0; transform: translateX(100%); }
-
+        @keyframes slideInDown {
+            from { transform: translateY(-100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; height: 0; padding-top: 0; padding-bottom: 0; margin-top: -10px; border: 0;}
+        }
+        .toast-leave-active { transition: all 0.5s ease-in; }
+        .toast-leave-to { opacity: 0; transform: translateY(-100%); }
+        /* ====== ▲▲▲ Stili Toast MODIFICATI (FIXED) ▲▲▲ ====== */
         /* ====== ▼▼▼ STILI DETTAGLI ESPANDIBILI ▼▼▼ ====== */
         .details-toggle-btn {
             font-size: 0.8rem; /* Rimpicciolisce la freccia */
@@ -281,7 +307,6 @@
              }
          }
         /* ====== ▲▲▲ FINE STILI DETTAGLI ESPANDIBILI ▲▲▲ ====== */
-
         /* ====== ▼▼▼ NUOVO: Auto-Update Panel ▼▼▼ ====== */
         .auto-update-panel {
             margin-top: 1rem;
@@ -326,7 +351,55 @@
             text-align: center;
         }
         /* ====== ▲▲▲ FINE Auto-Update Panel ▲▲▲ ====== */
-
+        /* ====== ▼▼▼ NUOVO: Welcome Screen Panel ▼▼▼ ====== */
+        .welcome-panel {
+            text-align: center;
+            padding: 2rem 1.5rem;
+        }
+        .welcome-panel h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: #BB86FC;
+            margin-bottom: 1.5rem;
+        }
+        .welcome-panel p {
+            color: rgba(230,230,230,0.8);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .welcome-option {
+            background: rgba(0,0,0,0.15);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(187,134,252,0.1);
+        }
+        .welcome-option h4 {
+            color: #7FF7E1;
+            font-family: 'Orbitron', sans-serif;
+            margin: 0 0 0.5rem 0;
+        }
+        .welcome-option p {
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            color: rgba(230,230,230,0.7);
+        }
+        .large-toggle { /* Style for the toggle in welcome screen */
+            transform: scale(1.3);
+            margin-right: 15px;
+            vertical-align: middle;
+        }
+        .welcome-option span { /* Text next to toggle */
+            vertical-align: middle;
+            font-size: 0.95rem;
+            color: #ccc;
+        }
+        .welcome-option .primary-btn {
+            font-size: 1rem;
+            padding: 10px 20px;
+        }
+        /* ====== ▲▲▲ FINE Welcome Screen Panel ▲▲▲ ====== */
         /* ====== Pulsante Salva Flottante (AGGIUNTO) ====== */
         .floating-save-btn {
             position: fixed;
@@ -372,7 +445,12 @@
         @media (max-width: 960px) { /* Modificato breakpoint */
              #app { grid-template-columns: 1fr; grid-template-rows: auto auto; /* Torna a righe automatiche */}
              .stats-panel-container { grid-column: 1 / -1; order: 1; position: static; height: auto; /* Rimuovi sticky */}
-             .main-content { grid-column: 1 / -1; order: 2; overflow-y: visible; padding-right: 0; } /* Rimuovi scroll e padding */
+             .main-content {
+                 grid-column: 1 / -1;
+                 order: 2;
+                 overflow-y: visible; /* Rimuovi scroll e padding */
+                 padding-right: 0;
+             }
          }
         @media (max-width: 768px) {
             #app { width: calc(100% - 24px); margin: 12px auto; padding: 1.2rem; }
@@ -405,9 +483,18 @@
             .controls-container { margin-left: 0; margin-top: 10px; width: 100%; flex-wrap: wrap; justify-content: flex-start; gap: 8px; }
             .move-controls { display: grid; order: 1; }
             .instructions-btn { top: -5px; right: -5px; width: 32px; height: 32px; font-size: 1.1rem; }
-            #toast-container { width: calc(100% - 40px); right: 20px; left: 20px; } /* Toast a tutta larghezza */
+            /* MODIFICATO: Stile Toast per mobile */
+            #toast-container {
+                width: calc(100% - 40px);
+                right: 20px;
+                left: 20px;
+                top: 20px; /* MODIFICATO: Spostato in alto */
+                bottom: auto; /* Rimosso bottom */
+            }
             /* AGGIUNTO: Adatta pulsante flottante per mobile */
             .floating-save-btn { bottom: 20px; right: 20px; width: 50px; height: 50px; font-size: 1.3rem; }
+            .welcome-panel { padding: 1.5rem 1rem; } /* Adjust padding for welcome screen on mobile */
+            .welcome-option { padding: 1rem; }
         }
         /* MODIFICATO: Spostato il selettore lingua nell'header */
         .lang-switcher { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
@@ -431,20 +518,34 @@
         <div :class="['global-loader', { visible: isLoading }]">
             <div class="loader-spinner"></div>
         </div>
-        <!-- Container per Toast -->
-        <div id="toast-container">
-            <transition-group name="toast" tag="div">
-                <div v-for="toast in toasts" :key="toast.id" :class="['toast', toast.type]">
-                    {{ toast.message }}
-                </div>
-            </transition-group>
-        </div>
+       
+        <!-- ▼▼▼ SEZIONE MODIFICATA ▼▼▼ -->
+        <!-- Container per Toast (SPOSTATO QUI, FUORI DAL GRID) -->
+        <!--
+            USANDO TELEPORT:
+            Questo sposta il container dei toast fuori da #app e lo attacca
+            direttamente al <body>.
+            Questo è necessario perché #app usa 'backdrop-filter', che crea
+            un "containing block" e impedisce a 'position: fixed' di
+            funzionare correttamente rispetto alla finestra (viewport)
+            quando si scorre la pagina.
+        -->
+        <teleport to="body">
+            <div id="toast-container">
+                <transition-group name="toast" tag="div">
+                    <div v-for="toast in toasts" :key="toast.id" :class="['toast', toast.type]">
+                        {{ toast.message }}
+                    </div>
+                </transition-group>
+            </div>
+        </teleport>
+        <!-- ▲▲▲ FINE SEZIONE MODIFICATA ▲▲▲ -->
         <header>
             <h1 @click="incrementAdminClick">{{ t('h1') }}</h1>
             <div class="subtitle" v-if="!isLoggedIn && !isMonitoring">{{ t('subtitle.login') }}</div>
             <div class="subtitle" v-else-if="isMonitoring">{{ t('subtitle.monitoring') }}</div>
+            <div class="subtitle" v-else-if="isLoggedIn && showWelcomeScreen">{{ t('welcome.title') }}</div> <!-- Subtitle for Welcome -->
             <div class="subtitle" v-else-if="isLoggedIn">{{ t('subtitle.loggedIn') }}</div>
-            
             <!-- ▼▼▼ SELETTORE LINGUA SPOSTATO QUI ▼▼▼ -->
             <div class="lang-switcher">
                 <span style="font-size: 0.85rem; opacity: 0.8;">{{ t('footer.language') }}:</span>
@@ -455,7 +556,7 @@
             <button @click="showInstructions = true" class="instructions-btn" :title="t('instructions.buttonTitle')">?</button>
         </header>
         <!-- Container per Pannello Statistiche (ora posizionato via Grid) -->
-        <div v-if="isLoggedIn" class="stats-panel-container">
+        <div v-if="isLoggedIn && !showWelcomeScreen" class="stats-panel-container"> <!-- Hide stats on welcome -->
              <div class="stats-panel">
                  <h3>{{ t('stats.title') }}</h3>
                  <div class="stat-item">
@@ -487,13 +588,12 @@
                          <div style="font-size:0.85rem;">{{ t('footer.copyright') }}</div>
                          <div style="font-size:0.85rem; opacity:0.8;">{{ t('footer.skin') }}</div>
                      </div>
-                     <!-- ▼▼▼ SELETTORE LINGUA RIMOSSO DA QUI ▼▼▼ -->
-                     <!-- ▲▲▲ SELETTORE LINGUA RIMOSSO DA QUI ▲▲▲ -->
                  </div>
              </div>
         </div>
         <!-- Contenuto principale (ora posizionato via Grid) -->
         <div class="main-content">
+            <!-- Container Toast RIMOSSO da qui -->
             <div class="panel" v-if="!isLoggedIn">
                 <!-- Login/Monitor Forms -->
                 <form @submit.prevent="login" v-if="!showAdminInput" style="margin-bottom:14px;">
@@ -509,12 +609,41 @@
                     <button type="submit" class="primary-btn" :disabled="isLoading" style="background: linear-gradient(90deg,#FFA500,#FFB86C); color:#111;">{{ isLoading ? t('monitor.loading') : t('monitor.button') }}</button>
                 </form>
             </div>
-            <div v-if="isLoggedIn">
+            <!-- ▼▼▼ NUOVO: Welcome Screen ▼▼▼ -->
+            <div v-if="isLoggedIn && showWelcomeScreen" class="panel welcome-panel">
+                <h2>{{ t('welcome.title') }}</h2>
+                <p>{{ t('welcome.p1') }}</p>
+                <!-- Auto Update Option -->
+                <div class="welcome-option">
+                    <h4>{{ t('welcome.autoUpdateTitle') }}</h4>
+                    <p>{{ t('welcome.autoUpdateDesc') }}</p>
+                    <label class="toggle-switch large-toggle" style="display: inline-block;">
+                        <input type="checkbox" v-model="isAutoUpdateEnabled" :disabled="isMonitoring">
+                        <span class="slider"></span>
+                    </label>
+                    <span>{{ isAutoUpdateEnabled ? t('welcome.autoUpdateEnabled') : t('welcome.autoUpdateDisabled') }}</span>
+                </div>
+                <!-- Proceed Option -->
+                <div class="welcome-option">
+                     <h4>{{ t('welcome.manageTitle') }}</h4>
+                     <p>{{ t('welcome.manageDesc') }}</p>
+                     <button @click="dismissWelcomeScreen" class="primary-btn">
+                         {{ t('welcome.proceedButton') }} →
+                     </button>
+                </div>
+            </div>
+            <!-- ▲▲▲ NUOVO: Welcome Screen ▲▲▲ -->
+             <!-- ▼▼▼ Main Addon Management Area (Conditional wrapper added) ▼▼▼ -->
+            <div v-if="isLoggedIn && !showWelcomeScreen">
                 <!-- Save Button -->
                 <div style="margin-bottom:12px;">
                     <button @click="saveOrder" :class="['primary-btn', { 'unsaved-changes': hasUnsavedChanges }]" :disabled="isLoading || isMonitoring" style="width:100%;">
                         <span v-if="hasUnsavedChanges" class="unsaved-indicator"></span>
                         💾 {{ t('list.saveButton') }} <span v-if="isMonitoring">(Disabled in Monitor Mode)</span>
+                    </button>
+                    <!-- Aggiungi dopo il bottone saveOrder -->
+                    <button @click="refreshAddonList" class="secondary-btn" :disabled="isLoading || isMonitoring" style="width:100%; margin-top: 10px; background: linear-gradient(90deg, #2196F3, #03A9F4);">
+                        🔄 {{ t('list.refreshButton') }}
                     </button>
                 </div>
                 <!-- Add Addon Panel -->
@@ -529,6 +658,8 @@
                         <button @click="exportBackup" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #4CAF50, #81C784);">{{ t('backup.exportButton') }}</button>
                         <button @click="triggerFileInput" class="secondary-btn" style="flex:1;" :disabled="isMonitoring">{{ t('backup.importButton') }}</button>
                         <button @click="generateShareLink" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #673AB7, #9575CD);">{{ t('backup.shareButton') }}</button>
+                        <!-- Aggiungi un nuovo bottone -->
+                        <button @click="exportTxt" class="secondary-btn" style="flex:1; background:linear-gradient(90deg, #607D8B, #90A4AE);">{{ t('backup.exportTxtButton') }}</button>
                     </div>
                     <input type="file" ref="fileInput" @change="handleFileImport" accept=".json" style="display: none;">
                 </div>
@@ -540,8 +671,7 @@
                         <button @click="copyShareLink" class="secondary-btn">{{ t('share.copyButton') }}</button>
                     </div>
                 </div>
-
-                <!-- ▼▼▼ NUOVO: Auto-Update Panel ▼▼▼ -->
+                <!-- Auto-Update Panel -->
                 <div class="panel auto-update-panel">
                     <div class="auto-update-header">
                         <h3>{{ t('autoUpdate.title') }}</h3>
@@ -558,8 +688,6 @@
                         {{ t('autoUpdate.lastCheck') }}: {{ new Date(lastUpdateCheck).toLocaleString(lang) }}
                     </div>
                 </div>
-                <!-- ▲▲▲ NUOVO: Auto-Update Panel ▲▲▲ -->
-                
                 <!-- Filters, Actions, Status Check -->
                 <div style="margin-top:14px;">
                     <div class="panel actions-panel" style="justify-content: center; min-height: auto;">
@@ -598,6 +726,10 @@
                             <button @click="toggleSelectAll" class="secondary-btn" style="background: rgba(0,0,0,0.2); border: 1px solid rgba(255,255,255,0.05);">
                                 {{ allSelected ? t('bulkActions.deselectAll') : t('bulkActions.selectAll') }}
                             </button>
+                            <!-- Aggiungi dopo il bottone toggleSelectAll -->
+                            <span v-if="filteredAddons.length !== addons.length" style="font-size: 0.9rem; color: rgba(230,230,230,0.75); margin-left: 10px;">
+                                {{ t('search.resultsCount', { shown: filteredAddons.length, total: addons.length }) }}
+                            </span>
                         </div>
                     </div>
                     <!-- Addon List -->
@@ -630,22 +762,21 @@
                                 </div>
                                 <div class="controls-container">
                                     <div class="move-controls" aria-hidden="false">
-                                        <button @click.stop="moveTop(addon)" :disabled="addons.indexOf(addon) === 0 || isMonitoring" class="controls-btn" :title="t('addon.moveTopTitle')">🔝</button>
-                                        <button @click.stop="moveBottom(addon)" :disabled="addons.indexOf(addon) === addons.length - 1 || isMonitoring" class="controls-btn" :title="t('addon.moveBottomTitle')">⬇️</button>
-                                        <button @click.stop="moveUp(addon)" :disabled="addons.indexOf(addon) === 0 || isMonitoring" class="controls-btn" :title="t('addon.moveUpTitle')">▲</button>
-                                        <button @click.stop="moveDown(addon)" :disabled="addons.indexOf(addon) === addons.length - 1 || isMonitoring" class="controls-btn" :title="t('addon.moveDownTitle')">▼</button>
+                                        <button @click.stop="moveTop(addon)" :disabled="addons.indexOf(addon) === 0 || isMonitoring" class="controls-btn" :title="t('addon.moveTopTitle')" aria-label="Move to top">🔝</button>
+                                        <button @click.stop="moveBottom(addon)" :disabled="addons.indexOf(addon) === addons.length - 1 || isMonitoring" class="controls-btn" :title="t('addon.moveBottomTitle')" aria-label="Move to bottom">⬇️</button>
+                                        <button @click.stop="moveUp(addon)" :disabled="addons.indexOf(addon) === 0 || isMonitoring" class="controls-btn" :title="t('addon.moveUpTitle')" aria-label="Move up">▲</button>
+                                        <button @click.stop="moveDown(addon)" :disabled="addons.indexOf(addon) === addons.length - 1 || isMonitoring" class="controls-btn" :title="t('addon.moveDownTitle')" aria-label="Move down">▼</button>
                                     </div>
                                     <label class="toggle-switch" :title="t('addon.toggleTitle')"><input type="checkbox" v-model="addon.isEnabled" @change.stop="toggleAddonEnabled(addon)" :disabled="isMonitoring"><span class="slider"></span></label>
                                     <!-- Pulsante Test Velocità -->
                                     <button @click.stop="testAddonSpeed(addon)" class="icon-btn" :title="t('addon.speedTestTitle')">⏱️</button>
-                                     <!-- ▼▼▼ NUOVO PULSANTE DETTAGLI (aggiunto se necessario) ▼▼▼ -->
+                                     <!-- Pulsante Dettagli -->
                                      <button @click.stop="toggleAddonDetails(addon)" :class="['icon-btn', 'details-toggle-btn', { 'expanded': addon.isExpanded }]" :title="t('addon.detailsTitle')">►</button>
-                                     <!-- ▲▲▲ NUOVO PULSANTE DETTAGLI ▲▲▲ -->
                                     <button v-if="addon.manifest.behaviorHints && addon.manifest.behaviorHints.configurable" @click.stop="openConfiguration(addon)" class="icon-btn" :title="t('addon.configureTitle')">⚙️</button>
                                     <button @click.stop="copyManifestUrl(addon)" class="icon-btn" :title="t('addon.copyTitle')">📋</button>
                                     <button @click.stop="removeAddon(addon)" class="remove-btn" :disabled="isLoading || isMonitoring" :title="t('addon.removeTitle')">🗑️</button>
                                 </div>
-                                 <!-- ▼▼▼ SEZIONE DETTAGLI ESPANDIBILE (aggiunta se necessario) ▼▼▼ -->
+                                 <!-- Sezione Dettagli Espandibile -->
                                  <div :class="['addon-extra-details', { 'visible': addon.isExpanded }]">
                                      <h4>{{ t('addon.details.title') }}</h4>
                                      <ul>
@@ -656,7 +787,6 @@
                                          <li><strong>{{ t('addon.details.url') }}:</strong> {{ addon.transportUrl }}</li>
                                      </ul>
                                  </div>
-                                 <!-- ▲▲▲ SEZIONE DETTAGLI ESPANDIBILE ▲▲▲ -->
                             </li>
                         </template>
                     </draggable>
@@ -664,14 +794,14 @@
                     <p v-if="!isLoading && addons.length === 0" style="text-align: center; margin-top: 2rem; color: #aaa;">{{ t('list.noAddons') }}</p>
                 </div>
                 <!-- Logout Button -->
-                <div v-if="isLoggedIn" style="margin-top:1.5rem; display:flex; gap:10px;">
+                <div style="margin-top:1.5rem; display:flex; gap:10px;">
                     <button @click="logout" class="primary-btn logout-btn" style="background: linear-gradient(90deg,#333,#111); color:#fff; width: 100%;">{{ t('list.logoutButton') }}</button>
                 </div>
-            </div> <!-- Fine Blocco v-if="isLoggedIn" -->
+            </div> <!-- Fine Blocco v-if="isLoggedIn && !showWelcomeScreen" -->
         </div> <!-- Fine .main-content -->
-        <!-- AGGIUNTO: Pulsante Salva Flottante -->
+        <!-- Pulsante Salva Flottante -->
         <button
-            v-if="isLoggedIn && !isMonitoring"
+            v-if="isLoggedIn && !isMonitoring && !showWelcomeScreen"
             @click="saveOrder"
             :class="['floating-save-btn', { visible: hasUnsavedChanges }]"
             :disabled="isLoading || !hasUnsavedChanges">
@@ -693,11 +823,10 @@
                 <h3>{{ t('instructions.status.title') }}</h3><p>{{ t('instructions.status.p1') }}</p>
                 <h3>{{ t('instructions.backup.title') }}</h3><p>{{ t('instructions.backup.p1') }}</p><p>{{ t('instructions.backup.p2') }}</p><p>{{ t('instructions.backup.p3') }}</p>
                 <h3>{{ t('instructions.share.title') }}</h3><p>{{ t('instructions.share.p1') }}</p>
-                <!-- ▼▼▼ NUOVO: Istruzioni Auto-Update ▼▼▼ -->
+                <!-- Istruzioni Auto-Update -->
                 <h3>{{ t('instructions.autoUpdate.title') }}</h3>
                 <p>{{ t('instructions.autoUpdate.p1') }}</p>
                 <p>{{ t('instructions.autoUpdate.p2') }}</p>
-                <!-- ▲▲▲ NUOVO: Istruzioni Auto-Update ▲▲▲ -->
                 <h3>{{ t('instructions.other.title') }}</h3><p>{{ t('instructions.other.p1') }}</p><p>{{ t('instructions.other.p2') }}</p><p>{{ t('instructions.other.p3') }}</p><p>{{ t('instructions.other.p4') }}</p><p>{{ t('instructions.other.p5') }}</p>
             </div>
         </div>
@@ -737,100 +866,70 @@
             const importedConfigFromUrl = ref(null); const shareInput = ref(null); const shareUrl = ref(null);
             const showSearchInput = ref(false); const searchInputRef = ref(null); const showInstructions = ref(false);
             const showImportConfirm = ref(false); const pendingImportData = ref(null); const importSource = ref('');
-            const isMobile = ref(window.innerWidth <= 960); // Aggiornato breakpoint mobile
-            // ▼▼▼ NUOVI REFS per Auto-Update ▼▼▼
+            const isMobile = ref(window.innerWidth <= 960);
             const isAutoUpdateEnabled = ref(false);
             const lastUpdateCheck = ref(null);
-            const isUpdating = ref(false); // Loader specifico per l'aggiornamento
-            // ▲▲▲ NUOVI REFS per Auto-Update ▲▲▲
-
-            // --- Translations (aggiunti placeholder per future espansioni) ---
+            const isUpdating = ref(false);
+            const showWelcomeScreen = ref(false); // NUOVO: Ref per la schermata di benvenuto
+            // --- Translations ---
             const translations = {
-                it: { /* Traduzioni IT aggiornate */ 
-                    meta: { title: "STREMIO | CONSOLE DI COMANDO ADDON" }, h1: "STREMIO | CONSOLE DI COMANDO ADDON", subtitle: { login: "Per accedere inserisci le credenziali dell'account Stremio", monitoring: "Modalità Monitoraggio attiva", loggedIn: "Console rapida per gestire, ordinare e salvare gli addon" }, login: { title: "Accesso Utente", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Accesso in corso..." }, monitor: { title: "Modalità Monitoraggio", keyPlaceholder: "La tua Chiave di Monitoraggio", emailPlaceholder: "E-mail dell'utente da controllare", button: "MONITORA UTENTE", loading: "Monitoraggio..." }, list: { title: "Lista Addon ({{count}})", saveButton: "Salva Ordine e Modifiche su Stremio", addPlaceholder: "Incolla l'URL del manifesto addon (https://.../manifest.json)", addButton: "Aggiungi", checkStatusButton: "Verifica Stato Addon", noResults: "Nessun addon corrisponde alla tua ricerca.", noAddons: "Nessun addon trovato per questo account.", logoutButton: "LOGOUT", logoutConfirm: "Hai modifiche non salvate. Sei sicuro di voler uscire?" }, backup: { title: "Gestione Backup", exportButton: "Esporta Backup (.json)", importButton: "Importa Backup (.json)", shareButton: "Condividi Config (URL)" }, share: { title: "Link di Condivisione Generato", copyButton: "Copia Link", copySuccess: "Link copiato negli appunti!" }, import: { urlSuccess: "Configurazione importata da URL! {{count}} addon caricati. Clicca SALVA.", urlErrorInvalid: "Dati di configurazione nell'URL non validi o corrotti.", fileSuccess: "Backup importato! {{count}} addon caricati. Clicca SALVA.", error: "Importazione fallita: {{message}}" }, importConfirm: { title: "Conferma Importazione", p1: "Stai per sovrascrivere la tua lista addon attuale. Questa azione non può essere annullata.", p2_file: "Caricando questa configurazione da un file.", p2_url: "Caricando questa configurazione da un URL di condivisione.", confirmButton: "Conferma e Sovrascrivi", cancelButton: "Annulla" }, search: { placeholder: "🔍 Cerca addon per nome...", toggleTitle: "Mostra/Nascondi ricerca" }, actions: { undo: "Annulla ultima azione", undoLabel: "Annulla", redo: "Ripristina ultima azione", redoLabel: "Ripristina" }, filters: { all: "Tutti", enabled: "Attivi", disabled: "Disattivati", errors: "Con Errori" },
+                it: {
+                    meta: { title: "STREMIO | CONSOLE DI COMANDO ADDON" }, h1: "STREMIO | CONSOLE DI COMANDO ADDON", subtitle: { login: "Per accedere inserisci le credenziali dell'account Stremio", monitoring: "Modalità Monitoraggio attiva", loggedIn: "Console rapida per gestire, ordinare e salvare gli addon" },
+                    welcome: { // NUOVE TRADUZIONI
+                        title: "Benvenuto nella Console Addon!",
+                        p1: "Configura rapidamente le opzioni principali o vai direttamente alla gestione della tua lista.",
+                        autoUpdateTitle: "Aggiornamenti Automatici Notturni",
+                        autoUpdateDesc: "Vuoi che la console controlli e installi automaticamente gli aggiornamenti degli addon ogni notte alle 3:00?",
+                        autoUpdateEnabled: "Attivi",
+                        autoUpdateDisabled: "Disattivati",
+                        manageTitle: "Gestisci i Tuoi Addon",
+                        manageDesc: "Vai alla lista completa per aggiungere, rimuovere, riordinare e configurare i tuoi addon.",
+                        proceedButton: "Gestisci Addon"
+                    },
+                    login: { title: "Accesso Utente", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Accesso in corso..." }, monitor: { title: "Modalità Monitoraggio", keyPlaceholder: "La tua Chiave di Monitoraggio", emailPlaceholder: "E-mail dell'utente da controllare", button: "MONITORA UTENTE", loading: "Monitoraggio..." }, list: { title: "Lista Addon ({{count}})", saveButton: "Salva Ordine e Modifiche su Stremio", addPlaceholder: "Incolla l'URL del manifesto addon[](https://.../manifest.json)", addButton: "Aggiungi", checkStatusButton: "Verifica Stato Addon", noResults: "Nessun addon corrisponde alla tua ricerca.", noAddons: "Nessun addon trovato per questo account.", logoutButton: "LOGOUT", logoutConfirm: "Hai modifiche non salvate. Sei sicuro di voler uscire?", refreshButton: "Aggiorna Lista", refreshSuccess: "Lista aggiornata dal server!", refreshError: "Errore aggiornamento: {{message}}" }, backup: { title: "Gestione Backup", exportButton: "Esporta Backup (.json)", importButton: "Importa Backup (.json)", shareButton: "Condividi Config (URL)", exportTxtButton: "Esporta Lista TXT", exportTxtSuccess: "Lista esportata come TXT!" }, share: { title: "Link di Condivisione Generato", copyButton: "Copia Link", copySuccess: "Link copiato negli appunti!" }, import: { urlSuccess: "Configurazione importata da URL! {{count}} addon caricati. Clicca SALVA.", urlErrorInvalid: "Dati di configurazione nell'URL non validi o corrotti.", fileSuccess: "Backup importato! {{count}} addon caricati. Clicca SALVA.", error: "Importazione fallita: {{message}}" }, importConfirm: { title: "Conferma Importazione", p1: "Stai per sovrascrivere la tua lista addon attuale. Questa azione non può essere annullata.", p2_file: "Caricando questa configurazione da un file.", p2_url: "Caricando questa configurazione da un URL di condivisione.", confirmButton: "Conferma e Sovrascrivi", cancelButton: "Annulla" }, search: { placeholder: "🔍 Cerca addon per nome...", toggleTitle: "Mostra/Nascondi ricerca", resultsCount: "Mostrando {{shown}}/{{total}} addon" }, actions: { undo: "Annulla ultima azione", undoLabel: "Annulla", redo: "Ripristina ultima azione", redoLabel: "Ripristina" }, filters: { all: "Tutti", enabled: "Attivi", disabled: "Disattivati", errors: "Con Errori" },
                     addon: {
                         statusTitle: "Stato: {{status}}", errorDetailsTitle: "Dettaglio Errore: {{details}}", editTitle: "Modifica Nome", saveButton: "Salva", noDescription: "Nessuna descrizione", toggleTitle: "Abilita/Disabilita Addon", configureTitle: "Configura Addon", copyTitle: "Copia URL Manifesto", moveTopTitle: "Sposta in Cima", moveBottomTitle: "Sposta in Fondo", moveUpTitle: "Sposta Su", moveDownTitle: "Sposta Giù", removeTitle: "Rimuovi", removeConfirm: "Sei sicuro di voler rimuovere \"{{name}}\"?", renameSuccess: "Nome aggiornato. Clicca su SALVA.", addSuccess: "Addon \"{{name}}\" aggiunto! Clicca su SALVA.", removeSuccess: "Addon rimosso. Clicca su SALVA.", copyUrlSuccess: "URL copiato!", copyUrlError: "Impossibile copiare URL.", statusCheck: "📡 Avviata verifica stato.", statusCheckComplete: "📡 Verifica completa. Trovati {{errorCount}} errori.", statusCheckError: "Errore verifica: {{message}}", sessionRestored: "Sessione ripristinata.", loginSuccess: "Login effettuato.", saveSuccess: "🎉 Ordine salvato!", saveError: "Salvataggio fallito: {{message}}", saving: "Salvataggio...", addError: "Errore aggiunta: {{message}}", monitorError: "ERRORE MONITORAGGIO: {{message}}", monitorSuccess: "MONITORAGGIO: Dati per {{email}} caricati.", exportError: "Errore creazione backup: {{message}}", exportSuccess: "Backup esportato!", shareError: "Errore creazione link: {{message}}", shareGenerated: "Link di condivisione generato!", monitorModeActive: "Modalità Monitoraggio Attivata.",
                         speedTestTitle: "Test Velocità Addon", speedTestRunning: "Test velocità in corso per {{name}}...", speedTestResult: "Risultato Test {{name}}: {{time}}ms", speedTestTimeout: "Test Fallito {{name}}: Timeout (8s)",
-                        // ▼▼▼ NUOVE TRADUZIONI DETTAGLI ▼▼▼
                         detailsTitle: "Mostra/Nascondi Dettagli",
-                        details: {
-                            title: "Dettagli Manifesto",
-                            version: "Versione",
-                            id: "ID",
-                            types: "Tipi",
-                            resources: "Risorse",
-                            url: "URL Manifesto"
-                        }
-                        // ▲▲▲ NUOVE TRADUZIONI DETTAGLI ▲▲▲
+                        details: { title: "Dettagli Manifesto", version: "Versione", id: "ID", types: "Tipi", resources: "Risorse", url: "URL Manifesto" }
                     },
-                    // ▼▼▼ NUOVE TRADUZIONI Auto-Update ▼▼▼
                     autoUpdate: {
-                        title: "Aggiornamento Automatico",
-                        description: "Se abilitato, cercherà nuove versioni degli addon ogni notte alle 3:00 e le salverà automaticamente.",
-                        toggleTitle: "Abilita/Disabilita aggiornamento automatico",
-                        forceButton: "Forza Aggiornamento Ora",
-                        running: "Aggiornamento in corso...",
-                        enabled: "Aggiornamento automatico Abilitato.",
-                        disabled: "Aggiornamento automatico Disabilitato.",
-                        foundChanges: "Trovati {{count}} aggiornamenti (falliti: {{failed}}). Salvataggio automatico...",
-                        noChanges: "Nessun aggiornamento trovato (falliti: {{failed}}).",
-                        lastCheck: "Ultimo controllo"
+                        title: "Aggiornamento Automatico", description: "Se abilitato, cercherà nuove versioni degli addon ogni notte alle 3:00 e le salverà automaticamente.", toggleTitle: "Abilita/Disabilita aggiornamento automatico", forceButton: "Forza Aggiornamento Ora", running: "Aggiornamento in corso...", enabled: "Aggiornamento automatico Abilitato.", disabled: "Aggiornamento automatico Disabilitato.", foundChanges: "Trovati {{count}} aggiornamenti (falliti: {{failed}}). Salvataggio automatico...", noChanges: "Nessun aggiornamento trovato (falliti: {{failed}}).", lastCheck: "Ultimo controllo"
                     },
-                    // ▲▲▲ NUOVE TRADUZIONI Auto-Update ▲▲▲
-                    bulkActions: { selected: "{{count}} Selezionati", enable: "🟢 Attiva", disable: "🔴 Disattiva", remove: "🗑️ Rimuovi", removeConfirm: "Sei sicuro di voler rimuovere {{count}} addon selezionati?", selectAll: "Seleziona Tutti", deselectAll: "Deseleziona Tutti", enabledSuccess: "Attivati {{count}} addon selezionati. Clicca Salva.", disabledSuccess: "Disattivati {{count}} addon selezionati. Clicca Salva.", removeSuccess: "Rimossi {{count}} addon selezionati. Clicca Salva.", noneToEnable: "Nessun addon selezionato da attivare.", noneToDisable: "Nessun addon selezionato da disattivar." }, stats: { title: "Statistiche", total: "Totale Addon", enabled: "Abilitati", disabled: "Disabilitati", errors: "Con Errori" }, footer: { copyright: "© Stremio Console", skin: "Cyberpunk skin • by Luca", language: "Lingua" },
+                    bulkActions: { selected: "{{count}} Selezionati", enable: "🟢 Attiva", disable: "🔴 Disattiva", remove: "🗑️ Rimuovi", removeConfirm: "Sei sicuro di voler rimuovere {{count}} addon selezionati?", selectAll: "Seleziona Tutti", deselectAll: "Deselecta Tutti", enabledSuccess: "Attivati {{count}} addon selezionati. Clicca Salva.", disabledSuccess: "Disattivati {{count}} addon selezionati. Clicca Salva.", removeSuccess: "Rimossi {{count}} addon selezionati. Clicca Salva.", noneToEnable: "Nessun addon selezionato da attivare.", noneToDisable: "Nessun addon selezionato da disattivar." }, stats: { title: "Statistiche", total: "Totale Addon", enabled: "Abilitati", disabled: "Disabilitati", errors: "Con Errori" }, footer: { copyright: "© Stremio Console", skin: "Cyberpunk skin • by Luca", language: "Lingua" },
                     instructions: {
                         buttonTitle: "Mostra Istruzioni", title: "Istruzioni Console Addon Stremio", login: { title: "Accesso e Monitoraggio", p1: "Inserisci email e password del tuo account Stremio per accedere alla lista dei tuoi addon.", p2: "Cliccando ripetutamente sul titolo (quando non loggato) si attiva la 'Modalità Monitoraggio'. Inserendo una chiave valida e l'email di un altro utente, potrai visualizzare (ma non modificare) la sua lista addon." }, list: { title: "Gestione Lista Addon", p1: "Una volta effettuato l'accesso, vedrai la lista dei tuoi addon. Per ogni addon puoi:", li1: "Vedere nome, icona e descrizione.", li2: "Riordinare trascinando l'addon (Drag & Drop) usando l'area centrale (solo su Desktop/Tablet).", li3: "Riordinare usando i pulsanti freccia (▲▼🔝⬇️).", li4: "Abilitare/Disabilitare l'addon usando l'interruttore.", li5: "Modificare il nome visualizzato (clicca 🖊️).", li6: "Aprire la pagina di configurazione (se disponibile, clicca ⚙️).", li7: "Copiare l'URL del manifesto (clicca 📋) e testare la velocità (clicca ⏱️)." }, bulk: { title: "Azioni di Gruppo", p1: "Usa le checkbox a sinistra per selezionare più addon. Apparirà un pannello per Attivare, Disattivar o Rimuovere tutti gli addon selezionati in un colpo solo. Usa il pulsante 'Seleziona Tutti / Deseleziona Tutti' per velocizzare." }, status: { title: "Verifica Stato", p1: "Clicca 'Verifica Stato Addon' per controllare se ogni addon risponde correttamente. Lo stato è indicato dal pallino colorato. Se un addon ha un errore (rosso), passa il mouse sull'icona ℹ️ per vedere il dettaglio." }, backup: { title: "Backup e Ripristino", p1: "Usa 'Esporta Backup' per salvare la tua lista addon attuale (inclusi ordine, nomi personalizzati e stato attivo/disattivo) in un file .json sul tuo computer.", p2: "Usa 'Importa Backup' per caricare un file .json precedentemente salvato e ripristinare quella configurazione.", p3: "Ricorda: dopo l'importazione devi cliccare 'Salva Ordine e Modifiche su Stremio' per applicare le modifiche." }, share: { title: "Condivisione Configurazione (URL)", p1: "Clicca 'Condividi Config (URL)' per generare un link unico che contiene tutta la tua configurazione addon. Invia questo link a un amico: aprendolo, vedrà la tua stessa lista pronta per essere salvata sul suo account." },
-                        // ▼▼▼ NUOVE ISTRUZIONI Auto-Update ▼▼▼
-                        autoUpdate: {
-                            title: "Aggiornamento Automatico",
-                            p1: "Nel pannello 'Aggiornamento Automatico' puoi abilitare un controllo notturno (alle 3:00) per le nuove versioni degli addon.",
-                            p2: "Se abilitato, la console scaricherà i manifest più recenti, li confronterà con i tuoi, e se trova differenze, salverà automaticamente la nuova configurazione su Stremio, mantenendo i tuoi nomi personalizzati e l'ordine. Puoi anche forzare un controllo manualmente."
-                        },
-                        // ▲▲▲ NUOVE ISTRUZIONI Auto-Update ▲▲▲
+                        autoUpdate: { title: "Aggiornamento Automatico", p1: "Nel pannello 'Aggiornamento Automatico' puoi abilitare un controllo notturno (alle 3:00) per le nuove versioni degli addon.", p2: "Se abilitato, la console scaricherà i manifest più recenti, li confronterà con i tuoi, e se trova differenze, salverà automaticamente la nuova configurazione su Stremio, mantenendo i tuoi nomi personalizzati e l'ordine. Puoi anche forzare un controllo manually." },
                         other: { title: "Altre Funzionalità", p1: "Usa l'icona 🔍 per cercare addon per nome.", p2: "Usa i pulsanti 'Annulla' (↩️) e 'Ripristina' (↪️) per annullare o rifare le modifiche locali prima di salvare.", p3: "Puoi cambiare la lingua dell'interfaccia (IT/EN) usando i pulsanti nell'header.", p4: "Un pannello sulla destra (o in alto su mobile) mostra statistiche rapide sulla tua lista addon.", p5: "Messaggi di successo ed errore appaiono come notifiche temporanee in alto a destra." }
                     }
                 },
-                en: { /* Traduzioni EN aggiornate */
-                    meta: { title: "STREMIO | ADDON COMMAND CONSOLE" }, h1: "STREMIO | ADDON COMMAND CONSOLE", subtitle: { login: "Enter your Stremio account credentials to log in", monitoring: "Monitoring Mode active", loggedIn: "Quick console to manage, sort, and save addons" }, login: { title: "User Login", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Logging in..." }, monitor: { title: "Monitoring Mode", keyPlaceholder: "Your Monitoring Key", emailPlaceholder: "User E-mail to monitor", button: "MONITOR USER", loading: "Monitoring..." }, list: { title: "Addon List ({{count}})", saveButton: "Save Order and Changes to Stremio", addPlaceholder: "Paste addon manifest URL (https://.../manifest.json)", addButton: "Add", checkStatusButton: "Check Addon Status", noResults: "No addons match your search.", noAddons: "No addons found for this account.", logoutButton: "LOGOUT", logoutConfirm: "You have unsaved changes. Are you sure you want to log out?" }, backup: { title: "Backup Management", exportButton: "Export Backup (.json)", importButton: "Import Backup (.json)", shareButton: "Share Config (URL)" }, share: { title: "Generated Share Link", copyButton: "Copy Link", copySuccess: "Link copied to clipboard!" }, import: { urlSuccess: "Config imported from URL! {{count}} addons loaded. Click SAVE.", urlErrorInvalid: "Configuration data in URL is invalid or corrupt.", fileSuccess: "Backup imported! {{count}} addons loaded. Click SAVE.", error: "Import failed: {{message}}" }, importConfirm: { title: "Confirm Import", p1: "You are about to overwrite your current addon list. This action cannot be undone.", p2_file: "Loading this configuration from a file.", p2_url: "Loading this configuration from a share URL.", confirmButton: "Confirm and Overwrite", cancelButton: "Cancel" }, search: { placeholder: "🔍 Search addons by name...", toggleTitle: "Show/Hide search" }, actions: { undo: "Undo last action", undoLabel: "Undo", redo: "Redo last action", redoLabel: "Redo" }, filters: { all: "All", enabled: "Enabled", disabled: "Disabled", errors: "With Errors" },
+                en: {
+                    meta: { title: "STREMIO | ADDON COMMAND CONSOLE" }, h1: "STREMIO | ADDON COMMAND CONSOLE", subtitle: { login: "Enter your Stremio account credentials to log in", monitoring: "Monitoring Mode active", loggedIn: "Quick console to manage, sort, and save addons" },
+                    welcome: { // NEW TRANSLATIONS
+                        title: "Welcome to the Addon Console!",
+                        p1: "Quickly set up key options or jump straight into managing your list.",
+                        autoUpdateTitle: "Nightly Automatic Updates",
+                        autoUpdateDesc: "Do you want the console to automatically check for and install addon updates every night at 3:00 AM?",
+                        autoUpdateEnabled: "Enabled",
+                        autoUpdateDisabled: "Disabled",
+                        manageTitle: "Manage Your Addons",
+                        manageDesc: "Go to the full list to add, remove, reorder, and configure your addons.",
+                        proceedButton: "Manage Addons"
+                    },
+                    login: { title: "User Login", emailPlaceholder: "Stremio E-mail", passwordPlaceholder: "Stremio Password", button: "LOGIN", loading: "Logging in..." }, monitor: { title: "Monitoring Mode", keyPlaceholder: "Your Monitoring Key", emailPlaceholder: "User E-mail to monitor", button: "MONITOR USER", loading: "Monitoring..." }, list: { title: "Addon List ({{count}})", saveButton: "Save Order and Changes to Stremio", addPlaceholder: "Paste addon manifest URL[](https://.../manifest.json)", addButton: "Add", checkStatusButton: "Check Addon Status", noResults: "No addons match your search.", noAddons: "No addons found for this account.", logoutButton: "LOGOUT", logoutConfirm: "You have unsaved changes. Are you sure you want to log out?", refreshButton: "Refresh List", refreshSuccess: "List refreshed from server!", refreshError: "Refresh error: {{message}}" }, backup: { title: "Backup Management", exportButton: "Export Backup (.json)", importButton: "Import Backup (.json)", shareButton: "Share Config (URL)", exportTxtButton: "Export TXT List", exportTxtSuccess: "List exported as TXT!" }, share: { title: "Generated Share Link", copyButton: "Copy Link", copySuccess: "Link copied to clipboard!" }, import: { urlSuccess: "Config imported from URL! {{count}} addons loaded. Click SAVE.", urlErrorInvalid: "Configuration data in URL is invalid or corrupt.", fileSuccess: "Backup imported! {{count}} addons loaded. Click SAVE.", error: "Import failed: {{message}}" }, importConfirm: { title: "Confirm Import", p1: "You are about to overwrite your current addon list. This action cannot be undone.", p2_file: "Loading this configuration from a file.", p2_url: "Loading this configuration from a share URL.", confirmButton: "Confirm and Overwrite", cancelButton: "Cancel" }, search: { placeholder: "🔍 Search addons by name...", toggleTitle: "Show/Hide search", resultsCount: "Showing {{shown}}/{{total}} addons" }, actions: { undo: "Undo last action", undoLabel: "Undo", redo: "Redo last action", redoLabel: "Redo" }, filters: { all: "All", enabled: "Enabled", disabled: "Disabled", errors: "With Errors" },
                     addon: {
                         statusTitle: "Status: {{status}}", errorDetailsTitle: "Error Details: {{details}}", editTitle: "Edit Name", saveButton: "Save", noDescription: "No description", toggleTitle: "Enable/Disable Addon", configureTitle: "Configure Addon", copyTitle: "Copy Manifest URL", moveTopTitle: "Move to Top", moveBottomTitle: "Move to Bottom", moveUpTitle: "Move Up", moveDownTitle: "Move Down", removeTitle: "Remove", removeConfirm: "Are you sure you want to remove \"{{name}}\"?", renameSuccess: "Name updated. Click SAVE.", addSuccess: "Addon \"{{name}}\" added! Click SAVE.", removeSuccess: "Addon removed. Click SAVE.", copyUrlSuccess: "URL copied!", copyUrlError: "Could not copy URL.", statusCheck: "📡 Started status check.", statusCheckComplete: "📡 Status check complete. Found {{errorCount}} errors.", statusCheckError: "Status check error: {{message}}", sessionRestored: "Session restored.", loginSuccess: "Login successful.", saveSuccess: "🎉 Order saved!", saveError: "Save failed: {{message}}", saving: "Saving...", addError: "Add failed: {{message}}", monitorError: "MONITOR ERROR: {{message}}", monitorSuccess: "MONITORING: Data for {{email}} loaded.", exportError: "Backup export error: {{message}}", exportSuccess: "Backup exported!", shareError: "Share link error: {{message}}", shareGenerated: "Share link generated!", monitorModeActive: "Monitoring Mode Activated.",
                         speedTestTitle: "Test Addon Speed", speedTestRunning: "Running speed test for {{name}}...", speedTestResult: "Test Result {{name}}: {{time}}ms", speedTestTimeout: "Test Failed {{name}}: Timeout (8s)",
-                         // ▼▼▼ NUOVE TRADUZIONI DETTAGLI ▼▼▼
                          detailsTitle: "Show/Hide Details",
-                         details: {
-                             title: "Manifest Details",
-                             version: "Version",
-                             id: "ID",
-                             types: "Types",
-                             resources: "Resources",
-                             url: "Manifest URL"
-                         }
-                         // ▲▲▲ NUOVE TRADUZIONI DETTAGLI ▲▲▲
+                         details: { title: "Manifest Details", version: "Version", id: "ID", types: "Types", resources: "Resources", url: "Manifest URL" }
                     },
-                    // ▼▼▼ NUOVE TRADUZIONI Auto-Update ▼▼▼
                     autoUpdate: {
-                        title: "Automatic Updates",
-                        description: "If enabled, this will check for new addon versions every night at 3:00 AM and save them automatically.",
-                        toggleTitle: "Enable/Disable automatic updates",
-                        forceButton: "Force Update Now",
-                        running: "Updating...",
-                        enabled: "Automatic updates Enabled.",
-                        disabled: "Automatic updates Disabled.",
-                        foundChanges: "Found {{count}} updates (failed: {{failed}}). Auto-saving...",
-                        noChanges: "No new updates found (failed: {{failed}}).",
-                        lastCheck: "Last check"
+                        title: "Automatic Updates", description: "If enabled, this will check for new addon versions every night at 3:00 AM and save them automatically.", toggleTitle: "Enable/Disable automatic updates", forceButton: "Force Update Now", running: "Updating...", enabled: "Automatic updates Enabled.", disabled: "Automatic updates Disabled.", foundChanges: "Found {{count}} updates (failed: {{failed}}). Auto-saving...", noChanges: "No new updates found (failed: {{failed}}).", lastCheck: "Last check"
                     },
-                    // ▲▲▲ NUOVE TRADUZIONI Auto-Update ▲▲▲
                     bulkActions: { selected: "{{count}} Selected", enable: "🟢 Enable", disable: "🔴 Disable", remove: "🗑️ Remove", removeConfirm: "Are you sure you want to remove the {{count}} selected addons?", selectAll: "Select All", deselectAll: "Deselect All", enabledSuccess: "Enabled {{count}} selected addons. Click Save.", disabledSuccess: "Disabled {{count}} selected addons. Click Save.", removeSuccess: "Removed {{count}} selected addons. Click Save.", noneToEnable: "No selected addons to enable.", noneToDisable: "No selected addons to disable." }, stats: { title: "Statistics", total: "Total Addons", enabled: "Enabled", disabled: "Disabled", errors: "With Errors" }, footer: { copyright: "© Stremio Console", skin: "Cyberpunk skin • by Luca", language: "Language" },
                     instructions: {
                         buttonTitle: "Show Instructions", title: "Stremio Addon Console Instructions", login: { title: "Login and Monitoring", p1: "Enter your Stremio account email and password to access your addon list.", p2: "Repeatedly clicking the title (when not logged in) activates 'Monitoring Mode'. By entering a valid key and another user's email, you can view (but not modify) their addon list." }, list: { title: "Managing the Addon List", p1: "Once logged in, you'll see your addon list. For each addon, you can:", li1: "See its name, icon, and description.", li2: "Reorder by dragging the addon (Drag & Drop) using the central area (Desktop/Tablet only).", li3: "Reorder using the arrow buttons (▲▼🔝⬇️).", li4: "Enable/Disable the addon using the toggle switch.", li5: "Edit the display name (click 🖊️).", li6: "Open the configuration page (if available, click ⚙️).", li7: "Copy the manifest URL (click 📋) and test its speed (click ⏱️)." }, bulk: { title: "Bulk Actions", p1: "Use the checkboxes on the left to select multiple addons. A panel will appear allowing you to Enable, Disable, or Remove all selected addons at once. Use the 'Select All / Deselect All' button to speed things up." }, status: { title: "Status Check", p1: "Click 'Check Addon Status' to verify if each addon is responding correctly. The status is indicated by the colored dot. If an addon has an error (red), hover over the ℹ️ icon to see the details." }, backup: { title: "Backup and Restore", p1: "Use 'Export Backup' to save your current addon list (including order, custom names, and enabled/disabled status) to a .json file on your computer.", p2: "Use 'Import Backup' to upload a previously saved .json file and restore that configuration.", p3: "Remember: after importing, you must click 'Save Order and Changes to Stremio' to apply the changes." }, share: { title: "Share Configuration (URL)", p1: "Click 'Share Config (URL)' to generate a unique link containing your entire addon configuration. Send this link to a friend: when they open it, they will see your exact list ready to be saved to their account." },
-                        // ▼▼▼ NUOVE ISTRUZIONI Auto-Update ▼▼▼
-                        autoUpdate: {
-                            title: "Automatic Updates",
-                            p1: "In the 'Automatic Updates' panel, you can enable a nightly check (at 3:00 AM) for new addon versions.",
-                            p2: "If enabled, the console will fetch the latest manifests, compare them to yours, and if differences are found, it will automatically save the new configuration to Stremio, keeping your custom names and order. You can also force a check manually."
-                        },
-                        // ▲▲▲ NUOVE ISTRUZIONI Auto-Update ▲▲▲
+                        autoUpdate: { title: "Automatic Updates", p1: "In the 'Automatic Updates' panel, you can enable a nightly check (at 3:00 AM) for new addon versions.", p2: "If enabled, the console will fetch the latest manifests, compare them to yours, and if differences are found, it will automatically save the new configuration to Stremio, keeping your custom names and order. You can also force a check manually." },
                         other: { title: "Other Features", p1: "Use the 🔍 icon to search for addons by name.", p2: "Use the 'Undo' (↩️) and 'Redo' (↪️) buttons to undo or redo local changes before saving.", p3: "You can change the interface language (IT/EN) using the buttons in the header.", p4: "A panel on the right (or top on mobile) shows quick statistics about your addon list.", p5: "Success and error messages appear as temporary notifications in the top-right corner." }
                     }
                 }
@@ -839,8 +938,6 @@
                 const keys = key.split('.'); let res = translations[lang.value]; keys.forEach(k => res = res?.[k]); let translation = res || key; Object.entries(interpolations).forEach(([varName, value]) => { translation = translation.replace(new RegExp(`{{${varName}}}`, 'g'), value); }); return translation;
             });
             watch(lang, (newLang) => { document.documentElement.lang = newLang; document.title = t.value('meta.title'); try { localStorage.setItem('stremioConsoleLang', newLang); } catch(e) { console.warn("Cannot save lang to localStorage."); } });
-            
-            // ▼▼▼ NUOVO: watch per isAutoUpdateEnabled ▼▼▼
             watch(isAutoUpdateEnabled, (newValue) => {
                 try {
                     localStorage.setItem('stremioAutoUpdateEnabled', newValue);
@@ -851,14 +948,10 @@
                     }
                 } catch(e) { console.warn("Cannot save auto-update pref to localStorage."); }
             });
-            // ▲▲▲ NUOVO: watch per isAutoUpdateEnabled ▲▲▲
-
-            // --- Functions (migliorato error handling e ottimizzato) ---
+            // --- Functions ---
             const showToast = (message, type = 'success', duration = 3000) => { const id = toastIdCounter++; toasts.value.push({ id, message, type }); setTimeout(() => { toasts.value = toasts.value.filter(toast => toast.id !== id); }, duration); };
-            const updateIsMobile = () => isMobile.value = window.innerWidth <= 960; // Aggiornato breakpoint
-             // ▼▼▼ MODIFICATO mapAddon PER INCLUDERE isExpanded ▼▼▼
+            const updateIsMobile = () => isMobile.value = window.innerWidth <= 960;
              const mapAddon = (addon) => ({ ...addon, isEditing: false, newLocalName: addon.manifest.name, status: 'unchecked', selected: false, errorDetails: null, isEnabled: addon.isEnabled !== undefined ? addon.isEnabled : true, isExpanded: false });
-             // ▲▲▲ MODIFICATO mapAddon PER INCLUDERE isExpanded ▲▲▲
             const deepClone = (obj) => JSON.parse(JSON.stringify(obj));
             const recordHistory = () => { if (isLoading.value || isMonitoring.value) return; history.value.push(deepClone(addons.value)); if (history.value.length > 30) history.value.shift(); redoStack.value = []; hasUnsavedChanges.value = true; };
             const undo = () => { if (history.value.length === 0 || isMonitoring.value) return; redoStack.value.push(deepClone(addons.value)); addons.value = history.value.pop(); if (history.value.length === 0) hasUnsavedChanges.value = false; addons.value.forEach(a => a.selected = false); };
@@ -871,7 +964,7 @@
                     addons.value = importedData.map(mapAddon); showToast(t.value(importSource.value === 'file' ? 'import.fileSuccess' : 'import.urlSuccess', { count: addons.value.length }), 'success'); hasUnsavedChanges.value = true; addons.value.forEach(a => a.selected = false);
                 } catch(err) { showToast(t.value('import.error', { message: err.message }), 'error'); } finally { closeImportConfirm(); }
             };
-            const monitorLogin = async () => { 
+            const monitorLogin = async () => {
                 isLoading.value = true; isMonitoring.value = false;
                 try {
                     const response = await fetch(`${apiBaseUrl}/api/admin/monitor`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ adminKey: adminKey.value, targetEmail: targetEmail.value }) });
@@ -880,38 +973,42 @@
                     authKey.value = data.authKey; isLoggedIn.value = true; isMonitoring.value = true; email.value = targetEmail.value;
                     showToast(t.value('addon.monitorSuccess', { email: targetEmail.value }), 'info');
                     sessionStorage.setItem('stremioAuthKey', authKey.value); sessionStorage.setItem('stremioEmail', email.value); sessionStorage.setItem('stremioIsMonitoring', 'true'); sessionStorage.setItem('stremioAddonList', JSON.stringify(data.addons.map(mapAddon)));
-                    if (importedConfigFromUrl.value) { pendingImportData.value = importedConfigFromUrl.value; importSource.value = 'url'; showImportConfirm.value = true; importedConfigFromUrl.value = null; }
-                    else { addons.value = data.addons.map(mapAddon); hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; addons.value.forEach(a => a.selected = false); }
+                    addons.value = data.addons.map(mapAddon);
+                    showWelcomeScreen.value = true; // Mostra welcome screen anche in monitor mode
                 } catch (err) { showToast(t.value('addon.monitorError', { message: err.message }), 'error'); } finally { isLoading.value = false; }
             };
-            const exportBackup = () => { 
+            const exportBackup = () => {
                 if (addons.value.length === 0) { showToast("No addons to export.", 'error'); return; }
                 try {
-                    // MODIFICATO: Rimuove isExpanded dall'export
                     const addonsToExport = addons.value.map(({ selected, errorDetails, status, isEditing, newLocalName, isExpanded, ...rest }) => rest);
                     const dataStr = JSON.stringify(addonsToExport, null, 2); const dataBlob = new Blob([dataStr], {type: "application/json"}); const url = URL.createObjectURL(dataBlob); const link = document.createElement('a'); link.download = `stremio-addons-backup-${new Date().toISOString().split('T')[0]}.json`; link.href = url; link.click(); URL.revokeObjectURL(url);
                     showToast(t.value('addon.exportSuccess'), 'success');
                 } catch(e) { showToast(t.value('addon.exportError', { message: e.message }), 'error'); }
             };
+            const exportTxt = () => {
+         if (addons.value.length === 0) { showToast("No addons to export.", 'error'); return; }
+         const txtContent = addons.value.map(a => `${a.manifest.name}: ${a.transportUrl}`).join('\n');
+         const dataBlob = new Blob([txtContent], {type: "text/plain"}); const url = URL.createObjectURL(dataBlob); const link = document.createElement('a'); link.download = `stremio-addons-list-${new Date().toISOString().split('T')[0]}.txt`; link.href = url; link.click(); URL.revokeObjectURL(url);
+         showToast(t.value('backup.exportTxtSuccess'), 'success');
+     };
             const triggerFileInput = () => { if (!isMonitoring.value) fileInput.value.click(); };
-            const handleFileImport = (event) => { 
+            const handleFileImport = (event) => {
                 const file = event.target.files[0]; if (!file || isMonitoring.value) return; const reader = new FileReader();
                 reader.onload = e => { pendingImportData.value = e.target.result; importSource.value = 'file'; showImportConfirm.value = true; };
-                reader.readAsText(file); event.target.value = null; // Reset input
+                reader.readAsText(file); event.target.value = null;
             };
-            const generateShareLink = () => { 
+            const generateShareLink = () => {
                 try {
-                     // MODIFICATO: Rimuove isExpanded dalla condivisione
                     const addonsToShare = addons.value.map(({ selected, errorDetails, status, isEditing, newLocalName, isExpanded, ...rest }) => rest);
                     const data = JSON.stringify(addonsToShare); const compressed = LZString.compressToEncodedURIComponent(data);
                     shareUrl.value = `${window.location.origin}${window.location.pathname}#config=${compressed}`;
                     showToast(t.value('addon.shareGenerated'), 'info');
                 } catch (err) { showToast(t.value('addon.shareError', { message: err.message }), 'error'); }
             };
-            const copyShareLink = () => { 
+            const copyShareLink = () => {
                 if (!shareInput.value) return; try { shareInput.value.select(); document.execCommand('copy'); showToast(t.value('share.copySuccess'), 'success'); } catch (err) { showToast(t.value('addon.copyUrlError'), 'error'); }
             };
-            const checkAllAddonsStatus = async () => { 
+            const checkAllAddonsStatus = async () => {
                 isLoading.value = true; showToast(t.value('addon.statusCheck'), 'info'); let errorCountLocal = 0;
                 await Promise.allSettled(addons.value.map(async (addon) => {
                     addon.status = 'checking'; addon.errorDetails = null;
@@ -920,173 +1017,65 @@
                 }));
                 showToast(t.value('addon.statusCheckComplete', { errorCount: errorCountLocal }), errorCountLocal > 0 ? 'error' : 'success'); isLoading.value = false;
             };
-
-             // ▼▼▼ NUOVE FUNZIONI PER DETTAGLI ESPANDIBILI ▼▼▼
-             const toggleAddonDetails = (addon) => {
-                 addon.isExpanded = !addon.isExpanded;
-             };
- 
+             const toggleAddonDetails = (addon) => { addon.isExpanded = !addon.isExpanded; };
              const getResourceNames = (resources) => {
-                 if (!Array.isArray(resources)) return 'N/A';
-                 if (resources.length === 0) return 'None';
-                 return resources.map(res => {
-                     if (typeof res === 'string') return res;
-                     if (typeof res === 'object' && res.name) return res.name;
-                     return 'unknown';
-                 }).join(', ');
+                 if (!Array.isArray(resources)) return 'N/A'; if (resources.length === 0) return 'None';
+                 return resources.map(res => { if (typeof res === 'string') return res; if (typeof res === 'object' && res.name) return res.name; return 'unknown'; }).join(', ');
              };
-             // ▲▲▲ NUOVE FUNZIONI PER DETTAGLI ESPANDIBILI ▲▲▲
-
-            // Funzione testAddonSpeed (aggiunta cache per test ripetuti)
             const testAddonSpeed = async (addon) => {
-                if (isLoading.value) return;
-                showToast(t.value('addon.speedTestRunning', { name: addon.manifest.name }), 'info', 2000);
-                isLoading.value = true;
-                const startTime = performance.now();
+                if (isLoading.value) return; showToast(t.value('addon.speedTestRunning', { name: addon.manifest.name }), 'info', 2000); isLoading.value = true; const startTime = performance.now();
                 try {
-                    const controller = new AbortController();
-                    const timeoutId = setTimeout(() => controller.abort(), 8000);
-                    await fetch(addon.transportUrl, { signal: controller.signal, mode: 'cors', cache: 'no-store' });
-                    clearTimeout(timeoutId);
-                    const endTime = performance.now();
-                    const duration = Math.round(endTime - startTime);
+                    const controller = new AbortController(); const timeoutId = setTimeout(() => controller.abort(), 8000);
+                    await fetch(addon.transportUrl, { signal: controller.signal, mode: 'cors', cache: 'no-store' }); clearTimeout(timeoutId);
+                    const endTime = performance.now(); const duration = Math.round(endTime - startTime);
                     showToast(t.value('addon.speedTestResult', { name: addon.manifest.name, time: duration }), 'success');
-                } catch (err) {
-                    showToast(t.value(err.name === 'AbortError' ? 'addon.speedTestTimeout' : 'addon.statusCheckError', { name: addon.manifest.name, message: err.message }), 'error');
-                } finally {
-                    isLoading.value = false;
-                }
+                } catch (err) { showToast(t.value(err.name === 'AbortError' ? 'addon.speedTestTimeout' : 'addon.statusCheckError', { name: addon.manifest.name, message: err.message }), 'error'); } finally { isLoading.value = false; }
             };
-            
-            // ▼▼▼ NUOVA FUNZIONE: runAutoUpdate ▼▼▼
             const runAutoUpdate = async (isManual = false) => {
-                if ((isLoading.value && !isUpdating.value) || isMonitoring.value || !isLoggedIn.value) {
-                    if (isManual) showToast(isMonitoring.value ? t.value('addon.monitorModeActive') : "Operazione già in corso o non loggato.", 'error');
-                    return;
-                }
-            
-                isLoading.value = true;
-                isUpdating.value = true;
-                showToast(t.value('autoUpdate.running'), 'info');
-            
-                let updatedCount = 0;
-                let failedCount = 0;
-                let hasManifestChanges = false;
-            
-                // Funzione helper per fetchare e comparare il manifest
+                if ((isLoading.value && !isUpdating.value) || isMonitoring.value || !isLoggedIn.value) { if (isManual) showToast(isMonitoring.value ? t.value('addon.monitorModeActive') : "Operazione già in corso o non loggato.", 'error'); return; }
+                isLoading.value = true; isUpdating.value = true; showToast(t.value('autoUpdate.running'), 'info');
+                let updatedCount = 0; let failedCount = 0; let hasManifestChanges = false;
                 const fetchAndUpdateAddon = async (addon) => {
                     try {
-                        const response = await fetch(`${apiBaseUrl}/api/fetch-manifest`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ manifestUrl: addon.transportUrl })
-                        });
-                        const responseText = await response.text();
-                        let newManifest;
-                        try {
-                            newManifest = JSON.parse(responseText);
-                        } catch (e) { throw new Error(`Invalid JSON response.`); }
-                        
+                        const response = await fetch(`${apiBaseUrl}/api/fetch-manifest`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ manifestUrl: addon.transportUrl }) });
+                        const responseText = await response.text(); let newManifest; try { newManifest = JSON.parse(responseText); } catch (e) { throw new Error(`Invalid JSON response.`); }
                         if (!response.ok || newManifest.error) throw new Error(newManifest.error?.message || "Failed to fetch");
-            
-                        // Funzione per creare una stringa comparabile del manifest
-                        const getComparableManifest = (m) => {
-                            const { version, description, logo, types, resources, id, behaviorHints, configurable } = m;
-                            // Nota: NON includiamo 'name' per preservare i nomi custom
-                            return JSON.stringify({ version, description, logo, types, resources, id, behaviorHints, configurable });
-                        };
-            
-                        const oldManifestComparable = getComparableManifest(addon.manifest);
-                        const newManifestComparable = getComparableManifest(newManifest);
-            
+                        const getComparableManifest = (m) => { const { version, description, logo, types, resources, id, behaviorHints, configurable } = m; return JSON.stringify({ version, description, logo, types, resources, id, behaviorHints, configurable }); };
+                        const oldManifestComparable = getComparableManifest(addon.manifest); const newManifestComparable = getComparableManifest(newManifest);
                         if (oldManifestComparable !== newManifestComparable) {
-                            hasManifestChanges = true;
-                            updatedCount++;
-                            
-                            // Preserva il nome custom
-                            const currentName = addon.manifest.name; 
-                            
-                            // Aggiorna il manifest, ma mantiene il nome attuale
-                            addon.manifest = { ...newManifest, name: currentName };
-                            addon.newLocalName = currentName; // Sincronizza per l'editing
-                            
+                            hasManifestChanges = true; updatedCount++; const currentName = addon.manifest.name;
+                            addon.manifest = { ...newManifest, name: currentName }; addon.newLocalName = currentName;
                             return { status: 'fulfilled', id: addon.manifest.id };
-                        }
-                        return { status: 'fulfilled', id: addon.manifest.id, noChange: true }; // Nessun cambiamento
-                    } catch (error) {
-                        console.error(`Failed to update ${addon.manifest.name}:`, error);
-                        failedCount++;
-                        return { status: 'rejected', id: addon.manifest.id, reason: error.message };
-                    }
+                        } return { status: 'fulfilled', id: addon.manifest.id, noChange: true };
+                    } catch (error) { console.error(`Failed to update ${addon.manifest.name}:`, error); failedCount++; return { status: 'rejected', id: addon.manifest.id, reason: error.message }; }
                 };
-            
-                // Esegui i fetch in parallelo
                 const results = await Promise.allSettled(addons.value.map(fetchAndUpdateAddon));
-            
-                if (hasManifestChanges) {
-                    showToast(t.value('autoUpdate.foundChanges', { count: updatedCount, failed: failedCount }), 'info');
-                    hasUnsavedChanges.value = true; // Imposta il flag
-                    
-                    // Salva automaticamente le modifiche
-                    await saveOrder(); // saveOrder gestisce i suoi toast (success/fail) e resetta isLoading
-                } else {
-                    showToast(t.value('autoUpdate.noChanges', { failed: failedCount }), failedCount > 0 ? 'error' : 'success');
-                    isLoading.value = false; // Resetta isLoading se non c'è nulla da salvare
-                }
-                
-                try {
-                    localStorage.setItem('stremioLastAutoUpdate', new Date().toISOString());
-                    lastUpdateCheck.value = new Date().toISOString();
-                } catch (e) { console.warn("Cannot save last update time to localStorage."); }
-                
+                if (hasManifestChanges) { showToast(t.value('autoUpdate.foundChanges', { count: updatedCount, failed: failedCount }), 'info'); hasUnsavedChanges.value = true; await saveOrder(); }
+                 else { showToast(t.value('autoUpdate.noChanges', { failed: failedCount }), failedCount > 0 ? 'error' : 'success'); isLoading.value = false; }
+                try { localStorage.setItem('stremioLastAutoUpdate', new Date().toISOString()); lastUpdateCheck.value = new Date().toISOString(); } catch (e) { console.warn("Cannot save last update time to localStorage."); }
                 isUpdating.value = false;
-                // Nota: isLoading viene resettato da saveOrder() o manualmente se non ci sono modifiche
             };
-            // ▲▲▲ NUOVA FUNZIONE: runAutoUpdate ▲▲▲
-
-            // ▼▼▼ NUOVA FUNZIONE: scheduleUpdateCheck ▼▼▼
             const scheduleUpdateCheck = () => {
-                const now = new Date();
-                const nextUpdate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 3, 0, 0, 0); // Oggi alle 3:00
-            
-                if (now.getTime() > nextUpdate.getTime()) {
-                    // Se sono passate le 3:00, schedula per domani
-                    nextUpdate.setDate(nextUpdate.getDate() + 1);
-                }
-            
-                const timeToNextUpdate = nextUpdate.getTime() - now.getTime();
-                console.log(`Next auto-update check scheduled for: ${nextUpdate.toLocaleString()}`);
-            
-                // Schedula il prossimo controllo
-                setTimeout(async () => {
-                    console.log("Running scheduled auto-update check...");
-                    if (isLoggedIn.value && isAutoUpdateEnabled.value && !isMonitoring.value) {
-                        await runAutoUpdate(false); // Esegui l'aggiornamento
-                    }
-                    // Ri-schedula per il giorno successivo
-                    scheduleUpdateCheck(); 
-                }, timeToNextUpdate);
+                const now = new Date(); const nextUpdate = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 3, 0, 0, 0);
+                if (now.getTime() > nextUpdate.getTime()) { nextUpdate.setDate(nextUpdate.getDate() + 1); }
+                const timeToNextUpdate = nextUpdate.getTime() - now.getTime(); console.log(`Next auto-update check scheduled for: ${nextUpdate.toLocaleString()}`);
+                setTimeout(async () => { console.log("Running scheduled auto-update check..."); if (isLoggedIn.value && isAutoUpdateEnabled.value && !isMonitoring.value) { await runAutoUpdate(false); } scheduleUpdateCheck(); }, timeToNextUpdate);
             };
-            // ▲▲▲ NUOVA FUNZIONE: scheduleUpdateCheck ▲▲▲
-
             const toggleAddonEnabled = (addon) => { if (!isMonitoring.value) recordHistory(); };
             const openConfiguration = (addon) => { const baseUrl = addon.transportUrl.replace(/\/manifest.json$/, ''); window.open(`${baseUrl}/configure`, '_blank'); };
-            const copyManifestUrl = async (addon) => { 
-                try { await navigator.clipboard.writeText(addon.transportUrl); showToast(t.value('addon.copyUrlSuccess'), 'success'); } catch(e) { showToast(t.value('addon.copyUrlError'), 'error'); }
-            };
+            const copyManifestUrl = async (addon) => { try { await navigator.clipboard.writeText(addon.transportUrl); showToast(t.value('addon.copyUrlSuccess'), 'success'); } catch(e) { showToast(t.value('addon.copyUrlError'), 'error'); } };
             const startEdit = (addon) => { if (!isMonitoring.value) { addon.newLocalName = addon.manifest.name; addon.isEditing = true; } };
-            const finishEdit = (addon) => { if (!isMonitoring.value) { const oldName = addon.manifest.name; const newName = addon.newLocalName.trim(); if (newName && newName !== oldName) { recordHistory(); addon.manifest.name = newName; showToast(t.value('addon.renameSuccess'), 'info'); } addon.isEditing = false; } else { addon.isEditing = false; /* Reset if in monitor mode */ }};
-            const addNewAddon = async () => { 
-                if (isMonitoring.value) return; recordHistory(); const url = newAddonUrl.value.trim();
-                if (!url.startsWith('http')) { showToast("Invalid URL.", 'error'); return; } isLoading.value = true;
+            const finishEdit = (addon) => { if (!isMonitoring.value) { const oldName = addon.manifest.name; const newName = addon.newLocalName.trim(); if (newName && newName !== oldName) { recordHistory(); addon.manifest.name = newName; showToast(t.value('addon.renameSuccess'), 'info'); } addon.isEditing = false; } else { addon.isEditing = false; }};
+            const addNewAddon = async () => {
+                if (isMonitoring.value) return; recordHistory(); const url = newAddonUrl.value.trim(); if (!url.startsWith('http')) { showToast("Invalid URL.", 'error'); return; } isLoading.value = true;
                 try {
                     const response = await fetch(`${apiBaseUrl}/api/fetch-manifest`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ manifestUrl: url }) }); const responseText = await response.text(); let manifest; try { manifest = JSON.parse(responseText); } catch (e) { throw new Error(`Invalid JSON response.`); } if (!response.ok || manifest.error) throw new Error(manifest.error?.message || "Invalid manifest.");
                     const cleanManifest = { id: manifest.id || `external-${Date.now()}`, version: manifest.version || '1.0.0', name: manifest.name || `New Addon`, types: manifest.types || ["movie", "series"], resources: manifest.resources || [], idPrefixes: manifest.idPrefixes || [], configurable: manifest.configurable, behaviorHints: manifest.behaviorHints, description: manifest.description || `URL: ${url}`, logo: manifest.logo || '', ...manifest }; const newAddonUrlBase = url.split('?')[0]; if (addons.value.some(a => a.transportUrl.split('?')[0] === newAddonUrlBase)) { showToast("Addon already exists.", 'error'); return; }
                     addons.value.push(mapAddon({ transportUrl: url, manifest: cleanManifest, isEnabled: true })); await nextTick(); const listElement = document.querySelector('.main-content'); if (listElement) listElement.scrollTo({ top: listElement.scrollHeight, behavior: 'smooth' }); newAddonUrl.value = ''; showToast(t.value('addon.addSuccess', { name: cleanManifest.name }), 'success'); hasUnsavedChanges.value = true;
                 } catch (err) { showToast(t.value('addon.addError', { message: err.message }), 'error'); } finally { isLoading.value = false; }
             };
-            const moveAddon = (addon, logicDirection, displayDirection) => { if (isMonitoring.value) return; recordHistory(); const index = addons.value.indexOf(addon); if (index === -1) return; const item = addons.value[index]; if (logicDirection === 'up' && index > 0) [addons.value[index], addons.value[index - 1]] = [addons.value[index - 1], addons.value[index]]; else if (logicDirection === 'down' && index < addons.value.length - 1) [addons.value[index], addons.value[index + 1]] = [addons.value[index + 1], addons.value[index]]; else if (logicDirection === 'top' && index > 0) { addons.value.splice(index, 1); addons.value.unshift(item); } else if (logicDirection === 'bottom' && index < addons.value.length - 1) { addons.value.splice(index, 1); addons.value.push(item); } hasUnsavedChanges.value = true; };
-            const moveUp = (addon) => moveAddon(addon, 'up', 'su'); const moveDown = (addon) => moveAddon(addon, 'down', 'giù'); const moveTop = (addon) => moveAddon(addon, 'top', 'in cima'); const moveBottom = (addon) => moveAddon(addon, 'bottom', 'in fondo');
+            const moveAddon = (addon, logicDirection) => { if (isMonitoring.value) return; recordHistory(); const index = addons.value.indexOf(addon); if (index === -1) return; const item = addons.value[index]; if (logicDirection === 'up' && index > 0) [addons.value[index], addons.value[index - 1]] = [addons.value[index - 1], addons.value[index]]; else if (logicDirection === 'down' && index < addons.value.length - 1) [addons.value[index], addons.value[index + 1]] = [addons.value[index + 1], addons.value[index]]; else if (logicDirection === 'top' && index > 0) { addons.value.splice(index, 1); addons.value.unshift(item); } else if (logicDirection === 'bottom' && index < addons.value.length - 1) { addons.value.splice(index, 1); addons.value.push(item); } hasUnsavedChanges.value = true; };
+            const moveUp = (addon) => moveAddon(addon, 'up'); const moveDown = (addon) => moveAddon(addon, 'down'); const moveTop = (addon) => moveAddon(addon, 'top'); const moveBottom = (addon) => moveAddon(addon, 'bottom');
             const removeAddon = (addon) => { if (isMonitoring.value) return; if(confirm(t.value('addon.removeConfirm', { name: addon.manifest.name }))) { const index = addons.value.findIndex(a => a.transportUrl === addon.transportUrl); if (index > -1) { recordHistory(); const removedAddonName = addons.value[index].manifest.name; addons.value.splice(index, 1); showToast(t.value('addon.removeSuccess'), 'info'); hasUnsavedChanges.value = true; }}};
             const enableSelected = () => { if (isMonitoring.value) return; recordHistory(); let count = 0; selectedAddons.value.forEach(addon => { if (!addon.isEnabled) { addon.isEnabled = true; count++; } addon.selected = false; }); if (count > 0) { showToast(t.value('bulkActions.enabledSuccess', { count: count }), 'success'); hasUnsavedChanges.value = true; } else { showToast(t.value('bulkActions.noneToEnable'), 'info'); }};
             const disableSelected = () => { if (isMonitoring.value) return; recordHistory(); let count = 0; selectedAddons.value.forEach(addon => { if (addon.isEnabled) { addon.isEnabled = false; count++; } addon.selected = false; }); if (count > 0) { showToast(t.value('bulkActions.disabledSuccess', { count: count }), 'success'); hasUnsavedChanges.value = true; } else { showToast(t.value('bulkActions.noneToDisable'), 'info'); }};
@@ -1094,49 +1083,60 @@
             const toggleSelectAll = () => { const targetState = !allSelected.value; addons.value.forEach(addon => addon.selected = targetState); };
             const toggleSearch = () => { showSearchInput.value = !showSearchInput.value; if (showSearchInput.value) nextTick(() => searchInputRef.value?.focus()); };
             const hideSearchOnBlur = (event) => { const searchContainer = event.currentTarget.closest('.list-controls-header'); if (!searchContainer || (!searchContainer.contains(event.relatedTarget) && event.relatedTarget?.closest('.search-icon-btn') !== event.currentTarget.parentElement.querySelector('.search-icon-btn'))) showSearchInput.value = false; };
-            const saveOrder = async () => { 
-                if (isMonitoring.value) return; 
-                const enabledAddons = addons.value.filter(a => a.isEnabled); 
-                // MODIFICATO: Rimuove isExpanded dal salvataggio
+            const saveOrder = async () => {
+                if (isMonitoring.value) return; const enabledAddons = addons.value.filter(a => a.isEnabled);
                 const addonsToSave = enabledAddons.map(({ isEditing, newLocalName, status, isEnabled, selected, errorDetails, isExpanded, ...rest }) => rest);
-                
-                // Se non è già in loading da un auto-update, impostalo
-                if (!isLoading.value) isLoading.value = true; 
-                
+                if (!isLoading.value) isLoading.value = true;
                 showToast(t.value('addon.saving'), 'info', 5000);
                 try {
-                    const response = await fetch(`${apiBaseUrl}/api/set-addons`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ authKey: authKey.value, addons: addonsToSave, email: email.value }) }); // Usa email normale
+                    const response = await fetch(`${apiBaseUrl}/api/set-addons`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ authKey: authKey.value, addons: addonsToSave, email: email.value }) });
                     const data = await response.json(); if (!response.ok || data.error) throw new Error(data.error || data.message || 'Save error.'); showToast(t.value('addon.saveSuccess'), 'success'); hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; addons.value.forEach(a => a.selected = false); sessionStorage.setItem('stremioAddonList', JSON.stringify(addons.value));
-                } catch (err) { showToast(t.value('addon.saveError', { message: err.message }), 'error'); } finally {
-                    isLoading.value = false; 
-                    isUpdating.value = false; // Assicura che anche il flag di updating sia resettato
-                }
+                } catch (err) { showToast(t.value('addon.saveError', { message: err.message }), 'error'); } finally { isLoading.value = false; isUpdating.value = false; }
             };
-            const login = async () => { 
+            const refreshAddonList = async () => {
+    if (isLoading.value || isMonitoring.value) return;
+    isLoading.value = true;
+    try {
+        const response = await fetch(`${apiBaseUrl}/api/get-addons`, {  // Cambia a POST se necessario
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ authKey: authKey.value, email: email.value })
+        });
+        const data = await response.json();
+        if (!response.ok || data.error) throw new Error(data.error || 'Refresh failed.');
+        addons.value = data.addons.map(mapAddon);
+        showToast(t.value('list.refreshSuccess'), 'success');
+        hasUnsavedChanges.value = false;
+    } catch (err) { showToast(t.value('list.refreshError', { message: err.message }), 'error'); }
+    finally { isLoading.value = false; }
+};
+            const login = async () => {
                 isLoading.value = true;
                 try {
                     const response = await fetch(`${apiBaseUrl}/api/login`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.value, password: password.value }) }); const data = await response.json(); if (!response.ok) throw new Error(data.message || 'Login failed.');
                     authKey.value = data.authKey; isLoggedIn.value = true;
                     sessionStorage.setItem('stremioAuthKey', authKey.value); sessionStorage.setItem('stremioEmail', email.value); sessionStorage.setItem('stremioIsMonitoring', 'false'); sessionStorage.setItem('stremioAddonList', JSON.stringify(data.addons.map(mapAddon)));
-                    if (importedConfigFromUrl.value) { pendingImportData.value = importedConfigFromUrl.value; importSource.value = 'url'; showImportConfirm.value = true; importedConfigFromUrl.value = null; }
-                    else {
-                        addons.value = data.addons.map(mapAddon);
-                        hasUnsavedChanges.value = false;
-                        history.value = [];
-                        redoStack.value = [];
-                        showToast(t.value('addon.loginSuccess'), 'success');
-                    }
-                    addons.value.forEach(a => a.selected = false);
+                    addons.value = data.addons.map(mapAddon);
+                    showWelcomeScreen.value = true; // Mostra welcome screen
+                    showToast(t.value('addon.loginSuccess'), 'success');
+                    // Gestione import URL spostata in dismissWelcomeScreen
                 } catch (err) { showToast(err.message, 'error'); } finally { isLoading.value = false; }
             };
-            const logout = () => { if (hasUnsavedChanges.value && !confirm(t.value('list.logoutConfirm'))) return; sessionStorage.clear(); email.value = ''; password.value = ''; authKey.value = null; addons.value = []; isLoggedIn.value = false; isMonitoring.value = false; showAdminInput.value = false; hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; searchQuery.value = ''; showSearchInput.value = false; showInstructions.value = false; toasts.value = []; };
+            // NUOVA FUNZIONE: dismissWelcomeScreen
+            const dismissWelcomeScreen = () => {
+                showWelcomeScreen.value = false;
+                // Controlla se c'era un import da URL in sospeso
+                if (importedConfigFromUrl.value) {
+                    pendingImportData.value = importedConfigFromUrl.value;
+                    importSource.value = 'url';
+                    showImportConfirm.value = true;
+                    importedConfigFromUrl.value = null; // Pulisci dopo averlo gestito
+                }
+            };
+            const logout = () => { if (hasUnsavedChanges.value && !confirm(t.value('list.logoutConfirm'))) return; sessionStorage.clear(); email.value = ''; password.value = ''; authKey.value = null; addons.value = []; isLoggedIn.value = false; isMonitoring.value = false; showAdminInput.value = false; hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; searchQuery.value = ''; showSearchInput.value = false; showInstructions.value = false; toasts.value = []; showWelcomeScreen.value = false; };
             const beforeUnloadHandler = (event) => { if (hasUnsavedChanges.value) { event.preventDefault(); event.returnValue = ''; } };
             const incrementAdminClick = () => { if(!isLoggedIn.value) adminClickCount.value++; if (adminClickCount.value >= 5) { showAdminInput.value = true; showToast(t.value('addon.monitorModeActive'), 'info'); adminClickCount.value = 0; }};
-             // Definizione di onDragEnd
-             const onDragEnd = (event) => {
-                 console.log('Drag ended', event);
-                 // La logica di riordino è gestita da computed.draggableList
-             };
+             const onDragEnd = (event) => { console.log('Drag ended', event); };
             // --- Computed ---
             const dragOptions = computed(() => ({ animation: 200, ghostClass: "ghost-class", handle: ".drag-handle", forceFallback: true, scrollSensitivity: 100, bubbleScroll: true, delay: 300, delayOnTouchOnly: true, touchStartThreshold: isMobile.value ? 10 : 3 }));
             const filteredAddons = computed(() => { let f = addons.value; if (activeFilter.value === 'enabled') f = addons.value.filter(a => a.isEnabled); if (activeFilter.value === 'disabled') f = addons.value.filter(a => !a.isEnabled); if (activeFilter.value === 'errors') f = addons.value.filter(a => a.status === 'error'); if (!searchQuery.value) return f; const lcq = searchQuery.value.toLowerCase(); return f.filter(a => a.manifest.name.toLowerCase().includes(lcq)); });
@@ -1146,46 +1146,34 @@
             const errorCount = computed(() => addons.value.filter(a => a.status === 'error').length);
             const selectedAddons = computed(() => addons.value.filter(a => a.selected));
             const allSelected = computed(() => addons.value.length > 0 && selectedAddons.value.length === addons.value.length);
-            // --- Lifecycle (aggiunta pulizia e ottimizzazione) ---
+            // --- Lifecycle ---
             onMounted(() => {
                 window.addEventListener('beforeunload', beforeUnloadHandler); window.addEventListener('resize', updateIsMobile);
                 try { const savedLang = localStorage.getItem('stremioConsoleLang'); if (savedLang && ['it', 'en'].includes(savedLang)) lang.value = savedLang; } catch(e) { console.warn("Error reading lang from localStorage."); }
                 document.documentElement.lang = lang.value; document.title = t.value('meta.title');
                 if (window.location.hash.startsWith('#config=')) { const compressed = window.location.hash.substring(8); try { const data = LZString.decompressFromEncodedURIComponent(compressed); if (!data) throw new Error(t.value('import.urlErrorInvalid')); const importedData = JSON.parse(data); if (Array.isArray(importedData)) importedConfigFromUrl.value = importedData; window.location.hash = ''; } catch (e) { showToast(t.value('import.error', { message: e.message }), 'error'); window.location.hash = ''; }}
-                
-                // ▼▼▼ NUOVO: Carica impostazioni Auto-Update e avvia scheduler ▼▼▼
                 try {
                     isAutoUpdateEnabled.value = localStorage.getItem('stremioAutoUpdateEnabled') === 'true';
                     lastUpdateCheck.value = localStorage.getItem('stremioLastAutoUpdate');
                 } catch (e) { console.warn("Error reading auto-update settings from localStorage."); }
-                // Avvia lo scheduler
                 scheduleUpdateCheck();
-                // ▲▲▲ NUOVO: Carica impostazioni Auto-Update e avvia scheduler ▲▲▲
-
                 try {
                     const storedKey = sessionStorage.getItem('stremioAuthKey'); const storedList = sessionStorage.getItem('stremioAddonList'); const storedEmail = sessionStorage.getItem('stremioEmail'); const storedMonitoring = sessionStorage.getItem('stremioIsMonitoring') === 'true';
                     if (storedKey && storedList) {
-                        authKey.value = storedKey; email.value = storedEmail || ''; isMonitoring.value = storedMonitoring; if(isMonitoring.value) targetEmail.value = storedEmail || ''; 
-                         // MODIFICATO: Applica mapAddon al ripristino per aggiungere 'isExpanded'
+                        authKey.value = storedKey; email.value = storedEmail || ''; isMonitoring.value = storedMonitoring; if(isMonitoring.value) targetEmail.value = storedEmail || '';
                          addons.value = JSON.parse(storedList).map(a => mapAddon(a));
-                        isLoggedIn.value = true; hasUnsavedChanges.value = false; history.value = []; redoStack.value = []; showToast(t.value('addon.sessionRestored'), 'info');
-                        if (importedConfigFromUrl.value) {
-                            pendingImportData.value = importedConfigFromUrl.value; importSource.value = 'url'; showImportConfirm.value = true; importedConfigFromUrl.value = null;
-                        }
+                        isLoggedIn.value = true;
+                        showWelcomeScreen.value = true; // Mostra welcome screen al ripristino
+                        showToast(t.value('addon.sessionRestored'), 'info');
+                        // Gestione import URL spostata in dismissWelcomeScreen
                     }
                 } catch(e) { console.error("Error restoring session:", e); sessionStorage.clear(); }
             });
             onBeforeUnmount(() => { window.removeEventListener('beforeunload', beforeUnloadHandler); window.removeEventListener('resize', updateIsMobile); });
             // --- Return ---
             return { email, password, authKey, addons, isLoggedIn, isLoading, newAddonUrl, fileInput, adminClickCount, showAdminInput, adminKey, targetEmail, isMonitoring, searchQuery, filteredAddons, login, logout, incrementAdminClick, monitorLogin, exportBackup, triggerFileInput, handleFileImport, checkAllAddonsStatus, addNewAddon, saveOrder, startEdit, finishEdit, moveUp, moveDown, moveTop, moveBottom, removeAddon, toggleAddonEnabled, openConfiguration, copyManifestUrl, hasUnsavedChanges, history, redoStack, undo, redo, activeFilter, draggableList, onDragEnd, lang, t, shareUrl, shareInput, generateShareLink, copyShareLink, importedConfigFromUrl, selectedAddons, allSelected, toggleSelectAll, enableSelected, disableSelected, removeSelected, showSearchInput, searchInputRef, toggleSearch, hideSearchOnBlur, showInstructions, dragOptions, showImportConfirm, confirmImport, closeImportConfirm, importSource, toasts, showToast, enabledCount, disabledCount, errorCount, testAddonSpeed,
-                 // ▼▼▼ AGGIUNTI I NUOVI METODI AL RETURN ▼▼▼
-                 toggleAddonDetails,
-                 getResourceNames,
-                 isAutoUpdateEnabled,
-                 lastUpdateCheck,
-                 isUpdating,
-                 runAutoUpdate
-                 // ▲▲▲ AGGIUNTI I NUOVI METODI AL RETURN ▲▲▲
+                 toggleAddonDetails, getResourceNames, isAutoUpdateEnabled, lastUpdateCheck, isUpdating, runAutoUpdate,
+                 showWelcomeScreen, dismissWelcomeScreen, refreshAddonList, exportTxt // Aggiunti al return
             };
         }
     });
