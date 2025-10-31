@@ -49,7 +49,7 @@ Per un avvio rapido e isolato, usa Docker:
 
 ```bash
 # 1. Clona il repository (solo la prima volta)
-git clone [https://github.com/Luca1234105/StreamOrder.git](https://github.com/Luca1234105/StreamOrder.git)
+git clone https://github.com/Luca1234105/StreamOrder.git
 cd StreamOrder
 
 # 2. Costruisci l'immagine Docker
@@ -59,3 +59,12 @@ docker build -t streamorder .
 docker run -d -p 8080:80 --name streamorder-app streamorder'''
  ```
 💡 Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
+---
+## ⚠️ Avviso Importante
+
+> **⚠️ Disclaimer Legale:**
+> StreamOrder non è un addon ufficiale di Stremio.
+> L’uso improprio o eccessivo può causare problemi al tuo account Stremio o ai tuoi addon.
+> L’autore non si assume alcuna responsabilità per eventuali danni, sospensioni o perdita di dati derivanti dall’uso di questo software.
+
+Utilizza StreamOrder a tuo rischio e pericolo, solo per scopi educativi o di testing locale.
