@@ -80,12 +80,59 @@ Content-Type: application/json
 
 {
   "authKey": "your-temporary-auth-key"
-}IMPORTANTE: Fai uno screenshot della tua app e caricalo su Imgur o direttamente nel tuo repo GitHub.
-Poi, sostituisci il link qui sotto con il link diretto al tuo screenshot.
--->
-<p align="center">
-<img src="httpsIA-INSERISCI-URL-SCREENSHOT-APP.png" alt="Screenshot della Stremio Addon Console" width="80%"/>
-</p>
+}
+> ⚠️ **Nota:** NON affiliato né approvato da Stremio. Usa a tuo rischio.
+
+---
+
+## 🚀 Funzionalità principali
+
+- **Gestione completa**: aggiungi, rimuovi, abilita/disabilita addon.
+- **Ordinamento Drag & Drop**: cambia priorità con un semplice trascinamento.
+- **Sincronizzazione Cloud**: salva direttamente sul tuo account Stremio tramite `authKey` temporanea.
+- **Backup & Ripristino**: esporta/importa la config in `.json`.
+- **Condivisione**: genera link condivisibili della tua lista addon.
+- **Multilingue**: 🇮🇹 Italiano, 🇬🇧 Inglese, 🇫🇷 Français, 🇩🇪 Deutsch, 🇪🇸 Español, 🇺🇦 Українська, 🇵🇹 Português.
+- **Doppio tema**: Cyberpunk Dark (default) / Cyberpunk Light.
+- **Verifica stato**: controlla se i manifest sono online.
+- **Speed test**: misura latenza/risposta per ogni addon.
+- **Aggiornamenti automatici (opz.)**: nightly update scheduler.
+- **Profili**: più account Stremio, switch rapido.
+
+---
+
+## 🧩 UI & UX (Highlights)
+
+- Look & feel: neon, glassmorphism, tipografia futuristica.
+- Bottone principale: `Salva Ordine e Modifiche su Stremio` con effetto glow.
+- Toggle tema, ricerca rapida, filtri, e pannello avanzato per test e verifiche.
+- Accessible keyboard controls per drag & drop e selezione rapida.
+
+---
+
+## 🛠️ Come usare (Quickstart)
+
+### 1 — Avvia l’app
+Apri la web app all'URL dove è hostata (es. `https://tuo-host/streamorganizer`).
+
+### 2 — Accedi con Stremio
+Inserisci la tua **authKey temporanea**. L'app **non salva** la password.
+
+### 3 — Gestisci addon
+- Trascina per riordinare.
+- Usa i toggle per abilitare/disabilitare.
+- Aggiungi manifest manualmente con `+ Add`.
+
+### 4 — Salva
+Clicca **💾 Salva Ordine e Modifiche su Stremio** — è l'unico step che scrive sul server Stremio.
+
+### 5 — Backup / Restore
+- `Export JSON` → scarica la configurazione.
+- `Import JSON` → carica un file di backup.
+
+---
+
+
 🚀 Overview
 StreamOrganizer è una console web avanzata per gestire, ordinare, salvare e sincronizzare i tuoi addon di Stremio, potenziata da una UI reattiva a tema Cyberpunk.
 È un potente strumento non ufficiale, creato per offrirti pieno controllo sulla tua configurazione di Stremio, con funzionalità che l'app ufficiale non fornisce.
