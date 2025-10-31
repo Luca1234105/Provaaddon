@@ -72,7 +72,7 @@ docker run -d -p 8080:80 --name streamorder-app streamorder
 ## 🧑‍💻 Crediti
 
 <p align="center">
-👨‍🚀 **Autore:** Luca Drogo  <br>
+👨‍🚀 **Autore:** LUC4N3X  <br>
 ⚙️ **Progetto:** StreamOrder  <br>
 💡 **Concept:** Cyberpunk Addon Console per Stremio  <br>
 🌍 **GitHub:** [github.com/Luca1234105](https://github.com/Luca1234105)
