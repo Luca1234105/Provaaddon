@@ -1,4 +1,4 @@
-# ⚡ STREAMORDER — La console di comando dell'add-on Cyberpunk 🧠
+⚡ STREAMORDER — La console di comando dell'add-on Cyberpunk 🧠
 
 > _"Controlla il caos. Domina i tuoi Addon."_  
 
@@ -77,6 +77,54 @@ Tecnologie	Descrizione
     "https://addon.strem.io/catalog/movies/trending.json"
   ],
   "theme": "cyberpunk",
+  "sync": true
+}
+
+
+---
+
+🛰️ Roadmap
+
+[x] Interfaccia Drag & Drop
+
+[x] Salvataggio locale automatico
+
+[x] Backup e sincronizzazione cloud
+
+[ ] Modalità oscura "Deep Neon"
+
+[ ] Supporto per Addon personalizzati
+
+[ ] Integrazione AI per suggerimenti addon
+
+
+
+---
+
+👤 Autore
+
+Luca Drogo
+💬 "Coding the future, one addon at a time."
+
+
+---
+
+⚔️ Licenza
+
+Distribuito sotto licenza MIT — libero di modificare, migliorare e condividere.
+
+> “In a world of chaos, StreamOrder brings the code back to balance.”
+
+
+
+
+---
+
+<p align="center">
+  <img src="https://img.shields.io/badge/CYBERPUNK_MODE-ENABLED-ff00ff?style=for-the-badge&logo=codesandbox&logoColor=white">
+</p>
+```
+---  "theme": "cyberpunk",
   "sync": true
 }
 
