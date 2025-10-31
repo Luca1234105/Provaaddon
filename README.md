@@ -39,11 +39,22 @@
 
 ---
 
-🚀 Installazione
+ ---
 
-💻 Metodo Locale
+## 🚀 Installazione
 
-> git clone https://github.com/Luca1234105/StreamOrder.git
-> cd StreamOrder
-> npm install
-> npm start
+### Metodo Docker (Consigliato)
+
+Per un avvio rapido e isolato, usa Docker:
+
+```bash
+# 1. Clona il repository (solo la prima volta)
+git clone [https://github.com/Luca1234105/StreamOrder.git](https://github.com/Luca1234105/StreamOrder.git)
+cd StreamOrder
+
+# 2. Costruisci l'immagine Docker
+docker build -t streamorder .
+
+# 3. Avvia il container
+docker run -p 8080:80 --name streamorder-app streamorder
+
