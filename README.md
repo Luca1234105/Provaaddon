@@ -32,3 +32,12 @@
 > cd StreamOrder
 > npm install
 > npm start
+
+🧠 Tech Stack
+
+Tecnologie	Descrizione
+
+⚡ Node.js	Backend modulare e veloce
+🧩 Stremio API	Connessione diretta al tuo ecosistema addon
+🎨 HTML / CSS / JS	Frontend con stile cyberpunk e animazioni
+🧬 LocalStorage / CloudSync	Salvataggio persistente delle configurazioni
