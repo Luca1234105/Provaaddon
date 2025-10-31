@@ -61,6 +61,8 @@ docker run -d -p 8080:80 --name streamorder-app streamorder'''
 💡 Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
 
 
+
+
 ---
 
 ## ⚠️ Avviso Importante
