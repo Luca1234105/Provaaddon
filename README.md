@@ -1,7 +1,7 @@
 <h1 align="center">⚡ StreamOrder ⚡</h1>
 
 <p align="center">
-  <img src="YOUR_S_IMAGE_URL_HERE?raw=true" alt="StreamOrder S Icon" width="100"> 
+  <img src="https://github.com/Luca1234105/Provaaddon/blob/main/images/Gemini_Generated_Image_l2ps73l2ps73l2ps.png?raw=true" alt="StreamOrder S Icon" width="80"> 
 </p>
 
 <p align="center">
