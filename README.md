@@ -61,21 +61,23 @@ docker run -d -p 8080:80 --name streamorder-app streamorder'''
 💡 Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
 
 ---
-🧑‍💻 Crediti
+## 🌌 Screenshot
+---
 
-👨‍🚀 Autore: Luca Drogo
-⚙️ Progetto: StreamOrder
-💡 Concept: Cyberpunk Addon Console per Stremio
-🌍 GitHub: github.com/Luca1234105
+## 🧑‍💻 Crediti
 
+* **👨‍🚀 Autore:** [Luca Drogo](https://github.com/Luca1234105)
+* **⚙️ Progetto:** StreamOrder
+* **💡 Concept:** Cyberpunk Addon Console per Stremio
+* **🌍 GitHub:** [github.com/Luca1234105](https://github.com/Luca1234105)
 
 ---
 
-## ⚠️ Avviso Importante
+## 💬 Supporta il Progetto
 
-> **⚠️ Disclaimer Legale:**
-> StreamOrder non è un addon ufficiale di Stremio.
-> L’uso improprio o eccessivo può causare problemi al tuo account Stremio o ai tuoi addon.
-> L’autore non si assume alcuna responsabilità per eventuali danni, sospensioni o perdita di dati derivanti dall’uso di questo software.
+Se ti piace questo progetto, lascia una ⭐ su GitHub — ogni stella alimenta il reattore neon di StreamOrder ⚡💜
 
-Utilizza StreamOrder a tuo rischio e pericolo, solo per scopi educativi o di testing locale.
+<p align="center">
+  <b>“Order your Addons. Rule the Stream.”</b><br>
+  <i>— StreamOrder Console v1.0.0</i>
+</p>
