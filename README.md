@@ -1,6 +1,10 @@
 <h1 align="center">⚡ StreamOrder ⚡</h1>
 
 <p align="center">
+  <img src="YOUR_S_IMAGE_URL_HERE?raw=true" alt="StreamOrder S Icon" width="100"> 
+</p>
+
+<p align="center">
   <img src="https://img.shields.io/badge/Version-1.0.0-purple?style=for-the-badge&logo=stremio" />
   <img src="https://img.shields.io/badge/Build-Stable-cyan?style=for-the-badge" />
   <img src="https://img.shields.io/badge/Theme-Cyberpunk-ff00ff?style=for-the-badge&logoColor=white" />
@@ -11,32 +15,31 @@
 
 ## 💠 Cos’è StreamOrder?
 
-> 🕹️ **StreamOrder** è una **Command Console Cyberpunk** per la gestione avanzata degli **addon Stremio**.  
-> Interfaccia **neon**, **drag & drop**, **backup automatici**, **sincronizzazione cloud** e **controllo totale** sul tuo ecosistema addon.  
-> Ideata per chi ama **ordine, potenza e stile futuristico** ⚙️💜
+> **StreamOrder** è una **Command Console Cyberpunk** per la gestione avanzata degli **addon Stremio**.  
+> Interfaccia con **effetti neon**, **drag & drop**, **backup automatici**, **sincronizzazione cloud** e **controllo totale** sul tuo ecosistema addon.  
+> Pensato per chi ama **ordine, potenza e stile futuristico**. ⚙️💜
 
 ---
-
 ## ⚙️ Funzionalità Principali
 
-- ✨ **Gestione Addon Totale** – Installa, aggiorna o disinstalla in un click  
-- 💾 **Backup & Sync** – Backup automatici e ripristino cloud  
-- 🖱️ **Drag & Drop Interface** – Riordina visivamente gli addon  
-- 🔗 **Smart Share System** – Condividi URL o QR code delle tue liste  
-- 🌌 **Cyberpunk UI** – Effetti neon, blur e dettagli terminal-style  
-- 🖥️ **Matrix Mode** – Modalità linea di comando per utenti avanzati  
-- 📜 **Realtime Logs** – Log in tempo reale con colori neon
+* **Gestione Addon Totale** - Installa, disinstalla o aggiorna in un click.
+* **Backup & Sync** - Backup automatici e ripristino cloud istantaneo.
+* **Drag & Drop Interface** - Riordina gli addon visivamente con fluidità.
+* **Smart Share System** - Genera URL o QR per condividere le tue liste.
+* **Cyberpunk UI** - Effetti neon, blur e dettagli terminal-style.
+* **Matrix Mode** - Modalità a linea di comando per utenti avanzati.
+* **Realtime Logs** - Console in tempo reale con log colorati.
 
 ---
 
 ## 🧠 Tech Stack
 
-| 🔧 Tecnologia | Descrizione |
+| Tecnologie | Descrizione |
 | :--- | :--- |
 | ⚡ Node.js | Backend modulare e veloce |
 | 🧩 Stremio API | Connessione diretta al tuo ecosistema addon |
-| 🎨 HTML / CSS / JS | Frontend Cyberpunk con animazioni |
-| ☁️ LocalStorage / CloudSync | Salvataggio persistente e sincronizzazione cloud |
+| 🎨 HTML / CSS / JS | Frontend con stile cyberpunk e animazioni |
+| 🧬 LocalStorage / CloudSync | Salvataggio persistente delle configurazioni |
 
 ---
 
@@ -44,13 +47,15 @@
 
 ### Metodo Docker (Consigliato)
 
+Per un avvio rapido e isolato, usa Docker:
+
 ```bash
-# 1️⃣ Clona il repository
-git clone https://github.com/Luca1234105/StreamOrder.git
+# 1. Clona il repository (solo la prima volta)
+git clone [https://github.com/Luca1234105/StreamOrder.git](https://github.com/Luca1234105/StreamOrder.git)
 cd StreamOrder
 
-# 2️⃣ Costruisci l'immagine Docker
+# 2. Costruisci l'immagine Docker
 docker build -t streamorder .
 
-# 3️⃣ Avvia il container in background
+# 3. Avvia il container in background (-d)
 docker run -d -p 8080:80 --name streamorder-app streamorder
