@@ -1,4 +1,9 @@
-<h1 align="center">⚡ StreamOrder ⚡</h1>
+# ⚡ STREAMORDER — The Cyberpunk Addon Command Console 🧠
+
+> _"Control the chaos. Rule your Addons."_  
+
+![Cyberpunk Neon Banner](https://capsule-render.vercel.app/api?type=rect&color=0:ff00cc,100:3333ff&height=120&section=header&text=STREAMORDER&fontSize=45&fontAlignY=55&fontColor=ffffff&desc=The%20Cyberpunk%20Stremio%20Addon%20Console&descAlignY=80)
+
 
 <p align="center">
   <img src="https://img.shields.io/badge/Version-1.0.0-purple?style=for-the-badge&logo=stremio" />
