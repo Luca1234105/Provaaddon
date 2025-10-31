@@ -61,7 +61,7 @@ docker run -d -p 8080:80 --name streamorder-app streamorder
 ## 🌌 Screenshot
 
 <p align="center">
-  <img src="https://github.com/Luca1234105/Provaaddon/blob/main/images/Gemini_Generated_Image_nx1h3lnx1h3lnx1h.png?raw=true" alt="Schermata StreamOrder" width="700">
+  <img src="https://github.com/Luca1234105/Provaaddon/blob/main/images/Gemini_Generated_Image_nx1h3lnx1h3lnx1h.png?raw=true" alt="Schermata StreamOrder" width="500">
 </p>
 
 ## 🧑‍💻 Crediti
@@ -72,6 +72,19 @@ docker run -d -p 8080:80 --name streamorder-app streamorder
 💡 **Concept:** Cyberpunk Addon Console per Stremio  <br>
 🌍 **GitHub:** [github.com/Luca1234105](https://github.com/Luca1234105)
 </p>
+
+---
+
+## ⚠️ Avviso Importante
+
+> 🚨 **Disclaimer Legale:**  
+> StreamOrder **non è un addon ufficiale di Stremio**.  
+> L’uso improprio o eccessivo può causare problemi al tuo account Stremio o ai tuoi addon.  
+> L’autore **non si assume alcuna responsabilità** per eventuali danni, sospensioni o perdita di dati derivanti dall’uso di questo software.
+
+> ⚡ **Nota d’uso:**  
+> Utilizza **StreamOrder** a tuo rischio e pericolo, solo per **scopi educativi** o di **testing locale**.
+
 
 
 
