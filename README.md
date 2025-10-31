@@ -16,22 +16,16 @@
 > Pensato per chi ama **ordine, potenza e stile futuristico**. ⚙️💜
 
 ---
+## ⚙️ Funzionalità Principali
 
-🧠 Funzionalità Principali
+* **Gestione Addon Totale** - Installa, disinstalla o aggiorna in un click.
+* **Backup & Sync** - Backup automatici e ripristino cloud istantaneo.
+* **Drag & Drop Interface** - Riordina gli addon visivamente con fluidità.
+* **Smart Share System** - Genera URL o QR per condividere le tue liste.
+* **Cyberpunk UI** - Effetti neon, blur e dettagli terminal-style.
+* **Matrix Mode** - Modalità a linea di comando per utenti avanzati.
+* **Realtime Logs** - Console in tempo reale con log colorati.
 
-⚙️ Gestione Addon Totale — Installa, disinstalla o aggiorna in un click.
-
-💾 Backup & Sync — Backup automatici e ripristino cloud istantaneo.
-
-🧩 Drag & Drop Interface — Riordina gli addon visivamente con fluidità.
-
-🌐 Smart Share System — Genera URL o QR per condividere le tue liste.
-
-🧬 Cyberpunk UI — Effetti neon, blur e dettagli terminal-style.
-
-🧠 Matrix Mode — Modalità a linea di comando per utenti avanzati.
-
-⚡ Realtime Logs — Console in tempo reale con log colorati.
 ---
 
 🚀 Installazione
