@@ -1,13 +1,13 @@
-STREAMORDER — La console di comando dell'add-on Cyberpunk 🧠
+⚡ STREAMORDER — La console di comando dell'add-on Cyberpunk 🧠
 
 > _"Controlla il caos. Domina i tuoi Addon."_  
 
 ![Cyberpunk Neon Banner](https://capsule-render.vercel.app/api?type=rect&color=0:ff00cc,100:3333ff&height=120&section=header&text=STREAMORDER&fontSize=45&fontAlignY=55&fontColor=ffffff&desc=The%20Cyberpunk%20Stremio%20Addon%20Console&descAlignY=80)
 
 <p align="center">
-  <img src="[https://img.shields.io/badge/STATUS-ALIVE-00ffff?style=for-the-badge&logo=matrix&logoColor=white](https://img.shields.io/badge/STATUS-ALIVE-00ffff?style=for-the-badge&logo=matrix&logoColor=white)">
-  <img src="[https://img.shields.io/badge/BUILD-STABLE-purple?style=for-the-badge&logo=vercel](https://img.shields.io/badge/BUILD-STABLE-purple?style=for-the-badge&logo=vercel)">
-  <img src="[https://img.shields.io/badge/STREMIO-ADDON-ff00cc?style=for-the-badge&logo=stremio](https://img.shields.io/badge/STREMIO-ADDON-ff00cc?style=for-the-badge&logo=stremio)">
+  <img src="https://img.shields.io/badge/STATUS-ALIVE-00ffff?style=for-the-badge&logo=matrix&logoColor=white">
+  <img src="https://img.shields.io/badge/BUILD-STABLE-purple?style=for-the-badge&logo=vercel">
+  <img src="https://img.shields.io/badge/STREMIO-ADDON-ff00cc?style=for-the-badge&logo=stremio">
 </p>
 
 ---
