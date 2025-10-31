@@ -45,7 +45,7 @@
 
 ---
 
-## 🚀 Installazione
+# 🚀 Installazione
 
 ### 🐳 Metodo **Docker** (🔥 Consigliato)
 
@@ -60,23 +60,10 @@ docker build -t streamorder .
 # 3️⃣ Avvia il container in background
 docker run -d -p 8080:80 --name streamorder-app streamorder
 ```
-<div align="center">
+<div align="center"> <table role="presentation" cellpadding="14" cellspacing="0" style="background:linear-gradient(135deg,#0a0014,#130022);border:1px solid rgba(187,134,252,0.4);border-radius:14px;box-shadow:0 0 20px rgba(187,134,252,0.3);width:80%;max-width:700px;"> <tr> <td align="center" style="color:#e0d4ff;font-family:Segoe UI,Arial,sans-serif;"> <p style="margin:0;font-size:1.1em;"> 🟢 <strong>Dopo l’avvio</strong>, StreamOrder sarà accessibile su:<br><br> 👉 <a href="http://localhost:8080" style="color:#bb86fc;font-weight:bold;text-decoration:none;">http://localhost:8080</a> </p> </td> </tr> </table> </div>
+<div align="center"> <table role="presentation" cellpadding="14" cellspacing="0" style="background:linear-gradient(135deg,#0a0014,#130022);border:1px solid rgba(187,134,252,0.4);border-radius:14px;box-shadow:0 0 20px rgba(187,134,252,0.3);width:80%;max-width:700px;"> <tr> <td align="center" style="color:#e0d4ff;font-family:Segoe UI,Arial,sans-serif;"> <h3 style="margin-top:0;color:#bb86fc;">🌐 Oppure prova la versione online!</h3> <p style="margin:0;font-size:1.1em;"> 💻 <strong>Nessuna installazione necessaria!</strong><br> Accedi subito alla versione web:<br><br> 👉 <a href="https://luca12234345-stremorganizer.hf.space" style="color:#7ee787;font-weight:bold;text-decoration:none;">StreamOrder Online su HuggingFace 🚀</a> </p> </td> </tr> </table> </div> 
 
-🟢 Dopo l’avvio, StreamOrder sarà accessibile su:<br>
-👉 http://localhost:8080
-
-</div>
-
-🌐 Oppure prova la versione online!
-<div align="center">
-
-💻 Nessuna installazione necessaria!
-Accedi subito alla versione web:
-
-👉 StreamOrder Online su HuggingFace 🚀
-
-</div>
- ---
+---
 ## 🌌 Screenshot
 
 <p align="center">
