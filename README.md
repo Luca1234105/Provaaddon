@@ -25,7 +25,7 @@
 > UI Mode: CYBERPUNK_2049
 > StreamOrder Ready. Welcome, Operator_001 ⚡
 
----
+--------------------------------
 
 🧠 Funzionalità Principali
 
