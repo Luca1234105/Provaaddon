@@ -69,8 +69,8 @@ docker build -t streamorder .
 
 # 3️⃣ Avvia il container in background
 docker run -d -p 8080:80 --name streamorder-app streamorder
+```
 
----
 ## 🌌 Screenshot
 
 <p align="center">
