@@ -58,3 +58,6 @@ docker build -t streamorder .
 # 3. Avvia il container
 docker run -p 8080:80 --name streamorder-app streamorder
 
+'''
+Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
+
