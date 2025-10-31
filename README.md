@@ -21,3 +21,20 @@ Drag & Drop, backup automatici, condivisione URL e sincronizzazione in tempo rea
 > Initializing StreamOrder...
 > Loading Addon Matrix...
 > Connected to Stremio API ✅
+
+
+---
+
+⚙️ Features
+
+🧩 Addon Management — Installa, disinstalla e aggiorna addon in pochi click.
+
+🎛️ Drag & Drop Interface — Riordina i tuoi addon con una UI fluida e reattiva.
+
+☁️ Cloud Sync — Salva e ripristina i tuoi addon da qualsiasi dispositivo.
+
+🔗 Share Addons — Genera URL condivisibili o QR per esportare le tue liste.
+
+🧠 Smart Backup System — Backup automatici con timestamp e cronologia.
+
+🌀 Cyberpunk Theme — Interfaccia dinamica con effetti neon, blur e terminal vibes.
