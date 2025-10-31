@@ -47,16 +47,6 @@
 
 ## 🚀 Installazione
 
-<div align="center">
-
-![Docker](https://img.shields.io/badge/Docker-Supported-blue?style=for-the-badge&logo=docker)
-![Platform](https://img.shields.io/badge/Platform-Linux%20%7C%20Windows%20%7C%20macOS-lightgrey?style=for-the-badge&logo=github)
-![Status](https://img.shields.io/badge/Build-Stable-success?style=for-the-badge)
-
-</div>
-
----
-
 ### 🐳 Metodo **Docker** (🔥 Consigliato)
 
 ```bash
@@ -77,6 +67,15 @@ docker run -d -p 8080:80 --name streamorder-app streamorder
 
 </div>
 
+🌐 Oppure prova la versione online!
+<div align="center">
+
+💻 Nessuna installazione necessaria!
+Accedi subito alla versione web:
+
+👉 StreamOrder Online su HuggingFace 🚀
+
+</div>
  ---
 ## 🌌 Screenshot
 
