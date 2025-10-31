@@ -17,14 +17,6 @@
 
 ---
 
-```bash
-> Initializing StreamOrder v1.0.0...
-> Connecting to Stremio Matrix...
-> Fetching Addon Grid...
-> Addons Loaded Successfully ✅
-> UI Mode: CYBERPUNK_2049
-> StreamOrder Ready. Welcome, Operator_001 ⚡
-  ```
 🧠 Funzionalità Principali
 
 ⚙️ Gestione Addon Totale — Installa, disinstalla o aggiorna in un click.
