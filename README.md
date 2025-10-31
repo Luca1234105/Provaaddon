@@ -55,9 +55,7 @@ cd StreamOrder
 # 2. Costruisci l'immagine Docker
 docker build -t streamorder .
 
-# 3. Avvia il container
-docker run -p 8080:80 --name streamorder-app streamorder
-
-'''
-Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
-
+# 3. Avvia il container in background (-d)
+docker run -d -p 8080:80 --name streamorder-app streamorder'''
+ ```
+💡 Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
