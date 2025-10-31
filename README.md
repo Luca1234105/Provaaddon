@@ -69,22 +69,6 @@ Clicca **💾 Salva Ordine e Modifiche su Stremio** — è l'unico step che scri
 - `Import JSON` → carica un file di backup.
 
 ---
-
-## 🔧 Esempi di comandi / API (Snippet)
-
-> Nota: questi endpoints sono esempi — adatta alla tua implementazione server.
-
-```http
-POST /api/auth
-Content-Type: application/json
-
-{
-  "authKey": "your-temporary-auth-key"
-}
-> ⚠️ **Nota:** NON affiliato né approvato da Stremio. Usa a tuo rischio.
-
----
-
 ## 🚀 Funzionalità principali
 
 - **Gestione completa**: aggiungi, rimuovi, abilita/disabilita addon.
