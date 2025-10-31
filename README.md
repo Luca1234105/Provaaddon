@@ -1,17 +1,86 @@
-<h1 align="center">🎮 StreamOrganizer</h1>
-<h3 align="center">La Command Console definitiva per Addon Stremio – con stile Cyberpunk ⚡</h3>
+# 🎮 StreamOrganizer
+
+> **La Command Console definitiva per Addon Stremio — UI Cyberpunk & controllo totale.**  
+> Strumento non ufficiale per gestire, ordinare, salvare e sincronizzare i tuoi addon Stremio.
+
 <p align="center">
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Versione-Beta_1.0-blueviolet%3Fstyle%3Dfor-the-badge%26logo%3Dstremio" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Stato-Attivo-success%3Fstyle%3Dfor-the-badge%26logo%3Dgithub" />
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Tema-Cyberpunk-ff00ff%3Fstyle%3Dfor-the-badge%26logo%3Dneovim" />
-
-
-<a href="https://www.google.com/url?sa=E&source=gmail&q=https://URL-DELLA-TUA-APP-LIVE.com" target="_blank">
-<img src="https://www.google.com/search?q=https://img.shields.io/badge/Accedi_alla_Console-Online-brightgreen%3Fstyle%3Dfor-the-badge%26logo%3Dvercel" />
-</a>
+  <img alt="StreamOrganizer - Cyberpunk UI placeholder" src="" style="display:none;" />
 </p>
-<!--
-IMPORTANTE: Fai uno screenshot della tua app e caricalo su Imgur o direttamente nel tuo repo GitHub.
+
+---
+
+[![Status](https://img.shields.io/badge/Status-Beta_1.0-blueviolet?style=for-the-badge)]()
+[![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)]()
+[![Language](https://img.shields.io/badge/Languages-IT%2CEN-orange?style=for-the-badge)]()
+
+---
+
+## ✨ Panoramica
+
+**StreamOrganizer** è una web-app non ufficiale progettata per dare controllo granulare sulla tua configurazione di Stremio. Interfaccia Cyberpunk, drag-and-drop per ordinare gli addon, sincronizzazione cloud, backup JSON, condivisione tramite URL e molto altro.
+
+> ⚠️ **Nota:** NON affiliato né approvato da Stremio. Usa a tuo rischio.
+
+---
+
+## 🚀 Funzionalità principali
+
+- **Gestione completa**: aggiungi, rimuovi, abilita/disabilita addon.
+- **Ordinamento Drag & Drop**: cambia priorità con un semplice trascinamento.
+- **Sincronizzazione Cloud**: salva direttamente sul tuo account Stremio tramite `authKey` temporanea.
+- **Backup & Ripristino**: esporta/importa la config in `.json`.
+- **Condivisione**: genera link condivisibili della tua lista addon.
+- **Multilingue**: 🇮🇹 Italiano, 🇬🇧 Inglese, 🇫🇷 Français, 🇩🇪 Deutsch, 🇪🇸 Español, 🇺🇦 Українська, 🇵🇹 Português.
+- **Doppio tema**: Cyberpunk Dark (default) / Cyberpunk Light.
+- **Verifica stato**: controlla se i manifest sono online.
+- **Speed test**: misura latenza/risposta per ogni addon.
+- **Aggiornamenti automatici (opz.)**: nightly update scheduler.
+- **Profili**: più account Stremio, switch rapido.
+
+---
+
+## 🧩 UI & UX (Highlights)
+
+- Look & feel: neon, glassmorphism, tipografia futuristica.
+- Bottone principale: `Salva Ordine e Modifiche su Stremio` con effetto glow.
+- Toggle tema, ricerca rapida, filtri, e pannello avanzato per test e verifiche.
+- Accessible keyboard controls per drag & drop e selezione rapida.
+
+---
+
+## 🛠️ Come usare (Quickstart)
+
+### 1 — Avvia l’app
+Apri la web app all'URL dove è hostata (es. `https://tuo-host/streamorganizer`).
+
+### 2 — Accedi con Stremio
+Inserisci la tua **authKey temporanea**. L'app **non salva** la password.
+
+### 3 — Gestisci addon
+- Trascina per riordinare.
+- Usa i toggle per abilitare/disabilitare.
+- Aggiungi manifest manualmente con `+ Add`.
+
+### 4 — Salva
+Clicca **💾 Salva Ordine e Modifiche su Stremio** — è l'unico step che scrive sul server Stremio.
+
+### 5 — Backup / Restore
+- `Export JSON` → scarica la configurazione.
+- `Import JSON` → carica un file di backup.
+
+---
+
+## 🔧 Esempi di comandi / API (Snippet)
+
+> Nota: questi endpoints sono esempi — adatta alla tua implementazione server.
+
+```http
+POST /api/auth
+Content-Type: application/json
+
+{
+  "authKey": "your-temporary-auth-key"
+}IMPORTANTE: Fai uno screenshot della tua app e caricalo su Imgur o direttamente nel tuo repo GitHub.
 Poi, sostituisci il link qui sotto con il link diretto al tuo screenshot.
 -->
 <p align="center">
@@ -156,3 +225,12 @@ Riordina, aggiungi o modifica i tuoi addon direttamente dall’interfaccia.
 
 # 4️⃣ Salva
 Clicca su **"💾 Salva Ordine e Modifiche su Stremio"** per applicare le modifiche.
+---
+
+🧾 Disclaimer & Sicurezza
+
+L'app è non ufficiale. Potrebbe causare loss di dati o problemi di sincronizzazione.
+
+Non memorizziamo password: usiamo solo authKey temporanea.
+
+Raccomandato: eseguire backup prima di qualsiasi Save.
