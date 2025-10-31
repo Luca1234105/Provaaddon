@@ -42,9 +42,6 @@
 🧠 Matrix Mode — Modalità a linea di comando per utenti avanzati.
 
 ⚡ Realtime Logs — Console in tempo reale con log colorati.
-
-
-
 ---
 
 🚀 Installazione
