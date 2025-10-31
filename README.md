@@ -47,9 +47,8 @@
 
 ## 🚀 Installazione
 
-### Metodo Docker (Consigliato)
+🐳 Metodo Docker (🔥 Consigliato)
 
-```bash
 # 1️⃣ Clona il repository
 git clone https://github.com/Luca1234105/StreamOrder.git
 cd StreamOrder
@@ -59,9 +58,14 @@ docker build -t streamorder .
 
 # 3️⃣ Avvia il container in background
 docker run -d -p 8080:80 --name streamorder-app streamorder
- ```
-💡 Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
 
+💡 Suggerimento:
+Dopo l’avvio, StreamOrder sarà disponibile su 👉 http://localhost:8080
+
+🌐 Oppure prova la versione online!
+
+Accedi subito senza installazione:
+👉 StreamOrder Online su HuggingFace 🚀
 ---
 ## 🌌 Screenshot
 
