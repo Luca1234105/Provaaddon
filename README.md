@@ -54,3 +54,20 @@ docker build -t streamorder .
 
 # 3️⃣ Avvia il container in background
 docker run -d -p 8080:80 --name streamorder-app streamorder
+ ```
+💡 Dopo aver eseguito il comando, StreamOrder sarà accessibile su http://localhost:8080.
+
+---
+🌌 Screenshot
+<p align="center"> <img src="https://github.com/Luca1234105/Provaaddon/blob/main/images/Gemini_Generated_Image_nx1h3lnx1h3lnx1h.png?raw=true" alt="Schermata StreamOrder" width="700"> </p>  
+
+🧑‍💻 Crediti
+👨‍🚀 Autore: Luca Drogo
+
+⚙️ Progetto: StreamOrder
+
+💡 Concept: Cyberpunk Addon Console per Stremio
+
+🌍 GitHub: github.com/Luca1234105
+
+
