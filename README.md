@@ -79,9 +79,30 @@ docker run -d -p 8080:80 --name streamorder-app streamorder'''
 
 ## 💬 Supporta il Progetto
 
-Se ti piace questo progetto, lascia una ⭐ su GitHub — ogni stella alimenta il reattore neon di StreamOrder ⚡💜
+Se ti piace questo progetto, lascia una ⭐ su GitHub — ogni stella alimenta il **reattore neon** di **StreamOrder** ⚡💜
 
 <p align="center">
   <b>“Order your Addons. Rule the Stream.”</b><br>
   <i>— StreamOrder Console v1.0.0</i>
 </p>
+
+---
+
+## ⚠️ Avviso Importante
+
+> 🚨 **Disclaimer Legale:**  
+> StreamOrder **non è un addon ufficiale di Stremio**.  
+> L’uso improprio o eccessivo potrebbe causare problemi al tuo account Stremio o ai tuoi addon.  
+> L’autore **non si assume alcuna responsabilità** per eventuali danni, sospensioni o perdita di dati derivanti dall’uso di questo software.
+
+> ⚡ **Nota d’uso:**  
+> Utilizza **StreamOrder** a tuo rischio e pericolo, esclusivamente per scopi **educativi** o di **testing locale**.
+
+---
+
+### 💡 Suggerimento
+
+Per ottenere il massimo da StreamOrder:  
+- Organizza i tuoi addon con drag & drop  
+- Effettua backup regolari  
+- Condividi URL dei tuoi addon preferiti con gli amici
